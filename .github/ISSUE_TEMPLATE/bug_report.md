@@ -1,13 +1,4 @@
 ---
-name: bug_report
-about: 버그 리포트 이슈
-title: ''
-labels: ''
-assignees: ''
-
----
-
----
 name: Bug_report
 about: 버그가 발생했을 때 작성해 주세요.
 title: ''
