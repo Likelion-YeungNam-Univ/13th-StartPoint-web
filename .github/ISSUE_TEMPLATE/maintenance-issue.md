@@ -1,14 +1,5 @@
 ---
 name: maintenance-issue
-about: 유지보수 관련 이슈
-title: ''
-labels: ''
-assignees: ''
-
----
-
----
-name: maintenance-issue
 about: 코드 리팩토링, 설정 변경, 유지보수 작업을 작성합니다.
 title: ''
 labels: 'Type : Chore, Type : Refactor'
