@@ -1,5 +1,5 @@
 ---
-name: feature_request.md
+name: feature_request
 about: 기능 요청 이슈
 title: ''
 labels: ''
@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 ---
-name: Feature request
+name: feature_request
 about: 새로운 기능을 요청하거나 개발할 때 사용합니다.
 title: ''
 labels: 'Type : Feature'
