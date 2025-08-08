@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/home";
 import MarketResearch from "./pages/MarketResearch";
 import Mentoring from "./pages/Mentoring";
+import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
 import Layout from "./Layout";
 
@@ -14,6 +15,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="market-research" element={<MarketResearch />} />
           <Route path="mentoring" element={<Mentoring />} />
+          <Route path="signup" element={<SignUp />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
