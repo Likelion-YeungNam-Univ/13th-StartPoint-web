@@ -6,6 +6,7 @@ import Mentoring from "./pages/Mentoring";
 import NotFound from "./pages/NotFound";
 import Layout from "./Layout";
 import MyPage from "./pages/MyPage";
+import Login from "./pages/Login";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
           <Route path="mentoring" element={<Mentoring />} />
           <Route path="mypage" element={<MyPage />} />
           <Route path="mypage" element={<MyPage />} />
+          <Route path="login" element={<Login />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
