@@ -1,0 +1,31 @@
+.mypage-wrap { background:#e9e9e9; min-height:calc(100vh - 64px); }
+.mypage-inner { max-width:960px; margin:0 auto; padding:32px 20px 80px; }
+.mypage-title { font-size:24px; font-weight:700; margin:0 0 8px; }
+.mypage-title-line { border:none; border-top:2px solid #000; margin:8px 0 24px; }
+
+.mypage-card { background:transparent; }
+.mypage-section-title { font-size:18px; font-weight:600; margin:8px 0; }
+.mypage-section-line { border:none; border-top:1px solid #bdbdbd; margin:8px 0 24px; }
+
+.mypage-grid {
+  display:grid;
+  grid-template-columns:120px 1fr;
+  gap:16px 24px;
+  align-items:center;
+}
+.skeleton-input {
+  height:28px;
+  background:#cfcfcf;
+  border-radius:6px;
+}
+.radio-row { display:flex; gap:24px; align-items:center; }
+
+.btn-row { margin-top:24px; }
+.btn-primary {
+  width:160px; height:36px; border-radius:8px; border:none;
+  background:#bdbdbd; cursor:pointer;
+}
+.danger-row { margin-top:12px; }
+.btn-ghost {
+  background:none; border:none; color:#777; text-decoration:underline; cursor:pointer;
+}
