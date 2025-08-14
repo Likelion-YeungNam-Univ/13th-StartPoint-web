@@ -20,7 +20,7 @@ function Section1() {
         className="absolute inset-0 -z-10 h-full w-full object-cover"
         loading="eager"
       />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#0d1620] via-transparent to-[#0d1620]" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent to-[#0d1620]" />
       <div className="min-h-[100vh] flex items-center justify-center">
         <div className="flex flex-col items-center gap-4 text-center">
           <h1 className="text-white text-4xl font-extrabold">
