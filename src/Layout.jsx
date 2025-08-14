@@ -6,7 +6,10 @@ const Layout = () => {
   return (
     <div className="h-screen flex flex-col">
       <NavBar />
-      <Outlet />
+      <div id="nav-sentinel" />
+      <main className="flex-1 pt-16 bg-[#0d1620]">
+        <Outlet />
+      </main>
     </div>
   );
 };
