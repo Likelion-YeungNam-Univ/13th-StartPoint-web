@@ -5,21 +5,28 @@ const NotFound = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-blue-100 to-white-100 text-center px-4">
-      <h1 className="text-8xl font-extrabold text-blue-800 drop-shadow-lg mb-4">
+    <div className="flex flex-col items-center justify-center h-screen">
+      <h1
+        className="text-[160px] font-[700] text-blue-800"
+        style={{ color: "#2E47A4" }}
+      >
         404
       </h1>
-      <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-2">
-        페이지를 찾을 수 없습니다.
+      <h2
+        className="text-2xl md:text-3xl font-semibold mb-3"
+        style={{ color: "#424242" }}
+      >
+        Page Not Found.
       </h2>
-      <p className="text-gray-700 mb-6">
-        요청하신 페이지가 존재하지 않거나, 이동되었을 수 있습니다.
+      <p className="mb-11" style={{ color: "#424242" }}>
+        Sorry, we couldn't find the page you were looking for.
       </p>
       <button
         onClick={() => navigate("/")}
-        className="px-6 py-3 bg-blue-800 hover:bg-blue-900 text-white font-medium rounded-xl shadow-md transition cursor-pointer"
+        className="px-12 py-2 text-white font-medium rounded-[40px] shadow-md transition cursor-pointer"
+        style={{ backgroundColor: "#2E47A4" }}
       >
-        홈으로 돌아가기
+        Back to home
       </button>
     </div>
   );
