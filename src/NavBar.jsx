@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Logo from "./assets/SPO_Logo.png";
@@ -19,21 +20,16 @@ const NavBar = () => {
         onClick={() => navigate("/")}
         className="cursor-pointer object-cover h-14"
       />
-      <div className="flex justify-center">
-        <Link to="/" className={getActiveLink("/")}>
-          Home
-        </Link>
-        <Link
-          to="/market-research"
-          className={getActiveLink("/market-research")}
-        >
-          상권 분석
-        </Link>
-        <Link to="/mentoring" className={getActiveLink("/mentoring")}>
-          멘토 탐색
-        </Link>
-      </div>
-      <div className="p-4">프로필 아이콘</div>
+      <span className="flex justify-center">
+        <Link to="/" className={getActiveLink("/")}>Home</Link>
+        <Link to="/market-research" className={getActiveLink("/market-research")}>상권 분석</Link>
+        <Link to="/mentoring" className={getActiveLink("/mentoring")}>멘토 탐색</Link>
+      </span>
+
+      <Link to="/mypage" className={getActiveLink("/mypage")} aria-label="마이페이지">
+        프로필 아이콘
+      </Link>
+
     </nav>
   );
 };
