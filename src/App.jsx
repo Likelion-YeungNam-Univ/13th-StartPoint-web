@@ -16,7 +16,6 @@ const App = () => {
           <Route path="market-research" element={<MarketResearch />} />
           <Route path="mentoring" element={<Mentoring />} />
           <Route path="mypage" element={<MyPage />} />
-          <Route path="mypage" element={<MyPage />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

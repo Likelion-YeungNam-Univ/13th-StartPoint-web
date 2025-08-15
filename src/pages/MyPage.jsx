@@ -1,5 +1,6 @@
 import React from "react";
 import "./mypage.css";
+
 export default function MyPage() {
   return (
     <div className="mypage-wrap">
@@ -11,33 +12,33 @@ export default function MyPage() {
           <h2 className="mypage-section-title">회원 정보</h2>
           <hr className="mypage-section-line" />
 
-          <div className="mypage-grid">
+          <form className="mypage-form">
             <label>이름</label>
-            <div className="skeleton-input" />
+            <input type="text" placeholder="입력해주세요" />
+
+            <label>아이디</label>
+            <input type="text" placeholder="입력해주세요" />
+
+            <label>비밀번호</label>
+            <input type="password" placeholder="입력해주세요" />
 
             <label>생년월일</label>
-            <div className="skeleton-input" />
+            <input type="date" />
 
             <label>전화번호</label>
-            <div className="skeleton-input" />
+            <input type="text" placeholder="입력해주세요" />
 
             <label>이메일</label>
-            <div className="skeleton-input" />
+            <input type="email" placeholder="입력해주세요" />
 
             <label>멘티 / 멘토</label>
             <div className="radio-row">
               <label><input type="radio" name="role" /> 멘티</label>
               <label><input type="radio" name="role" /> 멘토</label>
             </div>
-          </div>
 
-          <div className="btn-row">
-            <button className="btn-primary" type="button">수정</button>
-          </div>
-
-          <div className="danger-row">
-            <button className="btn-ghost" type="button">회원탈퇴</button>
-          </div>
+            <button className="btn-primary" type="submit">수정하기</button>
+          </form>
         </section>
       </div>
     </div>
