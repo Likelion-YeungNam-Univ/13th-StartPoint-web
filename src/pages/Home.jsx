@@ -119,21 +119,22 @@ function Section2() {
       />
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#0d1620] via-transparent to-[#0d1620]" />
 
-      {/* 좌측 요소 */}
       <div className="flex flex-col justify-center mb-20">
+        {/* 좌측 상단 텍스트 */}
         <div className="flex flex-col text-white">
           <h3 className="mb-1 text-[20px] font-bold">상권분석</h3>
           <div className="mb-6 text-[14px]">
             상권부터 유동인구, 가능성 예측까지 한 번에 분석하기
           </div>
         </div>
-
+        {/*버튼 및 패널*/}
         <div className="grid grid-cols-12 gap-7 items-start">
+          {/*좌측 버튼*/}
           <div className="col-span-6 flex flex-col">
             <button
               type="button"
               onClick={() => openPanel("area")}
-              className={`mb-20 ${leftBtnBase} ${
+              className={`mb-20 cursor-pointer ${leftBtnBase} ${
                 areaActive ? leftBtnActive : leftBtnInactive
               }`}
             >
@@ -143,7 +144,7 @@ function Section2() {
             <button
               type="button"
               onClick={() => openPanel("industry")}
-              className={`${leftBtnBase} ${
+              className={`cursor-pointer ${leftBtnBase} ${
                 industryActive ? leftBtnActive : leftBtnInactive
               }`}
             >
@@ -151,11 +152,13 @@ function Section2() {
             </button>
           </div>
 
+          {/*우측 패널*/}
           <div
             className={[
               "col-span-6 bg-white border-3 border-black rounded-2xl",
               "transition-all duration-300",
               "w-full h-80",
+              "flex flex-col",
               panel === "none"
                 ? "opacity-0 translate-y-2 pointer-events-none"
                 : "opacity-100 translate-y-0",
@@ -175,7 +178,7 @@ function Section2() {
                           setSelectedArea((prev) => (prev === a ? null : a))
                         }
                         className={[
-                          "h-11 w-25 rounded-lg text-[14px] border transition-colors",
+                          "h-11 w-25 rounded-lg text-[14px] border transition-colors cursor-pointer",
                           active
                             ? "bg-[#547DA0] text-[#FDFDFD] border-[#D4EBFF]"
                             : "bg-white text-[#547DA0] border-[#547DA0] border-dashed hover:border-sky-500 hover:text-sky-700",
@@ -203,10 +206,10 @@ function Section2() {
                           setSelectedSub(null);
                         }}
                         className={[
-                          "h-11 w-25 rounded-lg text-[14px] border transition-colors",
+                          "h-11 w-25 rounded-lg text-[14px] border transition-colors cursor-pointer",
                           active
-                            ? "bg-sky-100 border-sky-300 text-sky-800"
-                            : "bg-white border-slate-300 text-slate-700 hover:border-sky-400",
+                            ? "bg-[#547DA0] text-[#FDFDFD] border-[#D4EBFF]"
+                            : "bg-white text-[#547DA0] border-[#547DA0] border-dashed hover:border-sky-500 hover:text-sky-700",
                         ].join(" ")}
                       >
                         {m}
@@ -233,10 +236,10 @@ function Section2() {
                             setSelectedSub(null);
                           }}
                           className={[
-                            "h-11 w-25 rounded-lg text-[14px] border transition-colors",
+                            "h-11 w-25 rounded-lg text-[14px] border transition-colors cursor-pointer",
                             active
-                              ? "bg-indigo-100 border-indigo-300 text-indigo-800"
-                              : "bg-white border-slate-300 text-slate-700 hover:border-indigo-400",
+                              ? "bg-[#547DA0] text-[#FDFDFD] border-[#D4EBFF]"
+                              : "bg-white text-[#547DA0] border-[#547DA0] border-dashed hover:border-sky-500 hover:text-sky-700",
                           ].join(" ")}
                         >
                           {mid}
@@ -263,10 +266,10 @@ function Section2() {
                           setSelectedSub((prev) => (prev === s ? null : s))
                         }
                         className={[
-                          "h-11 w-25 rounded-lg text-[14px] border transition-colors",
+                          "h-11 w-25 rounded-lg text-[14px] border transition-colors cursor-pointer",
                           active
-                            ? "bg-sky-600 border-sky-500 text-white"
-                            : "bg-white border-slate-300 text-slate-700 hover:border-sky-400",
+                            ? "bg-[#547DA0] text-[#FDFDFD] border-[#D4EBFF]"
+                            : "bg-white text-[#547DA0] border-[#547DA0] border-dashed hover:border-sky-500 hover:text-sky-700",
                         ].join(" ")}
                       >
                         {s}
@@ -278,7 +281,7 @@ function Section2() {
             </div>
 
             {/* 하단 다음/결과 버튼 */}
-            <div className="px-6 pb-6 flex items-center justify-center">
+            <div className="mt-auto shrink-0 px-6 pb-5.5 flex items-center justify-center">
               {panel === "area" && (
                 <button
                   type="button"
@@ -292,8 +295,8 @@ function Section2() {
                   className={[
                     "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
                     canNextFromArea
-                      ? "bg-[#547DA0] text-white hover:brightness-95"
-                      : "bg-gray-200 text-gray-500 cursor-not-allowed",
+                      ? "bg-[#547DA0] text-white cursor-pointer hover:brightness-95"
+                      : "bg-[#CFCFCF] text-white cursor-not-allowed",
                   ].join(" ")}
                 >
                   다음
@@ -308,8 +311,8 @@ function Section2() {
                   className={[
                     "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
                     canNextFromMajor
-                      ? "bg-[#547DA0] text-white hover:brightness-95"
-                      : "bg-gray-200 text-gray-500 cursor-not-allowed",
+                      ? "bg-[#547DA0] text-white cursor-pointer hover:brightness-95"
+                      : "bg-[#CFCFCF] text-white cursor-not-allowed",
                   ].join(" ")}
                 >
                   다음
@@ -324,8 +327,8 @@ function Section2() {
                   className={[
                     "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
                     canNextFromMiddle
-                      ? "bg-[#547DA0] text-white hover:brightness-95"
-                      : "bg-gray-200 text-gray-500 cursor-not-allowed",
+                      ? "bg-[#547DA0] text-white cursor-pointer hover:brightness-95"
+                      : "bg-[#CFCFCF] text-white cursor-not-allowed",
                   ].join(" ")}
                 >
                   다음
@@ -340,8 +343,8 @@ function Section2() {
                   className={[
                     "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
                     canAnalyzeFromSub
-                      ? "bg-[#547DA0] text-white hover:brightness-95"
-                      : "bg-gray-200 text-gray-500 cursor-not-allowed",
+                      ? "bg-[#547DA0] text-white cursor-pointer hover:brightness-95"
+                      : "bg-[#CFCFCF] text-white cursor-not-allowed",
                   ].join(" ")}
                 >
                   분석하기
