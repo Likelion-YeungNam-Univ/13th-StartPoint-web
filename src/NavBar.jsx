@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Link } from "react-scroll";
-import Logo from "./assets/SPO_Logo.png";
+import Logo from "./assets/SPO_Logo.svg";
 import userIcon from "./assets/User_Icon.svg";
 import useScrollSpy from "./hooks/useScrollSpy";
 
