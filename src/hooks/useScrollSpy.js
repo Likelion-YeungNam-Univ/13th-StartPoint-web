@@ -37,9 +37,10 @@ export default function useScrollSpy(sectionIds, headerOffset = 64) {
         const line = window.scrollY + headerOffset;
 
         let pick = list[0].id;
-        for (let i = 0; i < list.length; i += 1) {
-          if (list[i].top <= line) {
-            pick = list[i].id;
+        for (let i = 0; i < list.length - 1; i += 1) {
+          const mid = (list[i].top + list[i + 1].top) / 2; // 두 섹션 사이 중앙
+          if (line >= mid) {
+            pick = list[i + 1].id;     // 중앙선을 넘을 때 다음 섹션으로
           } else {
             break;
           }
