@@ -391,7 +391,7 @@ function Section3() {
     <Element
       name="mentoring"
       id="mentoring"
-      className="relative isolate min-h-[calc(100vh-64px)] scroll-mt-16 bg-[#0d1620]"
+      className="relative isolate flex items-center min-h-[calc(100vh-64px)] scroll-mt-16 bg-[#0d1620]"
     >
       <img
         src={imgSection3}
@@ -401,22 +401,22 @@ function Section3() {
       />
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#0d1620] via-transparent to-[#0d1620]" />
 
-      <div className="mx-auto max-w-screen-xl px-6 py-24">
-        {/* 제목은 균형 잡힌 줄바꿈 */}
-        <h2 className="text-white text-3xl font-extrabold text-center leading-tight [text-wrap:balance]">
+      <div className="flex flex-col justify-center items-center mx-auto max-w-screen-xl px-6 py-24">
+        {/* 큰 제목 */}
+        <h2 className="text-white text-[56px] font-extrabold text-center leading-tight [text-wrap:balance]">
           SPO에서 당신의 멘토를 만나보세요!
         </h2>
 
-        {/* 카드 3개 */}
-        <div className="mt-6 grid grid-cols-9 gap-1">
+        {/* 카드 3개 내용 */}
+        <div className="mt-6 grid grid-cols-9 gap-14">
           {CARDS.map((it) => (
             <div
               key={it.t}
               className="col-span-3 py-20 text-white text-center rounded-sm"
             >
-              <h3 className="text-xl font-semibold">{it.t}</h3>
+              <h3 className="text-[30px] font-semibold">{it.t}</h3>
 
-              <p className="mt-4 text-white text-sm leading-7">
+              <p className="mt-4 text-white text-sm leading-5">
                 {it.lines.map((line, i) => (
                   <span key={i} className="block">
                     {line}
@@ -431,7 +431,7 @@ function Section3() {
           <button
             type="button"
             onClick={() => navigate("/mentoring")}
-            className="rounded-lg bg-[#547DA0] px-7 py-3 text-base font-semibold text-white hover:bg-[#547DA0]/80 transition"
+            className="rounded-lg bg-[#547DA0] px-8.5 py-4 text-[20px] font-semibold text-white hover:bg-[#547DA0]/80 transition"
           >
             멘토 탐색 바로가기
           </button>
