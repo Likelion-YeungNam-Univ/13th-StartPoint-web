@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/home";
 import MarketResearch from "./pages/MarketResearch";
 import Mentoring from "./pages/Mentoring";
+import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
 import Layout from "./Layout";
 import MyPage from "./pages/MyPage";
@@ -19,6 +20,7 @@ const App = () => {
           <Route path="mypage" element={<MyPage />} />
           <Route path="mypage" element={<MyPage />} />
           <Route path="login" element={<Login />} />
+          <Route path="signup" element={<SignUp />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
