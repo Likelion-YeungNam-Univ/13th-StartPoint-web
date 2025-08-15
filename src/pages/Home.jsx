@@ -12,7 +12,7 @@ function Section1() {
     <Element
       name="home"
       id="home"
-      className="relative isolate min-h-[100vh] scroll-mt-16 bg-[#0d1620]"
+      className="relative isolate min-h-[100vh] scroll-mt-16 bg-[#121B2A]"
     >
       <img
         src={imgSection1}
@@ -20,7 +20,7 @@ function Section1() {
         className="absolute inset-0 -z-10 h-full w-full object-cover"
         loading="eager"
       />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent to-[#0d1620]" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent from-10% to-[#121B2A] to-85%" />
       <div className="min-h-[100vh] flex items-center justify-center">
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-white text-[80px] font-extrabold">
@@ -108,7 +108,7 @@ function Section2() {
     <Element
       name="market-research"
       id="market-research"
-      className="flex items-center justify-center relative isolate min-h-[calc(100vh-64px)] bg-[#0d1620]"
+      className="flex items-center justify-center relative isolate min-h-[calc(100vh-64px)] bg-[#121B2A]"
     >
       {/* 배경 이미지 */}
       <img
@@ -117,7 +117,7 @@ function Section2() {
         className="absolute inset-0 -z-10 h-full w-full object-cover opacity-60"
         loading="lazy"
       />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#0d1620] via-transparent to-[#0d1620]" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#121B2A] from-10% via-transparent via-50% to-[#121B2A] to-90%" />
 
       <div className="flex flex-col justify-center mb-20">
         {/* 좌측 상단 텍스트 */}
@@ -391,7 +391,7 @@ function Section3() {
     <Element
       name="mentoring"
       id="mentoring"
-      className="relative isolate flex items-center min-h-[calc(100vh-64px)] scroll-mt-16 bg-[#0d1620]"
+      className="relative isolate flex items-center min-h-[calc(100vh-64px)] scroll-mt-16 bg-[#121B2A]"
     >
       <img
         src={imgSection3}
@@ -399,7 +399,7 @@ function Section3() {
         className="absolute inset-0 -z-10 h-full w-full object-cover opacity-60"
         loading="lazy"
       />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#0d1620] via-transparent to-[#0d1620]" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#121B2A] from-10% via-transparent via-50% to-[#121B2A] to-90%" />
 
       <div className="flex flex-col justify-center items-center mx-auto max-w-screen-xl px-6 py-12">
         {/* 큰 제목 */}
