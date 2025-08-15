@@ -12,14 +12,14 @@ const NavBar = () => {
     }`;
 
   return (
-    <nav className="flex justify-between min-h-18 px-4 py-2 overflow-hidden">
+    <nav className="flex justify-between min-h-18 px-4 py-2 border-b overflow-hidden">
       <img
         src={Logo}
         alt="Logo"
         onClick={() => navigate("/")}
         className="cursor-pointer object-cover h-14"
       />
-      <span className="flex justify-center">
+      <div className="flex justify-center">
         <Link to="/" className={getActiveLink("/")}>
           Home
         </Link>
@@ -32,7 +32,7 @@ const NavBar = () => {
         <Link to="/mentoring" className={getActiveLink("/mentoring")}>
           멘토 탐색
         </Link>
-      </span>
+      </div>
       <div className="p-4">프로필 아이콘</div>
     </nav>
   );
