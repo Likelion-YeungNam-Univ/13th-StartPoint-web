@@ -280,7 +280,7 @@ function Section2() {
               )}
             </div>
 
-            {/* 하단 다음/결과 버튼 */}
+            {/* 하단 CTA 버튼 */}
             <div className="mt-auto shrink-0 px-6 pb-5.5 flex items-center justify-center">
               {panel === "area" && (
                 <button
