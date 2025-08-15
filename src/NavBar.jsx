@@ -123,12 +123,13 @@ const NavBar = () => {
           <MenuItem id="mentoring">멘토 탐색</MenuItem>
         </div>
 
-        <Link to="/mypage" className={getActiveLink("/mypage")} aria-label="마이페이지">
+        <button type="button"
+            onClick={() => navigate("/mypage")}>
           <img
               src={userIcon}
               alt="User_Icon"
             />
-        </Link>
+        </button>
       </div>
     </nav>
   );

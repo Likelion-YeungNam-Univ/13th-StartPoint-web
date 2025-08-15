@@ -18,7 +18,6 @@ const App = () => {
           <Route path="market-result" element={<MarketResult />} />
           <Route path="mentoring" element={<Mentoring />} />
           <Route path="mypage" element={<MyPage />} />
-          <Route path="mypage" element={<MyPage />} />
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<SignUp />} />
           <Route path="*" element={<NotFound />} />
