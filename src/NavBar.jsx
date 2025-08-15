@@ -15,7 +15,7 @@ const TOP_LOCK_PX = 450; // 이 값 이하에서는 Home 강조 고정
 const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  
   const spyId = useScrollSpy(SECTION_IDS, NAV_H);
   const isHome = location.pathname === "/";
 
@@ -123,10 +123,12 @@ const NavBar = () => {
           <MenuItem id="mentoring">멘토 탐색</MenuItem>
         </div>
 
-        <img
-            src={userIcon}
-            alt="User_Icon"
-          />
+        <Link to="/mypage" className={getActiveLink("/mypage")} aria-label="마이페이지">
+          <img
+              src={userIcon}
+              alt="User_Icon"
+            />
+        </Link>
       </div>
     </nav>
   );
