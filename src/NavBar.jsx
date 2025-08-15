@@ -20,6 +20,7 @@ const NavBar = () => {
         onClick={() => navigate("/")}
         className="cursor-pointer object-cover h-14"
       />
+
       <span className="flex justify-center">
         <Link to="/" className={getActiveLink("/")}>Home</Link>
         <Link to="/market-research" className={getActiveLink("/market-research")}>상권 분석</Link>
@@ -29,7 +30,6 @@ const NavBar = () => {
       <Link to="/mypage" className={getActiveLink("/mypage")} aria-label="마이페이지">
         프로필 아이콘
       </Link>
-
     </nav>
   );
 };
