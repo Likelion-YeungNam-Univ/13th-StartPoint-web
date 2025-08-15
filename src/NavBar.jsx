@@ -123,13 +123,12 @@ const NavBar = () => {
           <MenuItem id="mentoring">멘토 탐색</MenuItem>
         </div>
 
-        <button type="button"
-            onClick={() => navigate("/mypage")}>
           <img
               src={userIcon}
               alt="User_Icon"
+              className="cursor-pointer"
+              onClick={() => navigate("/mypage")}
             />
-        </button>
       </div>
     </nav>
   );
