@@ -43,30 +43,28 @@ function Section1() {
 function Section2() {
   // 왼쪽 버튼 기본, 조건부 스타일
   const leftBtnBase =
-    "w-118 h-30 rounded-xl text-xl font-semibold border border-3 transition";
-  const leftBtnActive   = "bg-white text-[#121B2A] border-[#121B2A] hover:brightness-95";
+    "w-120 h-30 rounded-xl text-xl font-semibold border border-3 transition";
+  const leftBtnActive =
+    "bg-white text-[#121B2A] border-[#121B2A] hover:brightness-95";
   const leftBtnInactive = "bg-[#121B2A] text-white border-white";
 
   // 패널 상태: 'none' | 'area' | 'major' | 'middle' | 'sub'
-  //            선택X     동네     대분류    중분류      소분류
+  //            선택X     동네     대분류     중분류    소분류
   const [panel, setPanel] = useState("none");
 
   // 선택 상태
-  const [selectedArea, setSelectedArea]     = useState(null);
-  const [selectedMajor, setSelectedMajor]   = useState(null);
+  const [selectedArea, setSelectedArea] = useState(null);
+  const [selectedMajor, setSelectedMajor] = useState(null);
   const [selectedMiddle, setSelectedMiddle] = useState(null);
-  const [selectedSub, setSelectedSub]       = useState(null);
+  const [selectedSub, setSelectedSub] = useState(null);
 
   const navigate = useNavigate();
 
-
-
   // ------- 여기부터 API로 변경해야 됨 -------
-
 
   // 지금은 더미 데이터
   const AREA_OPTIONS = Array.from({ length: 15 }, (_, i) => `#${i + 1}`); // 동네 15개
-  const MAJORS       = Array.from({ length: 10 }, (_, i) => `#${i + 1}`); // 대분류 10개
+  const MAJORS = Array.from({ length: 10 }, (_, i) => `#${i + 1}`); // 대분류 10개
 
   // 대분류별 중분류 8개
   const MIDDLES_BY_MAJOR = Object.fromEntries(
@@ -83,11 +81,8 @@ function Section2() {
     )
   );
 
-
   // ------- 여기까지 -------
 
-
-  
   const openPanel = (type) => {
     if (type === "area") {
       setPanel("area");
@@ -100,19 +95,20 @@ function Section2() {
   };
 
   // 버튼 활성 조건
-  const canNextFromArea   = !!selectedArea;
-  const canNextFromMajor  = !!selectedMajor;
+  const canNextFromArea = !!selectedArea;
+  const canNextFromMajor = !!selectedMajor;
   const canNextFromMiddle = !!selectedMiddle;
   const canAnalyzeFromSub = !!selectedSub;
 
-  const areaActive     = panel === "area";
-  const industryActive = panel === "major" || panel === "middle" || panel === "sub";
+  const areaActive = panel === "area";
+  const industryActive =
+    panel === "major" || panel === "middle" || panel === "sub";
 
   return (
     <Element
       name="market-research"
       id="market-research"
-      className="relative isolate min-h-[calc(100vh-64px)] bg-[#0d1620]"
+      className="flex items-center justify-center relative isolate min-h-[calc(100vh-64px)] bg-[#0d1620]"
     >
       {/* 배경 이미지 */}
       <img
@@ -124,218 +120,235 @@ function Section2() {
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#0d1620] via-transparent to-[#0d1620]" />
 
       {/* 좌측 요소 */}
-      <div
-        className="flex flex-col absolute top-60 left-114 text-white"
-      >
-        <h3 className="text-[20px] font-bold">상권분석</h3>
-        <div className="mt-1 text-[14px]">상권부터 유동인구, 가능성 예측까지 한 번에 분석하기</div>
-        
-        <button
-          type="button"
-          onClick={() => openPanel("area")}
-          className={`mt-6 ${leftBtnBase} ${areaActive ? leftBtnActive : leftBtnInactive}`}
-        >
-          동네 선택하기
-        </button>
-
-        <button
-          type="button"
-          onClick={() => openPanel("industry")}
-          className={`mt-19.5 ${leftBtnBase} ${industryActive ? leftBtnActive : leftBtnInactive}`}
-        >
-          업종 선택하기
-        </button>
-      </div>
-
-      {/* 우측 요소 */}
-      <div
-        className={[
-          "absolute",
-          "bg-white border-3 border-black rounded-2xl",
-          "transition-all duration-300",
-          "top-79.5 right-113 w-122 h-80",
-          panel === "none" ? "opacity-0 translate-y-2 pointer-events-none" : "opacity-100 translate-y-0",
-        ].join(" ")}
-      >
-        <div className="px-6 py-7">
-          {/* AREA 단계 — 4열 */}
-          {panel === "area" && (
-            <div className="grid grid-cols-4 gap-2">
-              {AREA_OPTIONS.map((a) => {
-                const active = selectedArea === a;
-                return (
-                  <button
-                    key={a}
-                    type="button"
-                    onClick={() => setSelectedArea((prev) => (prev === a ? null : a))}
-                    className={[
-                      "h-11 w-25 rounded-lg text-[14px] border transition-colors",
-                      active
-                        ? "bg-[#547DA0] text-[#FDFDFD] border-[#D4EBFF]"
-                        : "bg-white text-[#547DA0] border-[#547DA0] border-dashed hover:border-sky-500 hover:text-sky-700",
-                    ].join(" ")}
-                  >
-                    {a}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {/* MAJOR 단계 — 4열 */}
-          {panel === "major" && (
-            <div className="grid grid-cols-4 gap-2">
-              {MAJORS.map((m) => {
-                const active = selectedMajor === m;
-                return (
-                  <button
-                    key={m}
-                    type="button"
-                    onClick={() => {
-                      setSelectedMajor((prev) => (prev === m ? null : m));
-                      setSelectedMiddle(null);   // 대분류 바뀌면 중/소 초기화
-                      setSelectedSub(null);
-                    }}
-                    className={[
-                      "h-11 w-25 rounded-lg text-[14px] border transition-colors",
-                      active
-                        ? "bg-sky-100 border-sky-300 text-sky-800"
-                        : "bg-white border-slate-300 text-slate-700 hover:border-sky-400",
-                    ].join(" ")}
-                  >
-                    {m}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {/* MIDDLE 단계 — 4열 */}
-          {panel === "middle" && (
-            <div className="grid grid-cols-4 gap-2">
-              {(selectedMajor ? MIDDLES_BY_MAJOR[selectedMajor] : []).map((mid) => {
-                const active = selectedMiddle === mid;
-                return (
-                  <button
-                    key={mid}
-                    type="button"
-                    onClick={() => {
-                      setSelectedMiddle((prev) => (prev === mid ? null : mid));
-                      setSelectedSub(null); // 중분류 바뀌면 소분류 초기화
-                    }}
-                    className={[
-                      "h-11 w-25 rounded-lg text-[14px] border transition-colors",
-                      active
-                        ? "bg-indigo-100 border-indigo-300 text-indigo-800"
-                        : "bg-white border-slate-300 text-slate-700 hover:border-indigo-400",
-                    ].join(" ")}
-                  >
-                    {mid}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {/* SUB 단계 — 4열 */}
-          {panel === "sub" && (
-            <div className="grid grid-cols-4 gap-2">
-              {(
-                selectedMajor && selectedMiddle
-                  ? SUB_BY_MIDDLE[`${selectedMajor}/${selectedMiddle}`]
-                  : []
-              ).map((s, i) => {
-                const active = selectedSub === s;
-                return (
-                  <button
-                    key={`${selectedMajor}-${selectedMiddle}-${i}`}
-                    type="button"
-                    onClick={() => setSelectedSub((prev) => (prev === s ? null : s))}
-                    className={[
-                      "h-11 w-25 rounded-lg text-[14px] border transition-colors",
-                      active
-                        ? "bg-sky-600 border-sky-500 text-white"
-                        : "bg-white border-slate-300 text-slate-700 hover:border-sky-400",
-                    ].join(" ")}
-                  >
-                    {s}
-                  </button>
-                );
-              })}
-            </div>
-          )}
+      <div className="flex flex-col justify-center mb-20">
+        <div className="flex flex-col text-white">
+          <h3 className="mb-1 text-[20px] font-bold">상권분석</h3>
+          <div className="mb-6 text-[14px]">
+            상권부터 유동인구, 가능성 예측까지 한 번에 분석하기
+          </div>
         </div>
 
-        {/* 하단 CTA */}
-        <div className="px-6 pb-6 flex items-center justify-center">
-          {panel === "area" && (
+        <div className="grid grid-cols-12 gap-7 items-start">
+          <div className="col-span-6 flex flex-col">
             <button
               type="button"
-              disabled={!canNextFromArea}
-              onClick={() => {
-                setSelectedMajor(null);
-                setSelectedMiddle(null);
-                setSelectedSub(null);
-                setPanel("major");
-              }}
-              className={[
-                "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
-                canNextFromArea
-                  ? "bg-[#547DA0] text-white hover:brightness-95"
-                  : "bg-gray-200 text-gray-500 cursor-not-allowed",
-              ].join(" ")}
+              onClick={() => openPanel("area")}
+              className={`mb-20 ${leftBtnBase} ${
+                areaActive ? leftBtnActive : leftBtnInactive
+              }`}
             >
-              다음
+              동네 선택하기
             </button>
-          )}
 
-          {panel === "major" && (
             <button
               type="button"
-              disabled={!canNextFromMajor}
-              onClick={() => setPanel("middle")}
-              className={[
-                "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
-                canNextFromMajor
-                  ? "bg-[#547DA0] text-white hover:brightness-95"
-                  : "bg-gray-200 text-gray-500 cursor-not-allowed",
-              ].join(" ")}
+              onClick={() => openPanel("industry")}
+              className={`${leftBtnBase} ${
+                industryActive ? leftBtnActive : leftBtnInactive
+              }`}
             >
-              다음
+              업종 선택하기
             </button>
-          )}
+          </div>
 
-          {panel === "middle" && (
-            <button
-              type="button"
-              disabled={!canNextFromMiddle}
-              onClick={() => setPanel("sub")}
-              className={[
-                "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
-                canNextFromMiddle
-                  ? "bg-[#547DA0] text-white hover:brightness-95"
-                  : "bg-gray-200 text-gray-500 cursor-not-allowed",
-              ].join(" ")}
-            >
-              다음
-            </button>
-          )}
+          <div
+            className={[
+              "col-span-6 bg-white border-3 border-black rounded-2xl",
+              "transition-all duration-300",
+              "w-full h-80",
+              panel === "none"
+                ? "opacity-0 translate-y-2 pointer-events-none"
+                : "opacity-100 translate-y-0",
+            ].join(" ")}
+          >
+            <div className="px-6 py-7">
+              {/* 동네 선택 패널 */}
+              {panel === "area" && (
+                <div className="grid grid-cols-4 gap-2">
+                  {AREA_OPTIONS.map((a) => {
+                    const active = selectedArea === a;
+                    return (
+                      <button
+                        key={a}
+                        type="button"
+                        onClick={() =>
+                          setSelectedArea((prev) => (prev === a ? null : a))
+                        }
+                        className={[
+                          "h-11 w-25 rounded-lg text-[14px] border transition-colors",
+                          active
+                            ? "bg-[#547DA0] text-[#FDFDFD] border-[#D4EBFF]"
+                            : "bg-white text-[#547DA0] border-[#547DA0] border-dashed hover:border-sky-500 hover:text-sky-700",
+                        ].join(" ")}
+                      >
+                        {a}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
 
-          {panel === "sub" && (
-            <button
-              type="button"
-              disabled={!canAnalyzeFromSub}
-              onClick={() => navigate("/market-result")}
-              className={[
-                "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
-                canAnalyzeFromSub
-                  ? "bg-[#547DA0] text-white hover:brightness-95"
-                  : "bg-gray-200 text-gray-500 cursor-not-allowed",
-              ].join(" ")}
-            >
-              분석하기
-            </button>
-          )}
+              {/* 대분류 선택 패널 */}
+              {panel === "major" && (
+                <div className="grid grid-cols-4 gap-2">
+                  {MAJORS.map((m) => {
+                    const active = selectedMajor === m;
+                    return (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => {
+                          setSelectedMajor((prev) => (prev === m ? null : m));
+                          setSelectedMiddle(null);
+                          setSelectedSub(null);
+                        }}
+                        className={[
+                          "h-11 w-25 rounded-lg text-[14px] border transition-colors",
+                          active
+                            ? "bg-sky-100 border-sky-300 text-sky-800"
+                            : "bg-white border-slate-300 text-slate-700 hover:border-sky-400",
+                        ].join(" ")}
+                      >
+                        {m}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* 중분류 선택 패널 */}
+              {panel === "middle" && (
+                <div className="grid grid-cols-4 gap-2">
+                  {(selectedMajor ? MIDDLES_BY_MAJOR[selectedMajor] : []).map(
+                    (mid) => {
+                      const active = selectedMiddle === mid;
+                      return (
+                        <button
+                          key={mid}
+                          type="button"
+                          onClick={() => {
+                            setSelectedMiddle((prev) =>
+                              prev === mid ? null : mid
+                            );
+                            setSelectedSub(null);
+                          }}
+                          className={[
+                            "h-11 w-25 rounded-lg text-[14px] border transition-colors",
+                            active
+                              ? "bg-indigo-100 border-indigo-300 text-indigo-800"
+                              : "bg-white border-slate-300 text-slate-700 hover:border-indigo-400",
+                          ].join(" ")}
+                        >
+                          {mid}
+                        </button>
+                      );
+                    }
+                  )}
+                </div>
+              )}
+
+              {/* 소분류 선택 패널 */}
+              {panel === "sub" && (
+                <div className="grid grid-cols-4 gap-2">
+                  {(selectedMajor && selectedMiddle
+                    ? SUB_BY_MIDDLE[`${selectedMajor}/${selectedMiddle}`]
+                    : []
+                  ).map((s, i) => {
+                    const active = selectedSub === s;
+                    return (
+                      <button
+                        key={`${selectedMajor}-${selectedMiddle}-${i}`}
+                        type="button"
+                        onClick={() =>
+                          setSelectedSub((prev) => (prev === s ? null : s))
+                        }
+                        className={[
+                          "h-11 w-25 rounded-lg text-[14px] border transition-colors",
+                          active
+                            ? "bg-sky-600 border-sky-500 text-white"
+                            : "bg-white border-slate-300 text-slate-700 hover:border-sky-400",
+                        ].join(" ")}
+                      >
+                        {s}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* 하단 다음/결과 버튼 */}
+            <div className="px-6 pb-6 flex items-center justify-center">
+              {panel === "area" && (
+                <button
+                  type="button"
+                  disabled={!canNextFromArea}
+                  onClick={() => {
+                    setSelectedMajor(null);
+                    setSelectedMiddle(null);
+                    setSelectedSub(null);
+                    setPanel("major");
+                  }}
+                  className={[
+                    "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
+                    canNextFromArea
+                      ? "bg-[#547DA0] text-white hover:brightness-95"
+                      : "bg-gray-200 text-gray-500 cursor-not-allowed",
+                  ].join(" ")}
+                >
+                  다음
+                </button>
+              )}
+
+              {panel === "major" && (
+                <button
+                  type="button"
+                  disabled={!canNextFromMajor}
+                  onClick={() => setPanel("middle")}
+                  className={[
+                    "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
+                    canNextFromMajor
+                      ? "bg-[#547DA0] text-white hover:brightness-95"
+                      : "bg-gray-200 text-gray-500 cursor-not-allowed",
+                  ].join(" ")}
+                >
+                  다음
+                </button>
+              )}
+
+              {panel === "middle" && (
+                <button
+                  type="button"
+                  disabled={!canNextFromMiddle}
+                  onClick={() => setPanel("sub")}
+                  className={[
+                    "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
+                    canNextFromMiddle
+                      ? "bg-[#547DA0] text-white hover:brightness-95"
+                      : "bg-gray-200 text-gray-500 cursor-not-allowed",
+                  ].join(" ")}
+                >
+                  다음
+                </button>
+              )}
+
+              {panel === "sub" && (
+                <button
+                  type="button"
+                  disabled={!canAnalyzeFromSub}
+                  onClick={() => navigate("/market-result")}
+                  className={[
+                    "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
+                    canAnalyzeFromSub
+                      ? "bg-[#547DA0] text-white hover:brightness-95"
+                      : "bg-gray-200 text-gray-500 cursor-not-allowed",
+                  ].join(" ")}
+                >
+                  분석하기
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </Element>
