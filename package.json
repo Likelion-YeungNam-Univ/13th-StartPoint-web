@@ -13,6 +13,7 @@
     "@tailwindcss/vite": "^4.1.11",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-minimal-pie-chart": "^9.1.1",
     "react-router-dom": "^7.7.1",
     "react-scroll": "^1.9.3",
     "tailwindcss": "^4.1.11"
