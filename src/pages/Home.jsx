@@ -4,6 +4,7 @@ import { Element, scroller } from "react-scroll";
 import imgSection1 from "../assets/Home_Section1.png";
 import imgSection2 from "../assets/Home_Section2.png";
 import imgSection3 from "../assets/Home_Section3.png";
+import ChatBot from "./ChatBot";
 
 const SCROLL_DURATION_MS = 500;
 
@@ -41,39 +42,21 @@ function Section1() {
 }
 
 function Section2() {
-  // 왼쪽 버튼 기본, 조건부 스타일
   const leftBtnBase =
     "w-118 h-30 rounded-xl text-xl font-semibold border border-3 transition";
-  const leftBtnActive   = "bg-white text-[#121B2A] border-[#121B2A] hover:brightness-95";
+  const leftBtnActive = "bg-white text-[#121B2A] border-[#121B2A] hover:brightness-95";
   const leftBtnInactive = "bg-[#121B2A] text-white border-white";
-
-  // 패널 상태: 'none' | 'area' | 'major' | 'middle' | 'sub'
-  //            선택X     동네     대분류    중분류      소분류
   const [panel, setPanel] = useState("none");
-
-  // 선택 상태
-  const [selectedArea, setSelectedArea]     = useState(null);
-  const [selectedMajor, setSelectedMajor]   = useState(null);
+  const [selectedArea, setSelectedArea] = useState(null);
+  const [selectedMajor, setSelectedMajor] = useState(null);
   const [selectedMiddle, setSelectedMiddle] = useState(null);
-  const [selectedSub, setSelectedSub]       = useState(null);
-
+  const [selectedSub, setSelectedSub] = useState(null);
   const navigate = useNavigate();
-
-
-
-  // ------- 여기부터 API로 변경해야 됨 -------
-
-
-  // 지금은 더미 데이터
-  const AREA_OPTIONS = Array.from({ length: 15 }, (_, i) => `#${i + 1}`); // 동네 15개
-  const MAJORS       = Array.from({ length: 10 }, (_, i) => `#${i + 1}`); // 대분류 10개
-
-  // 대분류별 중분류 8개
+  const AREA_OPTIONS = Array.from({ length: 15 }, (_, i) => `#${i + 1}`);
+  const MAJORS = Array.from({ length: 10 }, (_, i) => `#${i + 1}`);
   const MIDDLES_BY_MAJOR = Object.fromEntries(
     MAJORS.map((m) => [m, Array.from({ length: 8 }, (_, i) => `#${i + 1}`)])
   );
-
-  // 중분류별 소분류 12개
   const SUB_BY_MIDDLE = Object.fromEntries(
     MAJORS.flatMap((m) =>
       MIDDLES_BY_MAJOR[m].map((mid) => [
@@ -83,11 +66,6 @@ function Section2() {
     )
   );
 
-
-  // ------- 여기까지 -------
-
-
-  
   const openPanel = (type) => {
     if (type === "area") {
       setPanel("area");
@@ -99,13 +77,11 @@ function Section2() {
     }
   };
 
-  // 버튼 활성 조건
-  const canNextFromArea   = !!selectedArea;
-  const canNextFromMajor  = !!selectedMajor;
+  const canNextFromArea = !!selectedArea;
+  const canNextFromMajor = !!selectedMajor;
   const canNextFromMiddle = !!selectedMiddle;
   const canAnalyzeFromSub = !!selectedSub;
-
-  const areaActive     = panel === "area";
+  const areaActive = panel === "area";
   const industryActive = panel === "major" || panel === "middle" || panel === "sub";
 
   return (
@@ -114,7 +90,6 @@ function Section2() {
       id="market-research"
       className="relative isolate min-h-[calc(100vh-64px)] bg-[#0d1620]"
     >
-      {/* 배경 이미지 */}
       <img
         src={imgSection2}
         alt="상권 분석 섹션 배경"
@@ -123,10 +98,7 @@ function Section2() {
       />
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#0d1620] via-transparent to-[#0d1620]" />
 
-      {/* 좌측 요소 */}
-      <div
-        className="flex flex-col absolute top-60 left-114 text-white"
-      >
+      <div className="flex flex-col absolute top-60 left-114 text-white">
         <h3 className="text-[20px] font-bold">상권분석</h3>
         <div className="mt-1 text-[14px]">상권부터 유동인구, 가능성 예측까지 한 번에 분석하기</div>
         
@@ -147,7 +119,6 @@ function Section2() {
         </button>
       </div>
 
-      {/* 우측 요소 */}
       <div
         className={[
           "absolute",
@@ -158,7 +129,6 @@ function Section2() {
         ].join(" ")}
       >
         <div className="px-6 py-7">
-          {/* AREA 단계 — 4열 */}
           {panel === "area" && (
             <div className="grid grid-cols-4 gap-2">
               {AREA_OPTIONS.map((a) => {
@@ -182,7 +152,6 @@ function Section2() {
             </div>
           )}
 
-          {/* MAJOR 단계 — 4열 */}
           {panel === "major" && (
             <div className="grid grid-cols-4 gap-2">
               {MAJORS.map((m) => {
@@ -193,7 +162,7 @@ function Section2() {
                     type="button"
                     onClick={() => {
                       setSelectedMajor((prev) => (prev === m ? null : m));
-                      setSelectedMiddle(null);   // 대분류 바뀌면 중/소 초기화
+                      setSelectedMiddle(null);
                       setSelectedSub(null);
                     }}
                     className={[
@@ -210,7 +179,6 @@ function Section2() {
             </div>
           )}
 
-          {/* MIDDLE 단계 — 4열 */}
           {panel === "middle" && (
             <div className="grid grid-cols-4 gap-2">
               {(selectedMajor ? MIDDLES_BY_MAJOR[selectedMajor] : []).map((mid) => {
@@ -221,7 +189,7 @@ function Section2() {
                     type="button"
                     onClick={() => {
                       setSelectedMiddle((prev) => (prev === mid ? null : mid));
-                      setSelectedSub(null); // 중분류 바뀌면 소분류 초기화
+                      setSelectedSub(null);
                     }}
                     className={[
                       "h-11 w-25 rounded-lg text-[14px] border transition-colors",
@@ -237,13 +205,11 @@ function Section2() {
             </div>
           )}
 
-          {/* SUB 단계 — 4열 */}
           {panel === "sub" && (
             <div className="grid grid-cols-4 gap-2">
-              {(
-                selectedMajor && selectedMiddle
-                  ? SUB_BY_MIDDLE[`${selectedMajor}/${selectedMiddle}`]
-                  : []
+              {(selectedMajor && selectedMiddle
+                ? SUB_BY_MIDDLE[`${selectedMajor}/${selectedMiddle}`]
+                : []
               ).map((s, i) => {
                 const active = selectedSub === s;
                 return (
@@ -266,7 +232,6 @@ function Section2() {
           )}
         </div>
 
-        {/* 하단 CTA */}
         <div className="px-6 pb-6 flex items-center justify-center">
           {panel === "area" && (
             <button
@@ -344,31 +309,10 @@ function Section2() {
 
 function Section3() {
   const navigate = useNavigate();
-
   const CARDS = [
-    {
-      t: "탐색(Discover)",
-      lines: [
-        "나와 비슷한 길을 먼저 걸은 사람을 찾는 시간",
-        "분야별, 경험별 멘토 프로필을 한눈에",
-      ],
-    },
-    {
-      t: "연결(Connect)",
-      lines: [
-        "단순한 매칭이 아닌,",
-        "진짜 대화가 시작되는 연결",
-        "SPO와 함께하는 멘토와의 1:1 창업 컨설팅",
-      ],
-    },
-    {
-      t: "도약(Grow)",
-      lines: [
-        "멘토링 그 이후를 고민하는 당신에게",
-        "현실적인 조언과 방향성으로",
-        "나만의 창업 여정, 한 걸음 더 나아가기",
-      ],
-    },
+    { t: "탐색(Discover)", lines: ["나와 비슷한 길을 먼저 걸은 사람을 찾는 시간", "분야별, 경험별 멘토 프로필을 한눈에"] },
+    { t: "연결(Connect)", lines: ["단순한 매칭이 아닌,", "진짜 대화가 시작되는 연결", "SPO와 함께하는 멘토와의 1:1 창업 컨설팅"] },
+    { t: "도약(Grow)", lines: ["멘토링 그 이후를 고민하는 당신에게", "현실적인 조언과 방향성으로", "나만의 창업 여정, 한 걸음 더 나아가기"] }
   ];
 
   return (
@@ -386,31 +330,21 @@ function Section3() {
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#0d1620] via-transparent to-[#0d1620]" />
 
       <div className="mx-auto max-w-screen-xl px-6 py-24">
-        {/* 제목은 균형 잡힌 줄바꿈 */}
         <h2 className="text-white text-3xl font-extrabold text-center leading-tight [text-wrap:balance]">
           SPO에서 당신의 멘토를 만나보세요!
         </h2>
-
-        {/* 카드 3개 */}
         <div className="mt-6 grid grid-cols-9 gap-1">
           {CARDS.map((it) => (
-            <div
-              key={it.t}
-              className="col-span-3 py-20 text-white text-center rounded-sm"
-            >
+            <div key={it.t} className="col-span-3 py-20 text-white text-center rounded-sm">
               <h3 className="text-xl font-semibold">{it.t}</h3>
-
               <p className="mt-4 text-white text-sm leading-7">
                 {it.lines.map((line, i) => (
-                  <span key={i} className="block">
-                    {line}
-                  </span>
+                  <span key={i} className="block">{line}</span>
                 ))}
               </p>
             </div>
           ))}
         </div>
-
         <div className="mt-10 flex justify-center">
           <button
             type="button"
@@ -429,24 +363,20 @@ export default function Home() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // 다른 페이지 → 네비 클릭: state.scrollTo 로 목적지 전달 받으면 스크롤
   useEffect(() => {
     const id = location.state?.scrollTo;
     if (!id) return;
-    const offset =
-      typeof location.state?.offset === "number"
-        ? location.state.offset
-        : id === "home"
-        ? 0
-        : -8;
+    const offset = typeof location.state?.offset === "number"
+      ? location.state.offset
+      : id === "home"
+      ? 0
+      : -8;
 
     scroller.scrollTo(id, {
       smooth: "easeInOutQuad",
       duration: SCROLL_DURATION_MS,
       offset,
     });
-
-    // state 초기화 (뒤로가기 오염 방지)
     navigate(".", { replace: true, state: null });
   }, [location.state, navigate]);
 
@@ -455,6 +385,7 @@ export default function Home() {
       <Section1 />
       <Section2 />
       <Section3 />
+      <ChatBot />
     </div>
   );
 }
