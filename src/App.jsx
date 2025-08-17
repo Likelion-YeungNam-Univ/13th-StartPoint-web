@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./pages/home";
+import Home from "./pages/Home";
 import MarketResearch from "./pages/MarketResearch";
 import Mentoring from "./pages/Mentoring";
 import NotFound from "./pages/NotFound";
