@@ -11,7 +11,6 @@ import people from "../assets/People.svg";
 import down from "../assets/Down.svg";
 import up from "../assets/Up.svg";
 import back from "../assets/Back.svg";
-import location from "../assets/Location.svg";
 import { useNavigate } from "react-router-dom";
 import { PieChart } from "react-minimal-pie-chart";
 import {
