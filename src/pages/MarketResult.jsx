@@ -6,12 +6,80 @@ import population from "../assets/Population.svg";
 import vector from "../assets/Vector.svg";
 import check from "../assets/Check.svg";
 import icon from "../assets/Icon.svg";
+import shop from "../assets/Shop.svg";
+import people from "../assets/People.svg";
+import down from "../assets/Down.svg";
+import up from "../assets/Up.svg";
+import back from "../assets/Back.svg";
+import location from "../assets/Location.svg";
 import { useNavigate } from "react-router-dom";
 import { PieChart } from "react-minimal-pie-chart";
+import {
+  BarChart,
+  Bar,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  LabelList,
+} from "recharts";
+import { useEffect } from "react";
 
 const MarketResult = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+
+  const six_data = [
+    { name: "05-09", percent: 17.9 },
+    { name: "09-12", percent: 18.6 },
+    { name: "12-14", percent: 11.6 },
+    { name: "14-18", percent: 24.1 },
+    { name: "18-23", percent: 21.0 },
+    { name: "23-05", percent: 6.7 },
+  ];
+
+  const weekend_data = [
+    { name: "월", percent: 14.8 },
+    { name: "화", percent: 14.9 },
+    { name: "수", percent: 16.7 },
+    { name: "목", percent: 15.6 },
+    { name: "금", percent: 15.9 },
+    { name: "토", percent: 11.7 },
+    { name: "일", percent: 20.7 },
+  ];
+
+  // 평일과 주말 퍼센트 합
+  const weekdaySum = weekend_data
+    .slice(0, 5)
+    .reduce((acc, cur) => acc + cur.percent, 0);
+  const weekendSum = weekend_data
+    .slice(5)
+    .reduce((acc, cur) => acc + cur.percent, 0);
+
+  const barData = [
+    { name: "평일 합", percent: weekdaySum },
+    { name: "주말 합", percent: weekendSum },
+  ];
+
+  const compareData1 = [
+    { name: "종로구", percent: 845 },
+    { name: "서울시", percent: 1682 },
+  ];
+  const compareData2 = [
+    { name: "종로구", percent: 147 },
+    { name: "서울시", percent: 1682 },
+  ];
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [open]);
 
   return (
     <div className="min-h-screen bg-[#121B2A]">
@@ -90,25 +158,73 @@ const MarketResult = () => {
             </span>
             <span className="text-black">그래프</span>
           </div>
+
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
-            <span className="text-[22px] text-[#121B2A] font-semibold">
+            <span className="text-[22px] text-[#121B2A] font-semibold mt-10">
               지역 내 다른 동네와의 비교 결과
             </span>
-            <span className="text-black">그래프</span>
+            <div className="flex flex-1 w-full items-center justify-center gap-1 h-full">
+              <div className="flex flex-col items-center justify-end h-ful ml-15 mt-28">
+                <img
+                  src={vector}
+                  alt="vector"
+                  className="w-[41px] h-[80px] object-contain"
+                />
+                <span className="text-[#121B2A] font-medium mb-1 text-[16px]">
+                  교남동
+                </span>
+              </div>
+
+              <div className="flex-1 flex items-center justify-center font-medium h-full">
+                <ResponsiveContainer width="60%" height="80%">
+                  <BarChart
+                    data={compareData1}
+                    margin={{ top: 50, right: 0, left: 8, bottom: 30 }}
+                    barCategoryGap="15%"
+                  >
+                    <Bar
+                      dataKey="percent"
+                      fill="#03B4C8"
+                      radius={[10, 10, 0, 0]}
+                    >
+                      <LabelList
+                        dataKey="percent"
+                        position="top"
+                        offset={8}
+                        fill="#121B2A"
+                        fontSize={14}
+                      />
+                      <LabelList
+                        dataKey="name"
+                        position="bottom"
+                        offset={8}
+                        fill="#121B2A"
+                        fontSize={16}
+                      />
+                    </Bar>
+                    <XAxis hide />
+                    <YAxis hide />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           </div>
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <span className="text-[22px] text-[#121B2A] font-semibold mb-1">
               전년동월대비
             </span>
-            <span className="text-[32px] text-[#D04797] font-semibold mb-10">
+            <div className="flex items-center text-[32px] text-[#D04797] font-semibold mb-15">
               32.9%
-            </span>
+              <img src={up} alt="up" className="ml-1 w-6 h-6" />
+            </div>
+
             <span className="text-[22px] text-[#121B2A] font-semibold mb-1">
               전월대비
             </span>
-            <span className="text-[32px] text-[#D04797] font-semibold">
+            <div className="flex items-center text-[32px] text-[#D04797] font-semibold">
               8.3%
-            </span>
+              <img src={up} alt="up" className="ml-1 w-6 h-6" />
+            </div>
           </div>
         </div>
       </div>
@@ -121,30 +237,78 @@ const MarketResult = () => {
 
         <div className="mt-8 flex justify-center gap-7">
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
-            <span className="text-[22px] text-[#121B2A] font-semibold">
+            <span className="text-[22px] text-[#121B2A] font-semibold mb-10">
               선택업종 업종 수
             </span>
-            <span className="text-black">그래프</span>
+            <img src={people} alt="people" />
+            <span className="text-[#30C0D0] font-bold">1개</span>
           </div>
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
-            <span className="text-[22px] text-[#121B2A] font-semibold">
+            <span className="text-[22px] text-[#121B2A] font-semibold mt-10">
               지역 내 다른 동네와의 비교 결과
             </span>
-            <span className="text-black">그래프</span>
+            <div className="flex flex-1 w-full items-center justify-center gap-1 h-full">
+              <div className="flex flex-col items-center justify-end h-ful ml-15 mt-28">
+                <img
+                  src={vector}
+                  alt="vector"
+                  className="w-[41px] h-[80px] object-contain"
+                />
+                <span className="text-[#121B2A] font-medium mb-1 text-[16px]">
+                  교남동
+                </span>
+              </div>
+
+              <div className="flex-1 flex items-center justify-center font-medium h-full">
+                <ResponsiveContainer width="60%" height="80%">
+                  <BarChart
+                    data={compareData2}
+                    margin={{ top: 50, right: 0, left: 8, bottom: 30 }}
+                    barCategoryGap="15%"
+                  >
+                    <Bar
+                      dataKey="percent"
+                      fill="#03B4C8"
+                      radius={[10, 10, 0, 0]}
+                    >
+                      <LabelList
+                        dataKey="percent"
+                        position="top"
+                        offset={8}
+                        fill="#121B2A"
+                        fontSize={14}
+                      />
+                      <LabelList
+                        dataKey="name"
+                        position="bottom"
+                        offset={8}
+                        fill="#121B2A"
+                        fontSize={16}
+                      />
+                    </Bar>
+                    <XAxis hide />
+                    <YAxis hide />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           </div>
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <span className="text-[22px] text-[#121B2A] font-semibold mb-1">
               전년동월대비
             </span>
-            <span className="text-[32px] text-[#D04797] font-semibold mb-10">
-              32.9%
-            </span>
+            <div className="flex items-center text-[32px] text-[#03B4C8] font-semibold mb-15">
+              23.1%
+              <img src={down} alt="down" className="ml-1 w-6 h-6" />
+            </div>
+
             <span className="text-[22px] text-[#121B2A] font-semibold mb-1">
               전월대비
             </span>
-            <span className="text-[32px] text-[#D04797] font-semibold">
-              8.3%
-            </span>
+            <div className="flex items-center text-[32px] text-[#D04797] font-semibold">
+              5.8%
+              <img src={up} alt="up" className="ml-1 w-6 h-6" />
+            </div>
           </div>
         </div>
       </div>
@@ -157,22 +321,91 @@ const MarketResult = () => {
 
         <div className="mt-8 flex justify-center gap-7">
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
-            <span className="text-[22px] text-[#121B2A] font-semibold">
+            <span className="text-[22px] text-[#121B2A] font-semibold mb-10">
               일 평균 유동인구
             </span>
-            <span className="text-black">그래프</span>
+            <img src={shop} alt="shop" />
+            <span className="text-[#30C0D0] font-bold text-[32px]">
+              48,522명
+            </span>
           </div>
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
-            <span className="text-[22px] text-[#121B2A] font-semibold">
+            <span className="text-[22px] text-[#121B2A] font-semibold mt-10">
               요일별 유동인구 비교 결과
             </span>
-            <span className="text-black">그래프</span>
+            <div className="flex flex-1 w-full">
+              <div className="flex-1 flex items-center justify-center">
+                <ResponsiveContainer width="90%" height="75%">
+                  <BarChart
+                    data={barData}
+                    margin={{ top: 50, right: 0, left: 8, bottom: 10 }}
+                  >
+                    <Bar
+                      dataKey="percent"
+                      fill="#03B4C8"
+                      radius={[10, 10, 0, 0]}
+                      barSize={30}
+                    >
+                      <LabelList
+                        dataKey="percent"
+                        position="top"
+                        offset={8}
+                        fill="#121B2A"
+                        fontSize={16}
+                        formatter={(value) => `${value}%`}
+                      />
+                    </Bar>
+                    <XAxis hide />
+                    <YAxis hide />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              <li className="flex-1 flex flex-col justify-center items-center text-[20px] text-[#121B2A] font-semibold">
+                {weekend_data.map((item) => (
+                  <li key={item.name}>
+                    {item.name}: {item.percent}%
+                  </li>
+                ))}
+              </li>
+            </div>
           </div>
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
-            <span className="text-[22px] text-[#121B2A] font-semibold mb-1">
+            <span className="text-[22px] text-[#121B2A] font-semibold mt-10">
               시간대별 유동인구 비교 결과
             </span>
-            <span className="text-black">그래프</span>
+            <div className="flex-1 w-full flex items-center justify-center">
+              <ResponsiveContainer width="90%" height="90%">
+                <BarChart
+                  data={six_data}
+                  margin={{ top: 70, right: 0, left: 0, bottom: 20 }}
+                >
+                  <Bar dataKey="percent" fill="#03B4C8" radius={[10, 10, 0, 0]}>
+                    <LabelList
+                      dataKey="percent"
+                      position="top"
+                      offset={10}
+                      fill="#121B2A"
+                      fontSize={14}
+                      formatter={(value) => `${value}%`}
+                    />
+                  </Bar>
+
+                  <XAxis
+                    dataKey="name"
+                    axisLine={false} // x축 선 숨기기
+                    tickLine={false} // x축 틱선 숨기기
+                    tick={{
+                      fill: "#121B2A",
+                      fontSize: 14,
+                      textAnchor: "middle",
+                      dy: 5,
+                    }}
+                  />
+                  <YAxis hide />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
       </div>
@@ -199,12 +432,13 @@ const MarketResult = () => {
 
       {open && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="absolute inset-0 bg-black opacity-80"></div>
           <div className="bg-white w-[450px] p-15 rounded-xl shadow-lg text-center relative">
             <button
               onClick={() => setOpen(false)}
               className="absolute top-4 right-4 w-[27px] h-[27px] bg-[#4C5060] flex items-center justify-center text-white text-xl font-bold rounded-full"
             >
-              <img src={vector} alt="vector" className="w-[9] h-[9]" />
+              <img src={back} alt="back" className="w-[9] h-[9]" />
             </button>
 
             <h2 className="text-[24px] font-bold mb-6 text-[#333]">
