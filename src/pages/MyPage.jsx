@@ -14,45 +14,55 @@ export default function MyPage() {
       <div className="mx-auto my-3">
         <form>
           <div className="grid grid-cols-3 gap-x-12 gap-y-5 items-center">
+            {/* 이름 */}
             <label className="text-left text-sm text-blue-900">이름</label>
             <input
               type="text"
-              placeholder="변경 불가능한 내용"
-              className="col-span-2 w-full border rounded-md px-3 py-1.5 bg-gray-100 placeholder:text-gray-400"
+              value="변경 불가능한 내용"
+              disabled
+              className="col-span-2 w-full border rounded-md px-3 py-1.5 bg-gray-100 text-gray-500 cursor-not-allowed"
             />
 
+            {/* 아이디 */}
             <label className="text-left text-sm text-blue-900">아이디</label>
             <input
               type="text"
-              placeholder="변경 불가능한 내용"
-              className="col-span-2 w-full border rounded-md px-3 py-1.5 bg-gray-100 placeholder:text-gray-400"
+              value="변경 불가능한 내용"
+              disabled
+              className="col-span-2 w-full border rounded-md px-3 py-1.5 bg-gray-100 text-gray-500 cursor-not-allowed"
             />
 
+            {/* 비밀번호 */}
             <label className="text-left text-sm text-blue-900">비밀번호</label>
             <input
               type="password"
               className="col-span-2 w-full border rounded-md px-3 py-1.5 bg-white"
             />
 
+            {/* 생년월일 */}
             <label className="text-left text-sm text-blue-900">생년월일</label>
             <input
-              type="date"
-              placeholder="변경 불가능한 내용"
-              className="col-span-2 w-full border rounded-md px-3 py-1.5 bg-gray-100"
+              type="text"
+              value="변경 불가능한 내용"
+              disabled
+              className="col-span-2 w-full border rounded-md px-3 py-1.5 bg-gray-100 text-gray-500 cursor-not-allowed"
             />
 
+            {/* 전화번호 */}
             <label className="text-left text-sm text-blue-900">전화번호</label>
             <input
               type="tel"
               className="col-span-2 w-full border rounded-md px-3 py-1.5 bg-white"
             />
 
+            {/* 이메일 */}
             <label className="text-left text-sm text-blue-900">이메일</label>
             <input
               type="email"
               className="col-span-2 w-full border rounded-md px-3 py-1.5 bg-white"
             />
 
+            {/* 멘토 / 멘티 */}
             <label className="text-left text-sm text-blue-900">멘토 / 멘티</label>
             <div className="col-span-2 flex justify-start space-x-6">
               <label className="flex items-center space-x-1 text-blue-900">
@@ -81,7 +91,7 @@ export default function MyPage() {
               type="submit"
               className="bg-blue-800 text-white text-sm py-2 px-10 rounded-lg hover:bg-blue-900"
             >
-              수정하기
+              수정 완료
             </button>
           </div>
         </form>
