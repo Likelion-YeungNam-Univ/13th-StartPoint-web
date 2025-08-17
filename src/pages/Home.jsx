@@ -4,6 +4,7 @@ import { Element, scroller } from "react-scroll";
 import imgSection1 from "../assets/Home_Section1.png";
 import imgSection2 from "../assets/Home_Section2.png";
 import imgSection3 from "../assets/Home_Section3.png";
+import ChatBot from "./ChatBot";
 
 const SCROLL_DURATION_MS = 500;
 
@@ -41,7 +42,6 @@ function Section1() {
 }
 
 function Section2() {
-  // 왼쪽 버튼 기본, 조건부 스타일
   const leftBtnBase =
     "w-120 h-30 rounded-xl text-xl font-semibold border border-3 transition";
   const leftBtnActive =
@@ -70,8 +70,6 @@ function Section2() {
   const MIDDLES_BY_MAJOR = Object.fromEntries(
     MAJORS.map((m) => [m, Array.from({ length: 8 }, (_, i) => `#${i + 1}`)])
   );
-
-  // 중분류별 소분류 12개
   const SUB_BY_MIDDLE = Object.fromEntries(
     MAJORS.flatMap((m) =>
       MIDDLES_BY_MAJOR[m].map((mid) => [
@@ -82,7 +80,7 @@ function Section2() {
   );
 
   // ------- 여기까지 -------
-
+  
   const openPanel = (type) => {
     if (type === "area") {
       setPanel("area");
@@ -110,7 +108,6 @@ function Section2() {
       id="market-research"
       className="flex items-center justify-center relative isolate min-h-[calc(100vh-64px)] bg-[#121B2A]"
     >
-      {/* 배경 이미지 */}
       <img
         src={imgSection2}
         alt="상권 분석 섹션 배경"
@@ -360,31 +357,10 @@ function Section2() {
 
 function Section3() {
   const navigate = useNavigate();
-
   const CARDS = [
-    {
-      t: "탐색(Discover)",
-      lines: [
-        "나와 비슷한 길을 먼저 걸은 사람을 찾는 시간",
-        "분야별, 경험별 멘토 프로필을 한눈에",
-      ],
-    },
-    {
-      t: "연결(Connect)",
-      lines: [
-        "단순한 매칭이 아닌,",
-        "진짜 대화가 시작되는 연결",
-        "SPO와 함께하는 멘토와의 1:1 창업 컨설팅",
-      ],
-    },
-    {
-      t: "도약(Grow)",
-      lines: [
-        "멘토링 그 이후를 고민하는 당신에게",
-        "현실적인 조언과 방향성으로",
-        "나만의 창업 여정, 한 걸음 더 나아가기",
-      ],
-    },
+    { t: "탐색(Discover)", lines: ["나와 비슷한 길을 먼저 걸은 사람을 찾는 시간", "분야별, 경험별 멘토 프로필을 한눈에"] },
+    { t: "연결(Connect)", lines: ["단순한 매칭이 아닌,", "진짜 대화가 시작되는 연결", "SPO와 함께하는 멘토와의 1:1 창업 컨설팅"] },
+    { t: "도약(Grow)", lines: ["멘토링 그 이후를 고민하는 당신에게", "현실적인 조언과 방향성으로", "나만의 창업 여정, 한 걸음 더 나아가기"] }
   ];
 
   return (
@@ -418,15 +394,12 @@ function Section3() {
 
               <p className="mt-4 text-white text-sm leading-5">
                 {it.lines.map((line, i) => (
-                  <span key={i} className="block">
-                    {line}
-                  </span>
+                  <span key={i} className="block">{line}</span>
                 ))}
               </p>
             </div>
           ))}
         </div>
-
         <div className="mt-10 flex justify-center">
           <button
             type="button"
@@ -445,24 +418,20 @@ export default function Home() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // 다른 페이지 → 네비 클릭: state.scrollTo 로 목적지 전달 받으면 스크롤
   useEffect(() => {
     const id = location.state?.scrollTo;
     if (!id) return;
-    const offset =
-      typeof location.state?.offset === "number"
-        ? location.state.offset
-        : id === "home"
-        ? 0
-        : -8;
+    const offset = typeof location.state?.offset === "number"
+      ? location.state.offset
+      : id === "home"
+      ? 0
+      : -8;
 
     scroller.scrollTo(id, {
       smooth: "easeInOutQuad",
       duration: SCROLL_DURATION_MS,
       offset,
     });
-
-    // state 초기화 (뒤로가기 오염 방지)
     navigate(".", { replace: true, state: null });
   }, [location.state, navigate]);
 
@@ -471,6 +440,7 @@ export default function Home() {
       <Section1 />
       <Section2 />
       <Section3 />
+      <ChatBot />
     </div>
   );
 }
