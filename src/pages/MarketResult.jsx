@@ -24,6 +24,26 @@ import people from "../assets/People.svg";
 import downIcon from "../assets/Down.svg";
 import upIcon from "../assets/Up.svg";
 import back from "../assets/Back.svg";
+import practicalApi from "../apis/practicalApi";
+
+// ----- 동네 이름 코드 -----
+const areaList = [
+  { areaName: "서부1동", areaCode: "47290541" },
+  { areaName: "서부2동", areaCode: "47290542" },
+  { areaName: "중방동", areaCode: "47290510" },
+  { areaName: "중앙동", areaCode: "47290520" },
+  { areaName: "남부동", areaCode: "47290530" },
+  { areaName: "남천면", areaCode: "47290370" },
+  { areaName: "동부동", areaCode: "47290560" },
+  { areaName: "남산면", areaCode: "47290350" },
+  { areaName: "자인면", areaCode: "47290330" },
+  { areaName: "용성면", areaCode: "47290340" },
+  { areaName: "진량읍", areaCode: "47290253" },
+  { areaName: "압량면", areaCode: "47290256" },
+  { areaName: "북부동", areaCode: "47290550" },
+  { areaName: "하양읍", areaCode: "47290250" },
+  { areaName: "와촌면", areaCode: "47290310" },
+];
 
 // --- 요일/시간대 최댓값 ---
 const getMaxDay = (p) => {
@@ -72,8 +92,12 @@ const MarketResult = () => {
   const [loading, setLoading] = useState(true);
   const [errMsg, setErrMsg] = useState("");
 
+  const [pracData, setPracData] = useState(null);
+  const [pracLoading, setPracLoading] = useState(true);
+  const [pracErrMsg, setPracErrMsg] = useState("");
+
   const params = useMemo(() => {
-    const state = locationObj.state || {}; // 소포 안에 있던 데이터(areaCode, areaName 등)를 꺼내 쓸 수 있는 것이라고 ..
+    const state = locationObj.state || {}; // 소포 안에 있던 데이터(areaCode, areaName 등)를 꺼내 쓸 수 있는 것이라고 하는데 ..
     return {
       admiCd: state.areaCode || "",
       upjongCd: state.upjong3cd || "",
@@ -81,6 +105,7 @@ const MarketResult = () => {
     };
   }, [locationObj.state]);
 
+  // 간단 분석 API
   useEffect(() => {
     if (!params.admiCd || !params.upjongCd || !params.simpleLoc) {
       setLoading(false);
@@ -103,7 +128,7 @@ const MarketResult = () => {
       })
       .catch(() => {
         if (!alive) return;
-        setErrMsg("분석 데이터를 불러오지 못했습니다.");
+        setErrMsg("간단 분석 데이터를 불러오지 못했습니다.");
       })
       .finally(() => {
         if (!alive) return;
@@ -114,6 +139,36 @@ const MarketResult = () => {
       alive = false;
     };
   }, [params.admiCd, params.upjongCd, params.simpleLoc]);
+
+  // 상세 분석 API
+  useEffect(() => {
+    if (!open) return;
+
+    let alive = true;
+    setPracLoading(true);
+    setPracErrMsg("");
+
+    practicalApi({
+      admiCd: params.admiCd,
+      upjongCd: params.upjongCd,
+    })
+      .then((res) => {
+        if (!alive) return;
+        setPracData(res ?? null); // 응답을 data에 저장
+      })
+      .catch(() => {
+        if (!alive) return;
+        setPracErrMsg("상세 분석 데이터를 불러오지 못했습니다.");
+      })
+      .finally(() => {
+        if (!alive) return;
+        setPracLoading(false);
+      });
+
+    return () => {
+      alive = false;
+    };
+  }, [open, params.admiCd, params.upjongCd]);
 
   // 상세분석 모달 창이 떴을 때 배경 페이지의 스크롤을 막는 역할
   useEffect(() => {
@@ -164,10 +219,11 @@ const MarketResult = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#121B2A] text-white flex items-center justify-center">
-        로딩 중…
+        간단 분석 결과를 불러오는 중...
       </div>
     );
   }
+
   if (errMsg) {
     return (
       <div className="min-h-screen bg-[#121B2A] text-white flex flex-col items-center justify-center p-6">
@@ -630,80 +686,101 @@ const MarketResult = () => {
           <div className="bg-white w-[450px] p-15 rounded-xl shadow-lg text-center relative">
             <button
               onClick={() => setOpen(false)}
-              className="absolute top-4 right-4 w-[27px] h-[27px] bg-[#4C5060] flex items-center justify-center text-white text-xl font-bold rounded-full"
+              className="absolute top-4 right-4 w-[27px] h-[27px] bg-[#4C5060] flex items-center justify-center text-white text-xl font-bold rounded-full cursor-pointer"
             >
               <img src={back} alt="back" className="w-[9] h-[9]" />   
             </button>
-            <h2 className="text-[24px] font-bold mb-6 text-[#333]">
-              상세분석 결과 리포트    
-            </h2>
-            <div className="flex items-center mb-3">
-              <img src={check} alt="check" className="mr-3" />
-              <span className="text-[20px] text-[#42437D] font-semibold">
-                창업 가능성 점수
-              </span>
-            </div>
-            <div className="flex justify-center items-center relative w-full">
-              <div className="relative w-[500px] h-[250px]">
-                <PieChart
-                  data={[
-                    { value: 30, color: "#FFFFFF" },
-                    { value: 70, color: "#0047AB" },
-                  ]}
-                  startAngle={180}
-                  lengthAngle={180}
-                  lineWidth={15}
-                  rounded
-                  animate
-                  animationDuration={500}
-                  style={{ height: "250px", width: "100%" }}
-                />
-
-                <img
-                  src={icon}
-                  alt="icon"
-                  className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12"
-                />
-
-                <div className="absolute top-[65%] -translate-y-1/2 left-1/2 -translate-x-1/2 w-[293px] h-[82px] bg-gray-700 rounded-[20px] flex flex-col items-center justify-center">
-                  <div className="relative w-[180px] flex justify-between items-center text-sm">
-                    <span className="text-[15px] text-[#A0AEC0]">0점</span>
-                    <span className="text-[28px] text-white font-bold">
-                      7점    
-                    </span>
-                    <span className="text-[15px] text-[#A0AEC0]">10점</span>   
-                  </div>
-                  <div className="mt-2 text-center text-[15px] text-[#A0AEC0]">
-                    창업 가능성  
-                  </div>
-                </div>
+            {pracLoading ? (
+              <div className="py-20 text-gray-500">
+                상세 분석 결과를 불러오는 중...
               </div>
-            </div>
-            <div className="flex items-center mb-3">
-              <img src={check} alt="check" className="mr-3" />
-              <span className="text-[20px] text-[#42437D] font-semibold">
-                창업 추천 동네
-              </span>
-            </div>
-            <span className="text-[15px] text-[#42437D] font-semibold">
-              업종별 매출, 점포 수, 상권·유동인구, 창업 가능성 등을 종합해 상위
-              3개 동네를 추천합니다.    
-            </span>
-            <div className="mt-6">
-              <div className="flex justify-center gap-8">
-                <div className="flex items-center justify-center w-[100px] h-[100px] bg-[#80849B] rounded-full text-white text-[20px] font-semibold shrink-0">
-                  {dongName}
-                </div>
-
-                <div className="flex items-center justify-center w-[100px] h-[100px] bg-[#80849B] rounded-full text-white text-[20px] font-semibold shrink-0">
-                  {guName}
-                </div>
-
-                <div className="flex items-center justify-center w-[100px] h-[100px] bg-[#80849B] rounded-full text-white text-[20px] font-semibold shrink-0">
-                  {siName}
-                </div>
+            ) : pracErrMsg ? (
+              <div>
+                <div className="py-20 text-red-500">{pracErrMsg}</div>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-700 text-white text-sm"
+                >
+                  닫기
+                </button>
               </div>
-            </div>
+            ) : (
+              <>
+                <h2 className="text-[24px] font-bold mb-6 text-[#333]">
+                  상세분석 결과 리포트    
+                </h2>
+                <div className="flex items-center mb-3">
+                  <img src={check} alt="check" className="mr-3" />
+                  <span className="text-[20px] text-[#42437D] font-semibold">
+                    창업 가능성 점수
+                  </span>
+                </div>
+                <div className="flex justify-center items-center relative w-full">
+                  <div className="relative w-[500px] h-[250px]">
+                    <PieChart
+                      data={[
+                        { value: 30, color: "#FFFFFF" },
+                        { value: 70, color: "#0047AB" },
+                      ]}
+                      startAngle={180}
+                      lengthAngle={180}
+                      lineWidth={15}
+                      rounded
+                      animate
+                      animationDuration={500}
+                      style={{ height: "250px", width: "100%" }}
+                    />
+
+                    <img
+                      src={icon}
+                      alt="icon"
+                      className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12"
+                    />
+
+                    <div className="absolute top-[65%] -translate-y-1/2 left-1/2 -translate-x-1/2 w-[293px] h-[82px] bg-gray-700 rounded-[20px] flex flex-col items-center justify-center">
+                      <div className="relative w-[180px] flex justify-between items-center text-sm">
+                        <span className="text-[15px] text-[#A0AEC0]">0점</span>
+                        <span className="text-[28px] text-white font-bold">
+                          {pracData?.feasibilityScore
+                            ? `${pracData?.feasibilityScore}`
+                            : "-"}
+                        </span>
+                        <span className="text-[15px] text-[#A0AEC0]">10점</span>
+                           
+                      </div>
+                      <div className="mt-2 text-center text-[15px] text-[#A0AEC0]">
+                        창업 가능성  
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center mb-3">
+                  <img src={check} alt="check" className="mr-3" />
+                  <span className="text-[20px] text-[#42437D] font-semibold">
+                    창업 추천 동네
+                  </span>
+                </div>
+                <span className="text-[15px] text-[#42437D] font-semibold">
+                  업종별 매출, 점포 수, 상권·유동인구, 창업 가능성 등을 종합해
+                  상위 3개 동네를 추천합니다.    
+                </span>
+                <div className="mt-6">
+                  <div className="flex justify-center gap-8">
+                    <div className="flex items-center justify-center w-[100px] h-[100px] bg-[#80849B] rounded-full text-white text-[20px] font-semibold shrink-0">
+                      {dongName}
+                    </div>
+
+                    <div className="flex items-center justify-center w-[100px] h-[100px] bg-[#80849B] rounded-full text-white text-[20px] font-semibold shrink-0">
+                      {guName}
+                    </div>
+
+                    <div className="flex items-center justify-center w-[100px] h-[100px] bg-[#80849B] rounded-full text-white text-[20px] font-semibold shrink-0">
+                      {siName}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
