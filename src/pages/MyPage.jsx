@@ -1,5 +1,4 @@
 import React from "react";
-
 export default function MyPage() {
   const inputClass =
     "w-full border rounded-md px-4 py-2 bg-white focus:shadow-inner focus:outline-[#2E47A4] caret-[#2E47A4]";
