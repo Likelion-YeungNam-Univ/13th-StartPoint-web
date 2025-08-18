@@ -455,21 +455,18 @@ function Section2() {
                       (area) => area.areaCode === selectedArea
                     );
                     const areaCode = picked?.areaCode ?? null; // 8자리 코드
-                    const areaName = picked
-                      ? `경상북도+경산시+${picked.areaName}`
-                      : null;
+                    const areaName = picked?.areaName ?? null;
                     const upjong3cd = selectedSub?.code ?? null; // 예: "N10805"
 
                     if (!areaCode || !areaName || !upjong3cd) return;
 
-                    // 요구사항: areaCode, areaName(경상북도+경산시+ 포함해서), upjong3cd 전달
-                    navigate({
-                      pathname: "/market-result",
-                      search: createSearchParams({
-                        admiCd: areaCode,
-                        upjongCd: upjong3cd,
-                        simpleLoc: areaName,
-                      }).toString(),
+                    // areaCode, areaName, upjong3cd 전달
+                    navigate("/market-result", {
+                      state: {
+                        areaCode: areaCode,
+                        upjong3cd: upjong3cd,
+                        areaName: areaName,
+                      },
                     });
                   }}
                   className={[
