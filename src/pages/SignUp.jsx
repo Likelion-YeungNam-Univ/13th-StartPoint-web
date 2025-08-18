@@ -1,20 +1,19 @@
 import React from "react";
-export default function MyPage() {
+
+const SignUp = () => {
   const inputClass =
     "w-full border rounded-md px-4 py-2 bg-white focus:shadow-inner focus:outline-[#2E47A4] caret-[#2E47A4]";
-  const disabledInputClass =
-    "w-full border rounded-md px-4 py-2 bg-gray-100 text-gray-500 cursor-not-allowed";
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4">
-      <h1 className="text-[30px] text-[#2E47A4] font-bold px-3 py-2 border-b-2 border-[#2E47A4]">
-        마이페이지
+      <h1 className="text-[30px] text-[#2E47A4] font-bold px-3 py-2 border-b-2 border-[#2E47A4">
+        회원가입
       </h1>
 
       <div className="flex flex-col mx-auto w-full max-w-2xl">
         <div className="mt-10">
           <h2 className="text-[26px] text-[#2E47A4] font-semibold px-3 mb-2">
-            회원 정보
+            회원 정보 입력
           </h2>
         </div>
 
@@ -23,22 +22,12 @@ export default function MyPage() {
             <label className="text-lg text-left font-semibold text-[#2E47A4]">
               이름
             </label>
-            <input
-              type="text"
-              value="변경 불가능한 내용"
-              disabled
-              className={disabledInputClass}
-            />
+            <input type="text" className={inputClass} />
 
             <label className="text-lg text-left font-semibold text-[#2E47A4]">
               아이디
             </label>
-            <input
-              type="text"
-              value="변경 불가능한 내용"
-              disabled
-              className={disabledInputClass}
-            />
+            <input type="text" className={inputClass} />
 
             <label className="text-lg text-left font-semibold text-[#2E47A4]">
               비밀번호
@@ -48,12 +37,7 @@ export default function MyPage() {
             <label className="text-lg text-left font-semibold text-[#2E47A4]">
               생년월일
             </label>
-            <input
-              type="text"
-              value="변경 불가능한 내용"
-              disabled
-              className={disabledInputClass}
-            />
+            <input type="date" className={inputClass} />
 
             <label className="text-lg text-left font-semibold text-[#2E47A4]">
               전화번호
@@ -93,13 +77,15 @@ export default function MyPage() {
           <div className="my-10 flex justify-center">
             <button
               type="submit"
-              className="bg-[#2E47A4] text-white text-base py-3 px-[50px] rounded-lg hover:bg-[#2E47A4]/90 transition"
+              className="bg-[#2E47A4] text-white text-base py-3 px-50 rounded-lg hover:bg-[#2E47A4]/90 transition"
             >
-              수정 완료
+              가입완료
             </button>
           </div>
         </form>
       </div>
     </div>
   );
-}
+};
+
+export default SignUp;
