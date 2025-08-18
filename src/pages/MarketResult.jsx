@@ -266,7 +266,7 @@ const MarketResult = () => {
               유동 인구 많은 요일
             </div>
             <div className="text-[20px] text-[#03B4C8] font-semibold">
-              {maxDay.label}
+              {maxDay.label}요일
             </div>
           </div>
           <div className="w-[237px] h-[76px] p-4 bg-[#F5F5F5] rounded-lg flex flex-col items-center justify-center text-center">
@@ -391,7 +391,7 @@ const MarketResult = () => {
                   : "text-[#03B4C8]"
               }`}
             >
-              {data?.prevYearRate ?? "—"}%
+              {data?.prevYearRate.toFixed(1) ?? "—"}%
               <img
                 src={(Number(data?.prevYearRate) || 0) >= 0 ? upIcon : downIcon}
                 alt="trend"
@@ -409,7 +409,7 @@ const MarketResult = () => {
                   : "text-[#03B4C8]"
               }`}
             >
-              {data?.prevMonRate ?? "—"}%
+              {data?.prevMonRate.toFixed(1) ?? "—"}%
               <img
                 src={(Number(data?.prevMonRate) || 0) >= 0 ? upIcon : downIcon}
                 alt="trend"
@@ -503,7 +503,7 @@ const MarketResult = () => {
                   : "text-[#03B4C8]"
               }`}
             >
-              {data?.prevYearCntRate ?? "—"}%
+              {data?.prevYearCntRate.toFixed(1) ?? "—"}%
               <img
                 src={
                   (Number(data?.prevYearCntRate) || 0) >= 0 ? upIcon : downIcon
@@ -523,7 +523,7 @@ const MarketResult = () => {
                   : "text-[#03B4C8]"
               }`}
             >
-              {data?.prevMonCntRate ?? "—"}%
+              {data?.prevMonCntRate.toFixed(1) ?? "—"}%
               <img
                 src={
                   (Number(data?.prevMonCntRate) || 0) >= 0 ? upIcon : downIcon

@@ -92,8 +92,7 @@ function Section2() {
 
   // 예시: 'N10805' → { major:'N1', middle:'08', small:'05' }
   const splitUpjong = (code) => {
-    const split = String(code ?? "").trim();
-    if (!/^[A-Z]\d{5}$/.test(split)) return null; // 형식 방어
+    const split = String(code).trim();
     return {
       major: split.slice(0, 2),
       middle: split.slice(2, 4),
@@ -101,27 +100,24 @@ function Section2() {
     };
   };
 
-  // API 배열 → 대/중/소 트리
-  const buildUpjongTreeByCode = (rows) => {
-    if (!Array.isArray(rows)) {
-      return { majors: [], middlesByMajor: {}, subsByMiddle: {} };
-    }
-    const majorMap = new Map(); // prefix → 대분류 이름
-    const middleMap = {}; // prefix → [{ code, name }]
-    const subMap = {}; // "prefix/middle" → [{ code, name }]
+  // API 배열 → 대/중/소 분류
+  const categorization = (rows) => {
+    const majorMap = new Map(); // 대분류 코드와 이름을 맵핑
+    const middleMap = {}; // 대분류 코드에 해당하는 중분류 목록을 저장
+    const subMap = {}; // 대분류와 중분류 코드를 합친 key값에 해당하는 소분류 목록을 저장
 
-    for (const r of rows) {
-      const parts = splitUpjong(r?.upjong3cd);
-      if (!parts) continue;
+    for (const item of rows) {
+      const parts = splitUpjong(item.upjong3cd);
 
       const { major, middle } = parts;
-      const largeName = String(r?.largeCategory ?? "").trim();
-      const mediumName = String(r?.mediumCategory ?? "").trim();
-      const smallName = String(r?.smallCategory ?? "").trim();
-      const fullCode = String(r?.upjong3cd ?? "").trim();
+      const largeName = String(item.largeCategory).trim();
+      const mediumName = String(item.mediumCategory).trim();
+      const smallName = String(item.smallCategory).trim();
+      const fullCode = String(item.upjong3cd).trim();
 
       if (!largeName || !mediumName || !smallName || !fullCode) continue;
 
+      // 데이터들을 순회하면서 대분류가 이미 추가되었는지 확인하고, 추가되지 않았을 경우에만 majorMap에 새로운 대분류로 등록
       if (!majorMap.has(major)) majorMap.set(major, largeName);
 
       if (!middleMap[major]) middleMap[major] = [];
@@ -146,10 +142,10 @@ function Section2() {
     setUpjongError(null);
     try {
       const data = await upjongListApi();
-      const tree = buildUpjongTreeByCode(data);
-      setMajors(tree.majors);
-      setMiddlesByMajor(tree.middlesByMajor);
-      setSubsByMiddle(tree.subsByMiddle);
+      const categorizedData = categorization(data);
+      setMajors(categorizedData.majors);
+      setMiddlesByMajor(categorizedData.middlesByMajor);
+      setSubsByMiddle(categorizedData.subsByMiddle);
     } catch (e) {
       console.error(e);
       setUpjongError("업종 목록을 불러오지 못했습니다.");
