@@ -20,6 +20,9 @@ const marketResultApi = async ({ admiCd, upjongCd, simpleLoc }) => {
     api.get(FOOT_PATH, { params: { analyNo: ANALY_NO, admiCd, upjongCd } }),
   ]);
 
+  // console.log(simpleRes);
+  // console.log(footRes);
+
   const simpleData =
     simpleRes.status === "fulfilled" ? simpleRes.value?.data : null;
 

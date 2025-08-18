@@ -25,7 +25,7 @@ import downIcon from "../assets/Down.svg";
 import upIcon from "../assets/Up.svg";
 import back from "../assets/Back.svg";
 
-// --- 요일/시간 최댓값 ---
+// --- 요일/시간대 최댓값 ---
 const getMaxDay = (p) => {
   if (!p) return { label: "—", value: null };
   const dayMap = [
@@ -87,7 +87,7 @@ const MarketResult = () => {
       setErrMsg("필수 파라미터가 누락되었습니다. 홈에서 다시 선택해 주세요.");
       return;
     }
-    let alive = true;
+    let alive = true; // 비동기 처리 시 안전 스위치
     setLoading(true);
     setErrMsg("");
 
@@ -99,7 +99,7 @@ const MarketResult = () => {
     })
       .then((res) => {
         if (!alive) return;
-        setData(res ?? null); // 응답을 data라는 상태에 저장
+        setData(res ?? null); // 응답을 data에 저장
       })
       .catch(() => {
         if (!alive) return;
@@ -121,8 +121,8 @@ const MarketResult = () => {
     return () => (document.body.style.overflow = "auto");
   }, [open]);
 
-  const provName = "경상북도";
-  const cityName = "경산시";
+  const siName = "경상북도";
+  const guName = "경산시";
   const dongName = params.simpleLoc || "동";
 
   const upjongName = data?.upjongTypeMap?.upjong3nm || "—";
@@ -131,41 +131,28 @@ const MarketResult = () => {
   const maxDay = getMaxDay(pop);
   const maxHour = getMaxHour(pop);
 
-  const salesTriple = [
+  const minAvgMax = [
     { name: "최저", value: Number(data?.minAmt) || 0 },
     { name: "평균", value: Number(data?.saleAmt) || 0 },
     { name: "최고", value: Number(data?.maxAmt) || 0 },
   ];
 
-  const compareSalesCity = Number(data?.guAmt) || 0;
-  const compareSalesProv = Number(data?.siAmt) || 0;
-
-  const industryCntProv =
+  const saleSiCnt =
     Array.isArray(data?.storeCnt) && data.storeCnt.length
-      ? Number(
-          data.storeCnt.reduce((a, c) =>
-            Number(c?.yymm) > Number(a?.yymm) ? c : a
-          ).storeCnt
-        ) || 0
+      ? Number(data.storeCnt[0].storeCnt) || 0
       : 0;
 
-  const industryCntDong = Number(data?.saleCnt) || 0;
-  const industryCntCity = Number(data?.saleGuCnt) || 0;
-
-  const weekdayTotal = Number(pop?.day) || 0;
-  const weekendTotal = Number(pop?.weekend) || 0;
-
-  const dayBreakdown = [
-    { name: "월", value: Number(pop?.mon) || 0 },
-    { name: "화", value: Number(pop?.tues) || 0 },
-    { name: "수", value: Number(pop?.wed) || 0 },
-    { name: "목", value: Number(pop?.thur) || 0 },
-    { name: "금", value: Number(pop?.fri) || 0 },
+  const eachDay = [
+    { name: "월", value: Number(pop?.mon) || 0 }, // pop에서 옵셔널 체이닝(?)이 빠지면 터짐
+    { name: "화", value: Number(pop?.tues) || 0 }, // 왜 ?
+    { name: "수", value: Number(pop?.wed) || 0 }, // ?를 빼면 데이터가 도착하기 전에 pop이 없으니까 터져버리고
+    { name: "목", value: Number(pop?.thur) || 0 }, // ?를 넣으면 데이터가 도착하기 전엔 0으로,
+    { name: "금", value: Number(pop?.fri) || 0 }, // 도착한 뒤엔 실제 값으로 바뀐다고 ..
     { name: "토", value: Number(pop?.sat) || 0 },
     { name: "일", value: Number(pop?.sun) || 0 },
   ];
 
-  const hourBars = [
+  const eachHour = [
     { name: "05-09", value: Number(pop?.firstHour) || 0 },
     { name: "09-12", value: Number(pop?.secondHour) || 0 },
     { name: "12-14", value: Number(pop?.thirdHour) || 0 },
@@ -206,7 +193,7 @@ const MarketResult = () => {
         <span className="text-[#30C0D0] ml-2">‘{upjongName}’</span>에 대한 분석
         결과입니다.
       </div>
-      {/* 1. 간단 요약 (div에 값 그대로 표시) */}
+      {/* 0. 간단 요약 */}
       <div className="text-white text-[36px] pt-36 font-bold flex flex-col items-center">
         <div className="flex items-center">
           <img src={analysis} alt="analysis" className="mr-4.5" /> {" "}
@@ -262,7 +249,7 @@ const MarketResult = () => {
           </div>
         </div>
       </div>
-      {/* 1. 매출 분석 (차트 라벨도 단순 문자열) */}
+      {/* 1. 매출 분석 */}
       <div className="text-white text-[36px] pt-36 font-bold flex flex-col items-center">
         <div className="flex items-center">
           <img src={sales} alt="sales" className="mr-4.5" /> 
@@ -277,7 +264,7 @@ const MarketResult = () => {
             <div className="flex-1 w-full flex items-center justify-center">
               <ResponsiveContainer width="90%" height="80%">
                 <BarChart
-                  data={salesTriple}
+                  data={minAvgMax}
                   margin={{ top: 20, right: 0, left: 0, bottom: 10 }}
                 >
                   <Bar
@@ -308,7 +295,7 @@ const MarketResult = () => {
               </ResponsiveContainer>
             </div>
           </div>
-          {/* 1-2 지역 비교(매출) */} 
+          {/* 1-2 지역 매출 비교 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mt-10">
               지역 내 다른 동네와의 비교 결과
@@ -330,8 +317,8 @@ const MarketResult = () => {
                 <ResponsiveContainer width="70%" height="80%">
                   <BarChart
                     data={[
-                      { name: cityName, value: compareSalesCity },
-                      { name: provName, value: compareSalesProv },
+                      { name: guName, value: Number(data?.guAmt) || 0 },
+                      { name: siName, value: Number(data?.siAmt) || 0 },
                     ]}
                     margin={{ top: 50, right: 0, left: 8, bottom: 30 }}
                     barCategoryGap="15%"
@@ -361,7 +348,7 @@ const MarketResult = () => {
               </div>
             </div>
           </div>
-          {/* 1-3 증감률(그대로 출력) */} 
+          {/* 1-3 전년동월, 전월 대비 매출 증감률 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mb-1">
               전년동월대비    
@@ -373,7 +360,7 @@ const MarketResult = () => {
                   : "text-[#03B4C8]"
               }`}
             >
-              {data?.prevYearRate?.toFixed(1) ?? "—"}%
+              {Math.abs(data?.prevYearRate)?.toFixed(1) ?? "—"}%
               <img
                 src={(Number(data?.prevYearRate) || 0) >= 0 ? upIcon : downIcon}
                 alt="trend"
@@ -390,7 +377,7 @@ const MarketResult = () => {
                   : "text-[#03B4C8]"
               }`}
             >
-              {data?.prevMonRate?.toFixed(1) ?? "—"}%
+              {Math.abs(data?.prevMonRate)?.toFixed(1) ?? "—"}%
               <img
                 src={(Number(data?.prevMonRate) || 0) >= 0 ? upIcon : downIcon}
                 alt="trend"
@@ -417,7 +404,7 @@ const MarketResult = () => {
               {data?.saleCnt ?? "—"}개    
             </div>
           </div>
-          {/* 2-2 지역 비교(업종 수) */} 
+          {/* 2-2 지역 업종 수 비교 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mt-10">
               지역 내 다른 동네와의 비교 결과    
@@ -439,8 +426,8 @@ const MarketResult = () => {
                 <ResponsiveContainer width="70%" height="80%">
                   <BarChart
                     data={[
-                      { name: cityName, value: industryCntCity },
-                      { name: provName, value: industryCntProv },
+                      { name: guName, value: Number(data?.saleGuCnt) || 0 },
+                      { name: siName, value: saleSiCnt },
                     ]}
                     margin={{ top: 50, right: 0, left: 8, bottom: 30 }}
                     barCategoryGap="15%"
@@ -470,7 +457,7 @@ const MarketResult = () => {
               </div>
             </div>
           </div>
-          {/* 2-3 증감률(업종 수) */} 
+          {/* 2-3 전년동월, 전월 대비 업종 수 증감률 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mb-1">
               전년동월대비    
@@ -482,7 +469,7 @@ const MarketResult = () => {
                   : "text-[#03B4C8]"
               }`}
             >
-              {data?.prevYearCntRate?.toFixed(1) ?? "—"}%
+              {Math.abs(data?.prevYearCntRate)?.toFixed(1) ?? "—"}%
               <img
                 src={
                   (Number(data?.prevYearCntRate) || 0) >= 0 ? upIcon : downIcon
@@ -501,7 +488,7 @@ const MarketResult = () => {
                   : "text-[#03B4C8]"
               }`}
             >
-              {data?.prevMonCntRate?.toFixed(1) ?? "—"}%
+              {Math.abs(data?.prevMonCntRate)?.toFixed(1) ?? "—"}%
               <img
                 src={
                   (Number(data?.prevMonCntRate) || 0) >= 0 ? upIcon : downIcon
@@ -530,7 +517,7 @@ const MarketResult = () => {
               {data?.population?.dayAvg ?? "—"}명    
             </div>
           </div>
-          {/* 3-2 요일별 유동인구: 주중/주말 + 리스트 */} 
+          {/* 3-2 요일별 유동인구 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mt-4">
               요일별 유동인구 비교 결과    
@@ -540,8 +527,8 @@ const MarketResult = () => {
                 <ResponsiveContainer width="90%" height="75%">
                   <BarChart
                     data={[
-                      { name: "주중", value: weekdayTotal },
-                      { name: "주말", value: weekendTotal },
+                      { name: "주중", value: Number(pop?.day) || 0 },
+                      { name: "주말", value: Number(pop?.weekend) || 0 },
                     ]}
                     margin={{ top: 40, right: 0, left: 8, bottom: 10 }}
                   >
@@ -575,9 +562,9 @@ const MarketResult = () => {
               </div>
 
               <ul className="flex-1 flex flex-col justify-center items-start text-[16px] text-[#121B2A] font-semibold pl-6">
-                {dayBreakdown.map((d) => (
-                  <li key={d.name} className="mb-1">
-                    {d.name}: {d.value}명  
+                {eachDay.map((day) => (
+                  <li key={day.name} className="mb-1">
+                    {day.name}: {day.value}명  
                   </li>
                 ))}
               </ul>
@@ -591,7 +578,7 @@ const MarketResult = () => {
             <div className="flex-1 w-full flex items-center justify-center">
               <ResponsiveContainer width="90%" height="85%">
                 <BarChart
-                  data={hourBars}
+                  data={eachHour}
                   margin={{ top: 40, right: 0, left: 0, bottom: 20 }}
                 >
                   <Bar dataKey="value" fill="#03B4C8" radius={[10, 10, 0, 0]}>
@@ -619,7 +606,7 @@ const MarketResult = () => {
           </div>
         </div>
       </div>
-      {/* 푸터 & 모달 (그대로) */}
+      {/* 모달 */}
       <div className="text-white text-[24px] pt-36 font-semibold flex flex-col items-center">
         창업 가능성 및 상위 동네 추천은 상세분석에서 확인할 수 있습니다.
       </div>
@@ -709,11 +696,11 @@ const MarketResult = () => {
                 </div>
 
                 <div className="flex items-center justify-center w-[100px] h-[100px] bg-[#80849B] rounded-full text-white text-[20px] font-semibold shrink-0">
-                  {cityName}
+                  {guName}
                 </div>
 
                 <div className="flex items-center justify-center w-[100px] h-[100px] bg-[#80849B] rounded-full text-white text-[20px] font-semibold shrink-0">
-                  {provName}
+                  {siName}
                 </div>
               </div>
             </div>
