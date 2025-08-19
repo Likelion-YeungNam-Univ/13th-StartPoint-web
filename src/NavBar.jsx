@@ -141,13 +141,17 @@ const NavBar = () => {
           <MenuItem id="mentoring">멘토 탐색</MenuItem>
         </div>
 
-        <div className="relative" ref={userMenuRef}>
+        <div
+          className="relative"
+          ref={userMenuRef}
+          onMouseEnter={() => setUserOpen(true)}
+          onMouseLeave={() => setUserOpen(false)}
+        >
           <button
             type="button"
             // onClick={() => setUserOpen((v) => !v)}
-            onMouseEnter={() => setUserOpen(true)}
-            onMouseLeave={() => setUserOpen(false)}
-            className="p-2 rounded-full"
+
+            className="p-4 rounded-full"
             aria-haspopup="menu"
             aria-expanded={userOpen}
           >
@@ -161,7 +165,7 @@ const NavBar = () => {
           {userOpen && (
             <div
               role="menu"
-              className="absolute left-1/2 top-full mt-2 w-56 -translate-x-1/2 bg-white z-50 border border-[#757575]"
+              className="absolute left-1/2 top-full w-56 -translate-x-1/2 bg-white z-50 border border-[#757575]"
             >
               {!isLoggedIn ? (
                 // 로그인 X
