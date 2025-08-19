@@ -4,6 +4,8 @@ import { PieChart } from "react-minimal-pie-chart";
 import {
   BarChart,
   Bar,
+  Line,
+  LineChart,
   ResponsiveContainer,
   XAxis,
   YAxis,
@@ -258,27 +260,27 @@ const MarketResult = () => {
         <div className="mt-8 flex justify-center gap-7">
           {/* 1-1 월 평균/최고/최저 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center text-center">
-            <div className="text-[22px] text-[#121B2A] font-semibold mb-4">
+            <div className="text-[22px] text-[#121B2A] font-semibold mt-10">
               월 평균/최고/최저    
             </div>
             <div className="flex-1 w-full flex items-center justify-center">
-              <ResponsiveContainer width="90%" height="80%">
-                <BarChart
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart
                   data={minAvgMax}
-                  margin={{ top: 20, right: 0, left: 0, bottom: 10 }}
+                  margin={{ top: 20, right: 35, left: 35, bottom: 50 }}
                 >
-                  <Bar
+                  <Line
                     dataKey="value"
-                    fill="#03B4C8"
-                    radius={[10, 10, 0, 0]}
-                    barSize={35}
+                    stroke="#03B4C8"
+                    strokeWidth={2}
+                    type="monotone"
                   >
                     <LabelList
                       dataKey="value"
                       position="top"
                       offset={8}
                       fill="#121B2A"
-                      fontSize={14}
+                      fontSize={16}
                       formatter={(v) => `${v}만원`}
                     />
                     <LabelList
@@ -288,10 +290,10 @@ const MarketResult = () => {
                       fill="#121B2A"
                       fontSize={16}
                     />
-                  </Bar>
+                  </Line>
                   <XAxis hide />
                   <YAxis hide />
-                </BarChart>
+                </LineChart>
               </ResponsiveContainer>
             </div>
           </div>
@@ -300,27 +302,34 @@ const MarketResult = () => {
             <div className="text-[22px] text-[#121B2A] font-semibold mt-10">
               지역 내 다른 동네와의 비교 결과
             </div>
+            <div className="text-sm text-gray-500 font-medium ml-61">
+              (단위: 만 원)
+            </div>
             <div className="flex flex-1 w-full items-center justify-center gap-1 h-full">
-              <div className="flex flex-col items-center justify-end h-full ml-6 mt-16">
+              <div className="flex flex-col items-center justify-end h-full ml-15 mb-15">
+                <div className="text-[#121B2A] font-semibold text-[15px]">
+                  {data?.saleAmt ? `${data.saleAmt}` : "—"}
+                </div>
+
                 <img
                   src={vector}
                   alt="vector"
                   className="w-[41px] h-[80px] object-contain"
                 />
 
-                <div className="text-[#121B2A] font-medium mt-2 text-[14px]">
-                  {dongName} / {data?.saleAmt ? `${data.saleAmt}만원` : "—"}
+                <div className="text-[#121B2A] font-semibold text-[15px]">
+                  {dongName}
                 </div>
               </div>
 
-              <div className="flex-1 flex items-center justify-center font-medium h-full">
+              <div className="flex-1 flex items-center justify-center font-semibold h-full">
                 <ResponsiveContainer width="70%" height="80%">
                   <BarChart
                     data={[
                       { name: guName, value: Number(data?.guAmt) || 0 },
                       { name: siName, value: Number(data?.siAmt) || 0 },
                     ]}
-                    margin={{ top: 50, right: 0, left: 8, bottom: 30 }}
+                    margin={{ top: 50, right: 0, left: 5, bottom: 30 }}
                     barCategoryGap="15%"
                   >
                     <Bar dataKey="value" fill="#03B4C8" radius={[10, 10, 0, 0]}>
@@ -330,7 +339,7 @@ const MarketResult = () => {
                         offset={8}
                         fill="#121B2A"
                         fontSize={14}
-                        formatter={(v) => `${v}만원`}
+                        formatter={(v) => `${v}`}
                       />
 
                       <LabelList
@@ -409,27 +418,34 @@ const MarketResult = () => {
             <div className="text-[22px] text-[#121B2A] font-semibold mt-10">
               지역 내 다른 동네와의 비교 결과    
             </div>
+            <div className="text-sm text-gray-500 font-medium ml-66">
+              (단위: 개)
+            </div>
             <div className="flex flex-1 w-full items-center justify-center gap-1 h-full">
-              <div className="flex flex-col items-center justify-end h-full ml-6 mt-16">
+              <div className="flex flex-col items-center justify-end h-full ml-15 mb-15">
+                <div className="text-[#121B2A] font-semibold text-[15px]">
+                  {data?.saleCnt ?? "—"}
+                </div>
+
                 <img
                   src={vector}
                   alt="vector"
                   className="w-[41px] h-[80px] object-contain"
                 />
 
-                <div className="text-[#121B2A] font-medium mt-2 text-[14px]">
-                  {dongName} / {data?.saleCnt ?? "—"}개
+                <div className="text-[#121B2A] font-semibold text-[15px]">
+                  {dongName}
                 </div>
               </div>
 
-              <div className="flex-1 flex items-center justify-center font-medium h-full">
+              <div className="flex-1 flex items-center justify-center font-semibold h-full">
                 <ResponsiveContainer width="70%" height="80%">
                   <BarChart
                     data={[
                       { name: guName, value: Number(data?.saleGuCnt) || 0 },
                       { name: siName, value: saleSiCnt },
                     ]}
-                    margin={{ top: 50, right: 0, left: 8, bottom: 30 }}
+                    margin={{ top: 50, right: 0, left: 5, bottom: 30 }}
                     barCategoryGap="15%"
                   >
                     <Bar dataKey="value" fill="#03B4C8" radius={[10, 10, 0, 0]}>
@@ -439,7 +455,7 @@ const MarketResult = () => {
                         offset={8}
                         fill="#121B2A"
                         fontSize={14}
-                        formatter={(v) => `${v}개`}
+                        formatter={(v) => `${v}`}
                       />
 
                       <LabelList
@@ -523,14 +539,14 @@ const MarketResult = () => {
               요일별 유동인구 비교 결과    
             </div>
             <div className="flex flex-1 w-full">
-              <div className="flex-1 flex items-center justify-center">
+              <div className="flex-1 flex items-center justify-center ml-7">
                 <ResponsiveContainer width="90%" height="75%">
                   <BarChart
                     data={[
                       { name: "주중", value: Number(pop?.day) || 0 },
                       { name: "주말", value: Number(pop?.weekend) || 0 },
                     ]}
-                    margin={{ top: 40, right: 0, left: 8, bottom: 10 }}
+                    margin={{ top: 30, right: 0, left: 10, bottom: 30 }}
                   >
                     <Bar
                       dataKey="value"
@@ -561,7 +577,7 @@ const MarketResult = () => {
                 </ResponsiveContainer>
               </div>
 
-              <ul className="flex-1 flex flex-col justify-center items-start text-[16px] text-[#121B2A] font-semibold pl-6">
+              <ul className="flex-1 flex flex-col justify-center items-start text-[16px] text-[#121B2A] font-semibold pl-10">
                 {eachDay.map((day) => (
                   <li key={day.name} className="mb-1">
                     {day.name}: {day.value}명  
