@@ -187,9 +187,30 @@ const MarketResult = () => {
   const maxHour = getMaxHour(pop);
 
   const minAvgMax = [
-    { name: "최저", value: Number(data?.minAmt) || 0 },
-    { name: "평균", value: Number(data?.saleAmt) || 0 },
-    { name: "최고", value: Number(data?.maxAmt) || 0 },
+    {
+      name: "최저",
+      value: data?.minAmt
+        ? Number(data.minAmt) != 0
+          ? Number(data.minAmt)
+          : Number(data.guMin) // 지금은 없는 값
+        : 0,
+    },
+    {
+      name: "평균",
+      value: data?.saleAmt
+        ? Number(data.saleAmt) != 0
+          ? Number(data.saleAmt)
+          : Number(data.guAmt)
+        : 0,
+    },
+    {
+      name: "최고",
+      value: data?.maxAmt
+        ? Number(data?.maxAmt) != 0
+          ? Number(data.maxAmt)
+          : Number(data.guMax) // 지금은 없는 값
+        : 0,
+    },
   ];
 
   const saleSiCnt = Number(data?.storeCnt[0].storeCnt) || 0;
@@ -256,19 +277,27 @@ const MarketResult = () => {
            
           <div className="w-[237px] h-[76px] p-4 bg-[#F5F5F5] rounded-lg flex flex-col items-center justify-center text-center">
             <div className="text-[18px] text-black font-medium">
-              월 평균 매출    
+              월 평균 매출
             </div>
             <div className="text-[20px] text-[#03B4C8] font-semibold">
-              {data?.saleAmt ? `${data.saleAmt}만원` : "—"}   
+              {data?.saleAmt
+                ? Number(data.saleAmt) != 0
+                  ? `${data.saleAmt} 만 원`
+                  : `${data.guAmt} 만 원`
+                : "—"}
             </div>
           </div>
            
           <div className="w-[237px] h-[76px] p-4 bg-[#F5F5F5] rounded-lg flex flex-col items-center justify-center text-center">
             <div className="text-[18px] text-black font-medium">
-              선택 업종 수    
+              선택 업종 수
             </div>
             <div className="text-[20px] text-[#03B4C8] font-semibold">
-              {data?.saleCnt ?? "—"}개    
+              {data?.saleCnt
+                ? Number(data.saleCnt) != 0
+                  ? `${data.saleCnt} 개`
+                  : `${data.saleGuCnt} 개`
+                : "—"}
             </div>
           </div>
         </div>
@@ -276,28 +305,28 @@ const MarketResult = () => {
            
           <div className="w-[237px] h-[76px] p-4 bg-[#F5F5F5] rounded-lg flex flex-col items-center justify-center text-center">
             <div className="text-[18px] text-black font-medium">
-              일 평균 유동인구    
+              일 평균 유동인구
             </div>
             <div className="text-[20px] text-[#03B4C8] font-semibold">
-              {data?.population?.dayAvg ?? "—"}명    
+              {data?.population?.dayAvg ?? "—"} 명
             </div>
           </div>
            
           <div className="w-[237px] h-[76px] p-4 bg-[#F5F5F5] rounded-lg flex flex-col items-center justify-center text-center">
             <div className="text-[18px] text-black font-medium">
-              유동 인구 많은 요일    
+              유동 인구 많은 요일
             </div>
             <div className="text-[20px] text-[#03B4C8] font-semibold">
-              {maxDay.label}요일    
+              {maxDay.label}요일
             </div>
           </div>
            
           <div className="w-[237px] h-[76px] p-4 bg-[#F5F5F5] rounded-lg flex flex-col items-center justify-center text-center">
             <div className="text-[18px] text-black font-medium">
-              유동 인구 많은 시간    
+              유동 인구 많은 시간
             </div>
             <div className="text-[20px] text-[#03B4C8] font-semibold">
-              {maxHour.label}   
+              {maxHour.label}
             </div>
           </div>
         </div>
@@ -312,13 +341,13 @@ const MarketResult = () => {
           {/* 1-1 월 평균/최고/최저 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mb-4">
-              월 평균/최고/최저    
+              월 평균/최고/최저
             </div>
             <div className="flex-1 w-full flex items-center justify-center">
               <ResponsiveContainer width="90%" height="80%">
                 <BarChart
                   data={minAvgMax}
-                  margin={{ top: 20, right: 0, left: 0, bottom: 10 }}
+                  margin={{ top: 10, right: 0, left: 0, bottom: 30 }}
                 >
                   <Bar
                     dataKey="value"
@@ -362,7 +391,12 @@ const MarketResult = () => {
                 />
 
                 <div className="text-[#121B2A] font-medium mt-2 text-[14px]">
-                  {dongName} / {data?.saleAmt ? `${data.saleAmt}만원` : "—"}
+                  {dongName} /{" "}
+                  {data?.saleAmt
+                    ? data.saleAmt != 0
+                      ? `${data.saleAmt}만원`
+                      : "-"
+                    : "—"}
                 </div>
               </div>
 
@@ -404,24 +438,32 @@ const MarketResult = () => {
           {/* 1-3 전년동월, 전월 대비 매출 증감률 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mb-1">
-              전년동월대비    
+              전년동월대비
             </div>
             <div
               className={`flex items-center text-[32px] font-semibold mb-12 ${
-                (Number(data?.prevYearRate) || 0) >= 0
+                (Number(data?.prevYearRate) || 0) > 0
                   ? "text-[#D04797]"
-                  : "text-[#03B4C8]"
+                  : (Number(data?.prevYearRate) || 0) < 0
+                  ? "text-[#03B4C8]"
+                  : "text-gray-500"
               }`}
             >
               {Math.abs(data?.prevYearRate)?.toFixed(1) ?? "—"}%
               <img
-                src={(Number(data?.prevYearRate) || 0) >= 0 ? upIcon : downIcon}
+                src={
+                  (Number(data?.prevYearRate) || 0) > 0
+                    ? upIcon
+                    : (Number(data?.prevYearRate) || 0) < 0
+                    ? downIcon
+                    : ""
+                }
                 alt="trend"
                 className="ml-1 w-6 h-6"
               />
             </div>
             <div className="text-[22px] text-[#121B2A] font-semibold mb-1">
-              전월대비    
+              전월대비
             </div>
             <div
               className={`flex items-center text-[32px] font-semibold ${
@@ -450,17 +492,21 @@ const MarketResult = () => {
           {/* 2-1 선택업종 업종 수 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mb-10">
-              선택업종 업종 수    
+              선택업종 업종 수
             </div>
-            <img src={people} alt="people" />   
+            <img src={people} alt="people" />
             <div className="text-[#30C0D0] font-bold">
-              {data?.saleCnt ?? "—"}개    
+              {data?.saleCnt
+                ? Number(data.saleCnt) != 0
+                  ? `${data.saleCnt} 개`
+                  : `${data.saleGuCnt} 개`
+                : "—"}
             </div>
           </div>
           {/* 2-2 지역 업종 수 비교 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mt-10">
-              지역 내 다른 동네와의 비교 결과    
+              지역 내 다른 동네와의 비교 결과
             </div>
             <div className="flex flex-1 w-full items-center justify-center gap-1 h-full">
               <div className="flex flex-col items-center justify-end h-full ml-6 mt-16">
@@ -513,7 +559,7 @@ const MarketResult = () => {
           {/* 2-3 전년동월, 전월 대비 업종 수 증감률 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mb-1">
-              전년동월대비    
+              전년동월대비
             </div>
             <div
               className={`flex items-center text-[32px] font-semibold mb-12 ${
@@ -532,7 +578,7 @@ const MarketResult = () => {
               />
             </div>
             <div className="text-[22px] text-[#121B2A] font-semibold mb-1">
-              전월대비    
+              전월대비
             </div>
             <div
               className={`flex items-center text-[32px] font-semibold ${
@@ -563,17 +609,17 @@ const MarketResult = () => {
           {/* 3-1 일 평균 유동인구 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mb-10">
-              일 평균 유동인구    
+              일 평균 유동인구
             </div>
-            <img src={shop} alt="shop" />   
+            <img src={shop} alt="shop" />
             <div className="text-[#30C0D0] font-bold text-[32px]">
-              {data?.population?.dayAvg ?? "—"}명    
+              {data?.population?.dayAvg ?? "—"}명
             </div>
           </div>
           {/* 3-2 요일별 유동인구 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mt-4">
-              요일별 유동인구 비교 결과    
+              요일별 유동인구 비교 결과
             </div>
             <div className="flex flex-1 w-full">
               <div className="flex-1 flex items-center justify-center">
@@ -626,7 +672,7 @@ const MarketResult = () => {
           {/* 3-3 시간대별 유동인구 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mt-4">
-              시간대별 유동인구 비교 결과    
+              시간대별 유동인구 비교 결과
             </div>
             <div className="flex-1 w-full flex items-center justify-center">
               <ResponsiveContainer width="90%" height="85%">
@@ -685,7 +731,7 @@ const MarketResult = () => {
               onClick={() => setOpen(false)}
               className="absolute top-4 right-4 w-[27px] h-[27px] bg-[#4C5060] flex items-center justify-center text-white text-xl font-bold rounded-full cursor-pointer"
             >
-              <img src={back} alt="back" className="w-[9] h-[9]" />   
+              <img src={back} alt="back" className="w-[9] h-[9]" />
             </button>
             {pracLoading ? (
               <div className="py-20 text-gray-500">
@@ -704,7 +750,7 @@ const MarketResult = () => {
             ) : (
               <>
                 <h2 className="text-[24px] font-bold mb-6 text-[#333]">
-                  상세분석 결과 리포트    
+                  상세분석 결과 리포트
                 </h2>
                 <div className="flex items-center mb-3">
                   <img src={check} alt="check" className="mr-3" />
@@ -743,7 +789,6 @@ const MarketResult = () => {
                             : "-"}
                         </span>
                         <span className="text-[15px] text-[#A0AEC0]">10점</span>
-                           
                       </div>
                       <div className="mt-2 text-center text-[15px] text-[#A0AEC0]">
                         창업 가능성  
@@ -759,7 +804,7 @@ const MarketResult = () => {
                 </div>
                 <span className="text-[15px] text-[#42437D] font-semibold">
                   업종별 매출, 점포 수, 상권·유동인구, 창업 가능성 등을 종합해
-                  상위 3개 동네를 추천합니다.    
+                  상위 3개 동네를 추천합니다.
                 </span>
                 <div className="mt-6">
                   <div className="flex justify-center gap-8">
@@ -790,7 +835,6 @@ const MarketResult = () => {
           </div>
         </div>
       )}
-         
     </div>
   );
 };
