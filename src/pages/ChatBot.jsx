@@ -12,29 +12,13 @@ export default function ChatBot() {
   const [thinking, setThinking] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [contextId, setContextId] = useState(undefined); // 🔹 명세: contextId 저장
+  const [badgeHover, setBadgeHover] = useState(false);   // 🔹 아이콘 hover 상태
   const inputRef = useRef(null);
   const thinkTimer = useRef(null);
 
   useEffect(() => {
     console.log("[ENV] VITE_API_BASE =", import.meta.env?.VITE_API_BASE);
   }, []);
-
-  // (선택) 열 때 기존 대화 불러오기 — 서버가 세션+contextId를 필요로 할 때만 사용
-  // useEffect(() => {
-  //   if (open && contextId) {
-  //     getConversation(contextId)
-  //       .then((arr) => {
-  //         if (Array.isArray(arr)) {
-  //           const restored = arr.map((it) => [
-  //             { role: "user", text: it.question },
-  //             { role: "bot", text: it.answer },
-  //           ]).flat();
-  //           setMessages(restored);
-  //         }
-  //       })
-  //       .catch(() => {});
-  //   }
-  // }, [open, contextId]);
 
   const items = [
     { id: "regulation", label: "창업 절차 안내" },
@@ -65,8 +49,7 @@ export default function ChatBot() {
       const answer =
         typeof res?.answer === "string" && res.answer.trim().length > 0
           ? res.answer
-          : // 백엔드가 형식을 지키지 않았을 때 원본 가드
-            `서버 응답 형식이 예상과 달라요.\n원본: ${JSON.stringify(res?._raw ?? res, null, 2)}`;
+          : `서버 응답 형식이 예상과 달라요.\n원본: ${JSON.stringify(res?._raw ?? res, null, 2)}`;
 
       setMessages((prev) => [...prev, { role: "bot", text: answer }]);
     } catch (e) {
@@ -88,17 +71,23 @@ export default function ChatBot() {
   if (!open) {
     return (
       <div className="fixed right-5 bottom-5 flex flex-col items-end gap-2">
-        <div
-          className="max-w-[300px] rounded-2xl px-4 py-3 shadow-xl"
-          style={{ background: "rgba(39,56,75,0.9)" }}
-        >
-          <p className="text-white text-[12px] leading-[18px] whitespace-pre-line text-center">
-            {"당신의 창업 비서 스포티입니다!\n행정안내, 창업 관련 고민은\n저에게 물어봐주세요."}
-          </p>
-        </div>
+        {badgeHover && ( // 🔹 hover일 때만 멘트 표시
+          <div
+            className="max-w-[300px] rounded-2xl px-4 py-3 shadow-xl"
+            style={{ background: "rgba(39,56,75,0.9)" }}
+          >
+            <p className="text-white text-[12px] leading-[18px] whitespace-pre-line text-center">
+              {"당신의 창업 비서 스포티입니다!\n행정안내, 창업 관련 고민은\n저에게 물어봐주세요."}
+            </p>
+          </div>
+        )}
 
         <button
           onClick={() => setOpen(true)}
+          onMouseEnter={() => setBadgeHover(true)}   // hover 시작
+          onMouseLeave={() => setBadgeHover(false)}  // hover 종료
+          onFocus={() => setBadgeHover(true)}        // 키보드 접근성
+          onBlur={() => setBadgeHover(false)}
           className="w-12 h-12 rounded-full shadow-xl grid place-items-center overflow-hidden bg-transparent
                      transition duration-200 hover:brightness-110 hover:saturate-125 hover:scale-105"
           aria-label="챗봇 열기"
@@ -123,8 +112,6 @@ export default function ChatBot() {
     setMessages([]);
     setThinking(false);
     clearTimeout(thinkTimer.current);
-    // contextId는 유지/초기화 선택 가능. 유지하면 같은 세션 계속.
-    // setContextId(undefined);
   };
 
   return (
@@ -198,7 +185,6 @@ export default function ChatBot() {
                 </div>
               )}
 
-              {/* 입력창 바로 위부터 쌓이도록 하단 정렬 */}
               <div className={`flex-1 flex flex-col justify-end gap-2 ${isChatting ? "mt-4" : "mt-3"}`}>
                 {messages.map((m, idx) => (
                   <div
@@ -268,7 +254,6 @@ export default function ChatBot() {
         </div>
       </div>
 
-      {/* 같은 자리/크기의 상태표시 아이콘: 열림 시 swhite.png (닫기 버튼) */}
       <button
         onClick={() => setOpen(false)}
         className="fixed right-5 bottom-5 w-12 h-12 rounded-full shadow-xl grid place-items-center overflow-hidden bg-transparent"
