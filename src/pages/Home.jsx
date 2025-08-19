@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { createSearchParams, useLocation, useNavigate } from "react-router-dom";
 import { Element, scroller } from "react-scroll";
 import imgSection1 from "../assets/Home_Section1.png";
 import imgSection2 from "../assets/Home_Section2.png";
 import imgSection3 from "../assets/Home_Section3.png";
-import ChatBot from "./ChatBot";
+import upjongListApi from "../apis/upjongListApi";
 
 const SCROLL_DURATION_MS = 500;
 
@@ -42,6 +42,7 @@ function Section1() {
 }
 
 function Section2() {
+  // 왼쪽 버튼 기본, 조건부 스타일
   const leftBtnBase =
     "w-120 h-30 rounded-xl text-xl font-semibold border border-3 transition";
   const leftBtnActive =
@@ -49,7 +50,6 @@ function Section2() {
   const leftBtnInactive = "bg-[#121B2A] text-white border-white";
 
   // 패널 상태: 'none' | 'area' | 'major' | 'middle' | 'sub'
-  //            선택X     동네     대분류     중분류    소분류
   const [panel, setPanel] = useState("none");
 
   // 선택 상태
@@ -60,27 +60,101 @@ function Section2() {
 
   const navigate = useNavigate();
 
-  // ------- 여기부터 API로 변경해야 됨 -------
+  // ------- 동네 이름 코드 -------
+  const areaList = [
+    { areaName: "서부1동", areaCode: "47290541" },
+    { areaName: "서부2동", areaCode: "47290542" },
+    { areaName: "중방동", areaCode: "47290510" },
+    { areaName: "중앙동", areaCode: "47290520" },
+    { areaName: "남부동", areaCode: "47290530" },
+    { areaName: "남천면", areaCode: "47290370" },
+    { areaName: "동부동", areaCode: "47290560" },
+    { areaName: "남산면", areaCode: "47290350" },
+    { areaName: "자인면", areaCode: "47290330" },
+    { areaName: "용성면", areaCode: "47290340" },
+    { areaName: "진량읍", areaCode: "47290253" },
+    { areaName: "압량면", areaCode: "47290256" },
+    { areaName: "북부동", areaCode: "47290550" },
+    { areaName: "하양읍", areaCode: "47290250" },
+    { areaName: "와촌면", areaCode: "47290310" },
+  ];
 
-  // 지금은 더미 데이터
-  const AREA_OPTIONS = Array.from({ length: 15 }, (_, i) => `#${i + 1}`); // 동네 15개
-  const MAJORS = Array.from({ length: 10 }, (_, i) => `#${i + 1}`); // 대분류 10개
+  // ------- 업종 코드 -------
+  // 대분류: 앞에 두 자리
+  const [majors, setMajors] = useState([]);
+  // 중분류: 가운데 두 자리
+  const [middlesByMajor, setMiddlesByMajor] = useState({});
+  // 소분류: 끝에 두 자리
+  const [subsByMiddle, setSubsByMiddle] = useState({});
 
-  // 대분류별 중분류 8개
-  const MIDDLES_BY_MAJOR = Object.fromEntries(
-    MAJORS.map((m) => [m, Array.from({ length: 8 }, (_, i) => `#${i + 1}`)])
-  );
-  const SUB_BY_MIDDLE = Object.fromEntries(
-    MAJORS.flatMap((m) =>
-      MIDDLES_BY_MAJOR[m].map((mid) => [
-        `${m}/${mid}`,
-        Array.from({ length: 12 }, (_, i) => `#${i + 1}`),
-      ])
-    )
-  );
+  const [UpjongLoading, setUpjongLoading] = useState(false);
+  const [UpjongError, setUpjongError] = useState(null);
 
-  // ------- 여기까지 -------
-  
+  // 예시: 'N10805' → { major:'N1', middle:'08', small:'05' }
+  const splitUpjong = (code) => {
+    const split = String(code).trim();
+    return {
+      major: split.slice(0, 2),
+      middle: split.slice(2, 4),
+      small: split.slice(4, 6),
+    };
+  };
+
+  // API 배열 → 대/중/소 분류
+  const categorization = (rows) => {
+    const majorMap = new Map(); // 대분류 코드와 이름을 맵핑
+    const middleMap = {}; // 대분류 코드에 해당하는 중분류 목록을 저장
+    const subMap = {}; // 대분류와 중분류 코드를 합친 key값에 해당하는 소분류 목록을 저장
+
+    for (const item of rows) {
+      const parts = splitUpjong(item.upjong3cd);
+
+      const { major, middle } = parts;
+      const largeName = String(item.largeCategory).trim();
+      const mediumName = String(item.mediumCategory).trim();
+      const smallName = String(item.smallCategory).trim();
+      const fullCode = String(item.upjong3cd).trim();
+
+      if (!largeName || !mediumName || !smallName || !fullCode) continue;
+
+      // 데이터들을 순회하면서 대분류가 이미 추가되었는지 확인하고, 추가되지 않았을 경우에만 majorMap에 새로운 대분류로 등록
+      if (!majorMap.has(major)) majorMap.set(major, largeName);
+
+      if (!middleMap[major]) middleMap[major] = [];
+      if (!middleMap[major].some((major) => major.code === middle)) {
+        middleMap[major].push({ code: middle, name: mediumName });
+      }
+
+      const key = `${major}/${middle}`;
+      if (!subMap[key]) subMap[key] = [];
+      if (!subMap[key].some((sub) => sub.code === fullCode)) {
+        subMap[key].push({ code: fullCode, name: smallName });
+      }
+    }
+
+    const majors = Array.from(majorMap, ([prefix, name]) => ({ prefix, name }));
+    return { majors, middlesByMajor: middleMap, subsByMiddle: subMap };
+  };
+
+  const loadUpjong = async () => {
+    if (UpjongLoading) return;
+    setUpjongLoading(true);
+    setUpjongError(null);
+    try {
+      const data = await upjongListApi();
+      const categorizedData = categorization(data);
+      setMajors(categorizedData.majors);
+      setMiddlesByMajor(categorizedData.middlesByMajor);
+      setSubsByMiddle(categorizedData.subsByMiddle);
+    } catch (e) {
+      console.error(e);
+      setUpjongError("업종 목록을 불러오지 못했습니다.");
+    } finally {
+      setUpjongLoading(false);
+    }
+  };
+
+  // 패널 열기 (업종은 첫 진입 때만 로드)
   const openPanel = (type) => {
     if (type === "area") {
       setPanel("area");
@@ -89,6 +163,7 @@ function Section2() {
       setSelectedMiddle(null);
       setSelectedSub(null);
       setPanel("major");
+      if (!majors.length && !UpjongLoading) loadUpjong();
     }
   };
 
@@ -99,7 +174,7 @@ function Section2() {
   const canAnalyzeFromSub = !!selectedSub;
 
   const areaActive = panel === "area";
-  const industryActive =
+  const UpjongActive =
     panel === "major" || panel === "middle" || panel === "sub";
 
   return (
@@ -108,6 +183,7 @@ function Section2() {
       id="market-research"
       className="flex items-center justify-center relative isolate min-h-[calc(100vh-64px)] bg-[#121B2A]"
     >
+      {/* 배경 이미지 */}
       <img
         src={imgSection2}
         alt="상권 분석 섹션 배경"
@@ -124,9 +200,10 @@ function Section2() {
             상권부터 유동인구, 가능성 예측까지 한 번에 분석하기
           </div>
         </div>
-        {/*버튼 및 패널*/}
+
+        {/* 버튼 및 패널 */}
         <div className="grid grid-cols-12 gap-7 items-start">
-          {/*좌측 버튼*/}
+          {/* 좌측 버튼 */}
           <div className="col-span-6 flex flex-col">
             <button
               type="button"
@@ -140,16 +217,16 @@ function Section2() {
 
             <button
               type="button"
-              onClick={() => openPanel("industry")}
+              onClick={() => openPanel("Upjong")}
               className={`cursor-pointer ${leftBtnBase} ${
-                industryActive ? leftBtnActive : leftBtnInactive
+                UpjongActive ? leftBtnActive : leftBtnInactive
               }`}
             >
               업종 선택하기
             </button>
           </div>
 
-          {/*우측 패널*/}
+          {/* 우측 패널 */}
           <div
             className={[
               "col-span-6 bg-white border-3 border-black rounded-2xl",
@@ -165,14 +242,16 @@ function Section2() {
               {/* 동네 선택 패널 */}
               {panel === "area" && (
                 <div className="grid grid-cols-4 gap-2">
-                  {AREA_OPTIONS.map((a) => {
-                    const active = selectedArea === a;
+                  {areaList.map(({ areaName, areaCode }) => {
+                    const active = selectedArea === areaCode; // 선택값은 areaCode로 저장
                     return (
                       <button
-                        key={a}
+                        key={areaCode}
                         type="button"
                         onClick={() =>
-                          setSelectedArea((prev) => (prev === a ? null : a))
+                          setSelectedArea((prev) =>
+                            prev === areaCode ? null : areaCode
+                          )
                         }
                         className={[
                           "h-11 w-25 rounded-lg text-[14px] border transition-colors cursor-pointer",
@@ -181,7 +260,7 @@ function Section2() {
                             : "bg-white text-[#547DA0] border-[#547DA0] border-dashed hover:border-sky-500 hover:text-sky-700",
                         ].join(" ")}
                       >
-                        {a}
+                        {areaName} {/* 화면엔 이름 표시 */}
                       </button>
                     );
                   })}
@@ -190,45 +269,64 @@ function Section2() {
 
               {/* 대분류 선택 패널 */}
               {panel === "major" && (
-                <div className="grid grid-cols-4 gap-2">
-                  {MAJORS.map((m) => {
-                    const active = selectedMajor === m;
-                    return (
-                      <button
-                        key={m}
-                        type="button"
-                        onClick={() => {
-                          setSelectedMajor((prev) => (prev === m ? null : m));
-                          setSelectedMiddle(null);
-                          setSelectedSub(null);
-                        }}
-                        className={[
-                          "h-11 w-25 rounded-lg text-[14px] border transition-colors cursor-pointer",
-                          active
-                            ? "bg-[#547DA0] text-[#FDFDFD] border-[#D4EBFF]"
-                            : "bg-white text-[#547DA0] border-[#547DA0] border-dashed hover:border-sky-500 hover:text-sky-700",
-                        ].join(" ")}
-                      >
-                        {m}
-                      </button>
-                    );
-                  })}
-                </div>
+                <>
+                  {UpjongLoading && (
+                    <div className="text-sm text-gray-500">
+                      업종 불러오는 중…
+                    </div>
+                  )}
+                  {UpjongError && (
+                    <div className="text-sm text-red-600">{UpjongError}</div>
+                  )}
+                  {!UpjongLoading && !UpjongError && (
+                    <div className="grid grid-cols-4 gap-2">
+                      {majors.map((major) => {
+                        const active = selectedMajor === major.prefix; // "N1" 등
+                        return (
+                          <button
+                            key={major.prefix}
+                            type="button"
+                            onClick={() => {
+                              setSelectedMajor((prev) =>
+                                prev === major.prefix ? null : major.prefix
+                              );
+                              setSelectedMiddle(null);
+                              setSelectedSub(null);
+                            }}
+                            className={[
+                              "h-11 w-25 rounded-lg text-[14px] border transition-colors cursor-pointer",
+                              active
+                                ? "bg-[#547DA0] text-[#FDFDFD] border-[#D4EBFF]"
+                                : "bg-white text-[#547DA0] border-[#547DA0] border-dashed hover:border-sky-500 hover:text-sky-700",
+                            ].join(" ")}
+                          >
+                            {major.name} {/* 대분류명 */}
+                          </button>
+                        );
+                      })}
+                      {!majors.length && (
+                        <div className="col-span-4 text-sm text-gray-500">
+                          표시할 대분류가 없습니다.
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </>
               )}
 
               {/* 중분류 선택 패널 */}
               {panel === "middle" && (
                 <div className="grid grid-cols-4 gap-2">
-                  {(selectedMajor ? MIDDLES_BY_MAJOR[selectedMajor] : []).map(
+                  {(selectedMajor ? middlesByMajor[selectedMajor] : []).map(
                     (mid) => {
-                      const active = selectedMiddle === mid;
+                      const active = selectedMiddle === mid.code; // "08" 등
                       return (
                         <button
-                          key={mid}
+                          key={`${selectedMajor}-${mid.code}`}
                           type="button"
                           onClick={() => {
                             setSelectedMiddle((prev) =>
-                              prev === mid ? null : mid
+                              prev === mid.code ? null : mid.code
                             );
                             setSelectedSub(null);
                           }}
@@ -239,10 +337,15 @@ function Section2() {
                               : "bg-white text-[#547DA0] border-[#547DA0] border-dashed hover:border-sky-500 hover:text-sky-700",
                           ].join(" ")}
                         >
-                          {mid}
+                          {mid.name}
                         </button>
                       );
                     }
+                  )}
+                  {selectedMajor && !middlesByMajor[selectedMajor]?.length && (
+                    <div className="col-span-4 text-sm text-gray-500">
+                      이 대분류에 해당하는 중분류가 없습니다.
+                    </div>
                   )}
                 </div>
               )}
@@ -251,16 +354,18 @@ function Section2() {
               {panel === "sub" && (
                 <div className="grid grid-cols-4 gap-2">
                   {(selectedMajor && selectedMiddle
-                    ? SUB_BY_MIDDLE[`${selectedMajor}/${selectedMiddle}`]
+                    ? subsByMiddle[`${selectedMajor}/${selectedMiddle}`]
                     : []
-                  ).map((s, i) => {
-                    const active = selectedSub === s;
+                  ).map((sub) => {
+                    const active = selectedSub?.code === sub.code; // "N10805"
                     return (
                       <button
-                        key={`${selectedMajor}-${selectedMiddle}-${i}`}
+                        key={sub.code}
                         type="button"
                         onClick={() =>
-                          setSelectedSub((prev) => (prev === s ? null : s))
+                          setSelectedSub((prev) =>
+                            prev?.code === sub.code ? null : sub
+                          )
                         }
                         className={[
                           "h-11 w-25 rounded-lg text-[14px] border transition-colors cursor-pointer",
@@ -269,10 +374,18 @@ function Section2() {
                             : "bg-white text-[#547DA0] border-[#547DA0] border-dashed hover:border-sky-500 hover:text-sky-700",
                         ].join(" ")}
                       >
-                        {s}
+                        {sub.name}
                       </button>
                     );
                   })}
+                  {selectedMajor &&
+                    selectedMiddle &&
+                    !subsByMiddle[`${selectedMajor}/${selectedMiddle}`]
+                      ?.length && (
+                      <div className="col-span-4 text-sm text-gray-500">
+                        이 중분류에 해당하는 소분류가 없습니다.
+                      </div>
+                    )}
                 </div>
               )}
             </div>
@@ -288,6 +401,7 @@ function Section2() {
                     setSelectedMiddle(null);
                     setSelectedSub(null);
                     setPanel("major");
+                    if (!majors.length && !UpjongLoading) loadUpjong();
                   }}
                   className={[
                     "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
@@ -336,7 +450,25 @@ function Section2() {
                 <button
                   type="button"
                   disabled={!canAnalyzeFromSub}
-                  onClick={() => navigate("/market-result")}
+                  onClick={() => {
+                    const picked = areaList.find(
+                      (area) => area.areaCode === selectedArea
+                    );
+                    const areaCode = picked?.areaCode ?? null; // 8자리 코드
+                    const areaName = picked?.areaName ?? null;
+                    const upjong3cd = selectedSub?.code ?? null; // 예: "N10805"
+
+                    if (!areaCode || !areaName || !upjong3cd) return;
+
+                    // areaCode, areaName, upjong3cd 전달
+                    navigate("/market-result", {
+                      state: {
+                        areaCode: areaCode,
+                        upjong3cd: upjong3cd,
+                        areaName: areaName,
+                      },
+                    });
+                  }}
                   className={[
                     "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
                     canAnalyzeFromSub
@@ -357,10 +489,31 @@ function Section2() {
 
 function Section3() {
   const navigate = useNavigate();
+
   const CARDS = [
-    { t: "탐색(Discover)", lines: ["나와 비슷한 길을 먼저 걸은 사람을 찾는 시간", "분야별, 경험별 멘토 프로필을 한눈에"] },
-    { t: "연결(Connect)", lines: ["단순한 매칭이 아닌,", "진짜 대화가 시작되는 연결", "SPO와 함께하는 멘토와의 1:1 창업 컨설팅"] },
-    { t: "도약(Grow)", lines: ["멘토링 그 이후를 고민하는 당신에게", "현실적인 조언과 방향성으로", "나만의 창업 여정, 한 걸음 더 나아가기"] }
+    {
+      t: "탐색(Discover)",
+      lines: [
+        "나와 비슷한 길을 먼저 걸은 사람을 찾는 시간",
+        "분야별, 경험별 멘토 프로필을 한눈에",
+      ],
+    },
+    {
+      t: "연결(Connect)",
+      lines: [
+        "단순한 매칭이 아닌,",
+        "진짜 대화가 시작되는 연결",
+        "SPO와 함께하는 멘토와의 1:1 창업 컨설팅",
+      ],
+    },
+    {
+      t: "도약(Grow)",
+      lines: [
+        "멘토링 그 이후를 고민하는 당신에게",
+        "현실적인 조언과 방향성으로",
+        "나만의 창업 여정, 한 걸음 더 나아가기",
+      ],
+    },
   ];
 
   return (
@@ -394,12 +547,15 @@ function Section3() {
 
               <p className="mt-4 text-white text-sm leading-5">
                 {it.lines.map((line, i) => (
-                  <span key={i} className="block">{line}</span>
+                  <span key={i} className="block">
+                    {line}
+                  </span>
                 ))}
               </p>
             </div>
           ))}
         </div>
+
         <div className="mt-10 flex justify-center">
           <button
             type="button"
@@ -418,20 +574,24 @@ export default function Home() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // 다른 페이지 → 네비 클릭: state.scrollTo 로 목적지 전달 받으면 스크롤
   useEffect(() => {
     const id = location.state?.scrollTo;
     if (!id) return;
-    const offset = typeof location.state?.offset === "number"
-      ? location.state.offset
-      : id === "home"
-      ? 0
-      : -8;
+    const offset =
+      typeof location.state?.offset === "number"
+        ? location.state.offset
+        : id === "home"
+        ? 0
+        : -8;
 
     scroller.scrollTo(id, {
       smooth: "easeInOutQuad",
       duration: SCROLL_DURATION_MS,
       offset,
     });
+
+    // state 초기화 (뒤로가기 오염 방지)
     navigate(".", { replace: true, state: null });
   }, [location.state, navigate]);
 
@@ -440,7 +600,6 @@ export default function Home() {
       <Section1 />
       <Section2 />
       <Section3 />
-      <ChatBot />
     </div>
   );
 }
