@@ -6,7 +6,7 @@ import api from "./api";
  */
 const upjongListApi = async () => {
   try {
-    const res = await api.get("/upjong");
+    const res = await api.get("/analysis/general/upjong");
     const raw = res.data;
     // console.log(raw); // 확인용
 

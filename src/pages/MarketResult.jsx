@@ -27,6 +27,27 @@ import downIcon from "../assets/Down.svg";
 import upIcon from "../assets/Up.svg";
 import back from "../assets/Back.svg";
 
+import practicalApi from "../apis/practicalApi";
+
+// ----- 동네 코드 -> 이름 -----
+const codeToName = {
+  47290541: "서부1동",
+  47290542: "서부2동",
+  47290510: "중방동",
+  47290520: "중앙동",
+  47290530: "남부동",
+  47290370: "남천면",
+  47290560: "동부동",
+  47290350: "남산면",
+  47290330: "자인면",
+  47290340: "용성면",
+  47290253: "진량읍",
+  47290256: "압량면",
+  47290550: "북부동",
+  47290250: "하양읍",
+  47290310: "와촌면",
+};
+
 // --- 요일/시간대 최댓값 ---
 const getMaxDay = (p) => {
   if (!p) return { label: "—", value: null };
@@ -74,8 +95,12 @@ const MarketResult = () => {
   const [loading, setLoading] = useState(true);
   const [errMsg, setErrMsg] = useState("");
 
+  const [pracData, setPracData] = useState(null);
+  const [pracLoading, setPracLoading] = useState(true);
+  const [pracErrMsg, setPracErrMsg] = useState("");
+
   const params = useMemo(() => {
-    const state = locationObj.state || {}; // 소포 안에 있던 데이터(areaCode, areaName 등)를 꺼내 쓸 수 있는 것이라고 ..
+    const state = locationObj.state || {}; // 소포 안에 있던 데이터(areaCode, areaName 등)를 꺼내 쓸 수 있는 것이라고 하는데 ..
     return {
       admiCd: state.areaCode || "",
       upjongCd: state.upjong3cd || "",
@@ -83,6 +108,7 @@ const MarketResult = () => {
     };
   }, [locationObj.state]);
 
+  // 간단 분석 API
   useEffect(() => {
     if (!params.admiCd || !params.upjongCd || !params.simpleLoc) {
       setLoading(false);
@@ -105,7 +131,7 @@ const MarketResult = () => {
       })
       .catch(() => {
         if (!alive) return;
-        setErrMsg("분석 데이터를 불러오지 못했습니다.");
+        setErrMsg("간단 분석 데이터를 불러오지 못했습니다.");
       })
       .finally(() => {
         if (!alive) return;
@@ -116,6 +142,36 @@ const MarketResult = () => {
       alive = false;
     };
   }, [params.admiCd, params.upjongCd, params.simpleLoc]);
+
+  // 상세 분석 API
+  useEffect(() => {
+    if (!open) return;
+
+    let alive = true;
+    setPracLoading(true);
+    setPracErrMsg("");
+
+    practicalApi({
+      admiCd: params.admiCd,
+      upjongCd: params.upjongCd,
+    })
+      .then((res) => {
+        if (!alive) return;
+        setPracData(res ?? null); // 응답을 data에 저장
+      })
+      .catch(() => {
+        if (!alive) return;
+        setPracErrMsg("상세 분석 데이터를 불러오지 못했습니다.");
+      })
+      .finally(() => {
+        if (!alive) return;
+        setPracLoading(false);
+      });
+
+    return () => {
+      alive = false;
+    };
+  }, [open, params.admiCd, params.upjongCd]);
 
   // 상세분석 모달 창이 떴을 때 배경 페이지의 스크롤을 막는 역할
   useEffect(() => {
@@ -139,10 +195,7 @@ const MarketResult = () => {
     { name: "최고", value: Number(data?.maxAmt) || 0 },
   ];
 
-  const saleSiCnt =
-    Array.isArray(data?.storeCnt) && data.storeCnt.length
-      ? Number(data.storeCnt[0].storeCnt) || 0
-      : 0;
+  const saleSiCnt = Number(data?.storeCnt[0].storeCnt) || 0;
 
   const eachDay = [
     { name: "월", value: Number(pop?.mon) || 0 }, // pop에서 옵셔널 체이닝(?)이 빠지면 터짐
@@ -166,10 +219,11 @@ const MarketResult = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#121B2A] text-white flex items-center justify-center">
-        로딩 중…
+        간단 분석 결과를 불러오는 중...
       </div>
     );
   }
+
   if (errMsg) {
     return (
       <div className="min-h-screen bg-[#121B2A] text-white flex flex-col items-center justify-center p-6">
@@ -198,7 +252,7 @@ const MarketResult = () => {
       {/* 0. 간단 요약 */}
       <div className="text-white text-[36px] pt-36 font-bold flex flex-col items-center">
         <div className="flex items-center">
-          <img src={analysis} alt="analysis" className="mr-4.5" /> {" "}
+          <img src={analysis} alt="analysis" className="mr-4.5" /> 
           <span>분석 결과 간단 요약</span>
         </div>
         <div className="mt-8 flex justify-center gap-4">
@@ -234,19 +288,19 @@ const MarketResult = () => {
            
           <div className="w-[237px] h-[76px] p-4 bg-[#F5F5F5] rounded-lg flex flex-col items-center justify-center text-center">
             <div className="text-[18px] text-black font-medium">
-              유동 인구 많은 요일    
+              유동 인구 많은 요일
             </div>
             <div className="text-[20px] text-[#03B4C8] font-semibold">
-              {maxDay.label}요일    
+              {maxDay.label}요일
             </div>
           </div>
            
           <div className="w-[237px] h-[76px] p-4 bg-[#F5F5F5] rounded-lg flex flex-col items-center justify-center text-center">
             <div className="text-[18px] text-black font-medium">
-              유동 인구 많은 시간    
+              유동 인구 많은 시간
             </div>
             <div className="text-[20px] text-[#03B4C8] font-semibold">
-              {maxHour.label}   
+              {maxHour.label}
             </div>
           </div>
         </div>
@@ -360,24 +414,32 @@ const MarketResult = () => {
           {/* 1-3 전년동월, 전월 대비 매출 증감률 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mb-1">
-              전년동월대비    
+              전년동월대비
             </div>
             <div
               className={`flex items-center text-[32px] font-semibold mb-12 ${
-                (Number(data?.prevYearRate) || 0) >= 0
+                (Number(data?.prevYearRate) || 0) > 0
                   ? "text-[#D04797]"
-                  : "text-[#03B4C8]"
+                  : (Number(data?.prevYearRate) || 0) < 0
+                  ? "text-[#03B4C8]"
+                  : "text-gray-500"
               }`}
             >
               {Math.abs(data?.prevYearRate)?.toFixed(1) ?? "—"}%
               <img
-                src={(Number(data?.prevYearRate) || 0) >= 0 ? upIcon : downIcon}
+                src={
+                  (Number(data?.prevYearRate) || 0) > 0
+                    ? upIcon
+                    : (Number(data?.prevYearRate) || 0) < 0
+                    ? downIcon
+                    : ""
+                }
                 alt="trend"
                 className="ml-1 w-6 h-6"
               />
             </div>
             <div className="text-[22px] text-[#121B2A] font-semibold mb-1">
-              전월대비    
+              전월대비
             </div>
             <div
               className={`flex items-center text-[32px] font-semibold ${
@@ -399,18 +461,22 @@ const MarketResult = () => {
       {/* 2. 업종 분석 */}
       <div className="text-white text-[36px] pt-36 font-bold flex flex-col items-center">
         <div className="flex items-center">
-          <img src={industry} alt="industry" className="mr-4.5" /> {" "}
+          <img src={industry} alt="industry" className="mr-4.5" /> 
           <span>업종 분석</span>
         </div>
         <div className="mt-8 flex justify-center gap-7">
           {/* 2-1 선택업종 업종 수 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mb-10">
-              선택업종 업종 수    
+              선택업종 업종 수
             </div>
-            <img src={people} alt="people" />   
+            <img src={people} alt="people" />
             <div className="text-[#30C0D0] font-bold">
-              {data?.saleCnt ?? "—"}개    
+              {data?.saleCnt
+                ? Number(data.saleCnt) != 0
+                  ? `${data.saleCnt} 개`
+                  : `${data.saleGuCnt} 개`
+                : "—"}
             </div>
           </div>
           {/* 2-2 지역 업종 수 비교 */} 
@@ -426,13 +492,11 @@ const MarketResult = () => {
                 <div className="text-[#121B2A] font-semibold text-[15px]">
                   {data?.saleCnt ?? "—"}
                 </div>
-
                 <img
                   src={vector}
                   alt="vector"
                   className="w-[41px] h-[80px] object-contain"
                 />
-
                 <div className="text-[#121B2A] font-semibold text-[15px]">
                   {dongName}
                 </div>
@@ -476,7 +540,7 @@ const MarketResult = () => {
           {/* 2-3 전년동월, 전월 대비 업종 수 증감률 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mb-1">
-              전년동월대비    
+              전년동월대비
             </div>
             <div
               className={`flex items-center text-[32px] font-semibold mb-12 ${
@@ -495,7 +559,7 @@ const MarketResult = () => {
               />
             </div>
             <div className="text-[22px] text-[#121B2A] font-semibold mb-1">
-              전월대비    
+              전월대비
             </div>
             <div
               className={`flex items-center text-[32px] font-semibold ${
@@ -526,11 +590,11 @@ const MarketResult = () => {
           {/* 3-1 일 평균 유동인구 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mb-10">
-              일 평균 유동인구    
+              일 평균 유동인구
             </div>
-            <img src={shop} alt="shop" />   
+            <img src={shop} alt="shop" />
             <div className="text-[#30C0D0] font-bold text-[32px]">
-              {data?.population?.dayAvg ?? "—"}명    
+              {data?.population?.dayAvg ?? "—"}명
             </div>
           </div>
           {/* 3-2 요일별 유동인구 */} 
@@ -589,7 +653,7 @@ const MarketResult = () => {
           {/* 3-3 시간대별 유동인구 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mt-4">
-              시간대별 유동인구 비교 결과    
+              시간대별 유동인구 비교 결과
             </div>
             <div className="flex-1 w-full flex items-center justify-center">
               <ResponsiveContainer width="90%" height="85%">
@@ -646,80 +710,109 @@ const MarketResult = () => {
           <div className="bg-white w-[450px] p-15 rounded-xl shadow-lg text-center relative">
             <button
               onClick={() => setOpen(false)}
-              className="absolute top-4 right-4 w-[27px] h-[27px] bg-[#4C5060] flex items-center justify-center text-white text-xl font-bold rounded-full"
+              className="absolute top-4 right-4 w-[27px] h-[27px] bg-[#4C5060] flex items-center justify-center text-white text-xl font-bold rounded-full cursor-pointer"
             >
-              <img src={back} alt="back" className="w-[9] h-[9]" />   
+              <img src={back} alt="back" className="w-[9] h-[9]" />
             </button>
-            <h2 className="text-[24px] font-bold mb-6 text-[#333]">
-              상세분석 결과 리포트    
-            </h2>
-            <div className="flex items-center mb-3">
-              <img src={check} alt="check" className="mr-3" />
-              <span className="text-[20px] text-[#42437D] font-semibold">
-                창업 가능성 점수
-              </span>
-            </div>
-            <div className="flex justify-center items-center relative w-full">
-              <div className="relative w-[500px] h-[250px]">
-                <PieChart
-                  data={[
-                    { value: 30, color: "#FFFFFF" },
-                    { value: 70, color: "#0047AB" },
-                  ]}
-                  startAngle={180}
-                  lengthAngle={180}
-                  lineWidth={15}
-                  rounded
-                  animate
-                  animationDuration={500}
-                  style={{ height: "250px", width: "100%" }}
-                />
-
-                <img
-                  src={icon}
-                  alt="icon"
-                  className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12"
-                />
-
-                <div className="absolute top-[65%] -translate-y-1/2 left-1/2 -translate-x-1/2 w-[293px] h-[82px] bg-gray-700 rounded-[20px] flex flex-col items-center justify-center">
-                  <div className="relative w-[180px] flex justify-between items-center text-sm">
-                    <span className="text-[15px] text-[#A0AEC0]">0점</span>
-                    <span className="text-[28px] text-white font-bold">
-                      7점    
-                    </span>
-                    <span className="text-[15px] text-[#A0AEC0]">10점</span>   
-                  </div>
-                  <div className="mt-2 text-center text-[15px] text-[#A0AEC0]">
-                    창업 가능성  
-                  </div>
-                </div>
+            {pracLoading ? (
+              <div className="py-20 text-gray-500">
+                상세 분석 결과를 불러오는 중...
               </div>
-            </div>
-            <div className="flex items-center mb-3">
-              <img src={check} alt="check" className="mr-3" />
-              <span className="text-[20px] text-[#42437D] font-semibold">
-                창업 추천 동네
-              </span>
-            </div>
-            <span className="text-[15px] text-[#42437D] font-semibold">
-              업종별 매출, 점포 수, 상권·유동인구, 창업 가능성 등을 종합해 상위
-              3개 동네를 추천합니다.    
-            </span>
-            <div className="mt-6">
-              <div className="flex justify-center gap-8">
-                <div className="flex items-center justify-center w-[100px] h-[100px] bg-[#80849B] rounded-full text-white text-[20px] font-semibold shrink-0">
-                  {dongName}
-                </div>
-
-                <div className="flex items-center justify-center w-[100px] h-[100px] bg-[#80849B] rounded-full text-white text-[20px] font-semibold shrink-0">
-                  {guName}
-                </div>
-
-                <div className="flex items-center justify-center w-[100px] h-[100px] bg-[#80849B] rounded-full text-white text-[20px] font-semibold shrink-0">
-                  {siName}
-                </div>
+            ) : pracErrMsg ? (
+              <div>
+                <div className="py-20 text-red-500">{pracErrMsg}</div>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-700 text-white text-sm"
+                >
+                  닫기
+                </button>
               </div>
-            </div>
+            ) : (
+              <>
+                <h2 className="text-[24px] font-bold mb-6 text-[#333]">
+                  상세분석 결과 리포트
+                </h2>
+                <div className="flex items-center mb-3">
+                  <img src={check} alt="check" className="mr-3" />
+                  <span className="text-[20px] text-[#42437D] font-semibold">
+                    창업 가능성 점수
+                  </span>
+                </div>
+                <div className="flex justify-center items-center relative w-full">
+                  <div className="relative w-[500px] h-[250px]">
+                    <PieChart
+                      data={[
+                        { value: 70, color: "#0047AB" },
+                        { value: 30, color: "#FFFFFF" },
+                      ]}
+                      startAngle={180}
+                      lengthAngle={180}
+                      lineWidth={15}
+                      rounded
+                      animate
+                      animationDuration={500}
+                      style={{ height: "250px", width: "100%" }}
+                    />
+
+                    <img
+                      src={icon}
+                      alt="icon"
+                      className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12"
+                    />
+
+                    <div className="absolute top-[65%] -translate-y-1/2 left-1/2 -translate-x-1/2 w-[293px] h-[82px] bg-gray-700 rounded-[20px] flex flex-col items-center justify-center">
+                      <div className="relative w-[180px] flex justify-between items-center text-sm">
+                        <span className="text-[15px] text-[#A0AEC0]">0점</span>
+                        <span className="text-[28px] text-white font-bold">
+                          {pracData?.feasibilityScore
+                            ? `${pracData?.feasibilityScore}`
+                            : "-"}
+                        </span>
+                        <span className="text-[15px] text-[#A0AEC0]">10점</span>
+                      </div>
+                      <div className="mt-2 text-center text-[15px] text-[#A0AEC0]">
+                        창업 가능성  
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center mb-3">
+                  <img src={check} alt="check" className="mr-3" />
+                  <span className="text-[20px] text-[#42437D] font-semibold">
+                    창업 추천 동네
+                  </span>
+                </div>
+                <span className="text-[15px] text-[#42437D] font-semibold">
+                  업종별 매출, 점포 수, 상권·유동인구, 창업 가능성 등을 종합해
+                  상위 3개 동네를 추천합니다.
+                </span>
+                <div className="mt-6">
+                  <div className="flex justify-center gap-8">
+                    <div className="flex items-center justify-center w-[100px] h-[100px] bg-[#80849B] rounded-full text-white text-[20px] font-semibold shrink-0">
+                      {pracData?.top3
+                        ? codeToName[pracData.top3[0].admiCd] ||
+                          pracData.top3[0].admiCd
+                        : "-"}
+                    </div>
+
+                    <div className="flex items-center justify-center w-[100px] h-[100px] bg-[#80849B] rounded-full text-white text-[20px] font-semibold shrink-0">
+                      {pracData?.top3
+                        ? codeToName[pracData.top3[1].admiCd] ||
+                          pracData.top3[1].admiCd
+                        : "-"}
+                    </div>
+
+                    <div className="flex items-center justify-center w-[100px] h-[100px] bg-[#80849B] rounded-full text-white text-[20px] font-semibold shrink-0">
+                      {pracData?.top3
+                        ? codeToName[pracData.top3[2].admiCd] ||
+                          pracData.top3[2].admiCd
+                        : "-"}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}

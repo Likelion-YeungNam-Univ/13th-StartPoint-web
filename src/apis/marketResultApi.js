@@ -8,8 +8,8 @@ const ANALY_NO = 1143243;
  * 둘 다 성공하면 합쳐 반환, 하나 실패해도 가능한 데이터는 살려서 반환
  */
 const marketResultApi = async ({ admiCd, upjongCd, simpleLoc }) => {
-  const SIMPLE_PATH = "/simple-anls";
-  const FOOT_PATH = "/foot-traffic";
+  const SIMPLE_PATH = "/analysis/general/simple-anls";
+  const FOOT_PATH = "/analysis/general/foot-traffic";
 
   // API URL에 맞는 형식으로 fullLoc 변경
   const fullLoc = `경상북도+경산시+${simpleLoc}`;
