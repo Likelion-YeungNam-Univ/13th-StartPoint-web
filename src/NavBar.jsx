@@ -114,7 +114,7 @@ const NavBar = () => {
 
   return (
     <nav className="fixed inset-x-0 top-0 z-50 h-16 bg-white">
-      <div className="mx-auto max-w-screen-xl h-full flex items-center justify-between px-4">
+      <div className="mx-auto max-w-screen-xl h-full flex items-center justify-around px-4">
         {isHome ? (
           <Link
             to="home"
@@ -144,7 +144,9 @@ const NavBar = () => {
         <div className="relative" ref={userMenuRef}>
           <button
             type="button"
-            onClick={() => setUserOpen((v) => !v)}
+            // onClick={() => setUserOpen((v) => !v)}
+            onMouseEnter={() => setUserOpen(true)}
+            onMouseLeave={() => setUserOpen(false)}
             className="p-2 rounded-full"
             aria-haspopup="menu"
             aria-expanded={userOpen}
@@ -152,7 +154,7 @@ const NavBar = () => {
             <img
               src={userIcon}
               alt="User_Icon"
-              className="h-8 w-8 object-cover"
+              className="h-8 w-8 object-cover cursor-pointer"
             />
           </button>
 
