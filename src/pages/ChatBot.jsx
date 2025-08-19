@@ -13,11 +13,57 @@ export default function ChatBot() {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [contextId, setContextId] = useState(undefined); // 🔹 명세: contextId 저장
   const [badgeHover, setBadgeHover] = useState(false);   // 🔹 아이콘 hover 상태
+
+  // 🔹 푸터가 화면에 들어오면 그만큼 띄우는 오프셋(px)
+  const [footerBump, setFooterBump] = useState(0);
+
   const inputRef = useRef(null);
   const thinkTimer = useRef(null);
 
   useEffect(() => {
     console.log("[ENV] VITE_API_BASE =", import.meta.env?.VITE_API_BASE);
+  }, []);
+
+  // 🔹 푸터 감지: footer / #footer / #site-footer 중 하나 자동 감지
+  useEffect(() => {
+    const footer =
+      document.querySelector("footer") ||
+      document.querySelector("#footer") ||
+      document.querySelector("#site-footer");
+
+    if (!footer) {
+      setFooterBump(0);
+      return;
+    }
+
+    let raf = 0;
+    const computeBump = () => {
+      const rect = footer.getBoundingClientRect();
+      // 푸터의 top이 화면 아래쪽 안으로 들어오면 overlap 시작
+      const overlap = Math.max(0, window.innerHeight - rect.top);
+      // 기본 여백 20px + 겹친 만큼 밀어올림
+      setFooterBump(Math.ceil(overlap));
+    };
+
+    const onScrollOrResize = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(computeBump);
+    };
+
+    computeBump();
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize);
+
+    // 푸터 크기 변동 대응
+    const ro = new ResizeObserver(onScrollOrResize);
+    ro.observe(footer);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScrollOrResize);
+      window.removeEventListener("resize", onScrollOrResize);
+      ro.disconnect();
+    };
   }, []);
 
   const items = [
@@ -70,7 +116,11 @@ export default function ChatBot() {
 
   if (!open) {
     return (
-      <div className="fixed right-5 bottom-5 flex flex-col items-end gap-2">
+      <div
+        className="fixed right-5 flex flex-col items-end gap-2"
+        // ⬇️ bottom: 20px + 푸터 겹침만큼
+        style={{ bottom: `${20 + footerBump}px` }}
+      >
         {badgeHover && ( // 🔹 hover일 때만 멘트 표시
           <div
             className="max-w-[300px] rounded-2xl px-4 py-3 shadow-xl"
@@ -117,8 +167,9 @@ export default function ChatBot() {
   return (
     <>
       <div
-        className="fixed right-5 bottom-[80px] w-[378px] h-[465px] rounded-[12px] shadow-2xl overflow-hidden"
-        style={{ background: "#ffffff" }}
+        className="fixed right-5 w-[378px] h-[465px] rounded-[12px] shadow-2xl overflow-hidden"
+        // ⬇️ 열림 상태 창도 푸터 겹치면 위로
+        style={{ background: "#ffffff", bottom: `${80 + footerBump}px` }}
       >
         <div className="relative h-8 flex items-center">
           {showHome && (
@@ -254,9 +305,12 @@ export default function ChatBot() {
         </div>
       </div>
 
+      {/* 같은 자리/크기의 상태표시 아이콘: 열림 시 swhite.png (닫기 버튼) */}
       <button
         onClick={() => setOpen(false)}
-        className="fixed right-5 bottom-5 w-12 h-12 rounded-full shadow-xl grid place-items-center overflow-hidden bg-transparent"
+        className="fixed right-5 w-12 h-12 rounded-full shadow-xl grid place-items-center overflow-hidden bg-transparent"
+        // ⬇️ 열림 상태일 때도 닫기 아이콘이 푸터 위에 멈춤
+        style={{ bottom: `${20 + footerBump}px` }}
         aria-label="챗봇 닫기"
       >
         <img
