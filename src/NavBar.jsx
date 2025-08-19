@@ -151,7 +151,7 @@ const NavBar = () => {
             type="button"
             // onClick={() => setUserOpen((v) => !v)}
 
-            className="p-4 rounded-full"
+            className="py-4 rounded-full"
             aria-haspopup="menu"
             aria-expanded={userOpen}
           >
@@ -172,7 +172,7 @@ const NavBar = () => {
                 <ul className="divide-y divide-[#757575]">
                   <li>
                     <button
-                      className="w-full text-center px-4 py-2 text-sm hover:bg-gray-50"
+                      className="w-full text-center px-4 py-2 text-sm cursor-pointer hover:bg-gray-50"
                       onClick={() => {
                         setUserOpen(false);
                         navigate("/signup");
@@ -183,7 +183,7 @@ const NavBar = () => {
                   </li>
                   <li>
                     <button
-                      className="w-full text-cneter px-4 py-2 text-sm hover:bg-gray-50"
+                      className="w-full text-cneter px-4 py-2 text-sm cursor-pointer hover:bg-gray-50"
                       onClick={() => {
                         setUserOpen(false);
                         navigate("/login");
@@ -199,7 +199,7 @@ const NavBar = () => {
                 <ul className="divide-y divide-[#757575]">
                   <li>
                     <button
-                      className="w-full text-center px-4 py-2 text-sm hover:bg-gray-50"
+                      className="w-full text-center px-4 py-2 text-sm cursor-pointer hover:bg-gray-50"
                       onClick={() => {
                         setUserOpen(false);
                         navigate("/mypage");
@@ -210,7 +210,7 @@ const NavBar = () => {
                   </li>
                   <li>
                     <button
-                      className="w-full text-center px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                      className="w-full text-center px-4 py-2 text-sm cursor-pointer text-red-600 hover:bg-red-50"
                       onClick={() => {
                         localStorage.setItem("isLoggedIn", "false");
                         setIsLoggedIn(false);
