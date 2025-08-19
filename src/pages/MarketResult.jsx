@@ -26,24 +26,24 @@ import upIcon from "../assets/Up.svg";
 import back from "../assets/Back.svg";
 import practicalApi from "../apis/practicalApi";
 
-// ----- 동네 이름 코드 -----
-const areaList = [
-  { areaName: "서부1동", areaCode: "47290541" },
-  { areaName: "서부2동", areaCode: "47290542" },
-  { areaName: "중방동", areaCode: "47290510" },
-  { areaName: "중앙동", areaCode: "47290520" },
-  { areaName: "남부동", areaCode: "47290530" },
-  { areaName: "남천면", areaCode: "47290370" },
-  { areaName: "동부동", areaCode: "47290560" },
-  { areaName: "남산면", areaCode: "47290350" },
-  { areaName: "자인면", areaCode: "47290330" },
-  { areaName: "용성면", areaCode: "47290340" },
-  { areaName: "진량읍", areaCode: "47290253" },
-  { areaName: "압량면", areaCode: "47290256" },
-  { areaName: "북부동", areaCode: "47290550" },
-  { areaName: "하양읍", areaCode: "47290250" },
-  { areaName: "와촌면", areaCode: "47290310" },
-];
+// ----- 동네 코드 -> 이름 -----
+const codeToName = {
+  47290541: "서부1동",
+  47290542: "서부2동",
+  47290510: "중방동",
+  47290520: "중앙동",
+  47290530: "남부동",
+  47290370: "남천면",
+  47290560: "동부동",
+  47290350: "남산면",
+  47290330: "자인면",
+  47290340: "용성면",
+  47290253: "진량읍",
+  47290256: "압량면",
+  47290550: "북부동",
+  47290250: "하양읍",
+  47290310: "와촌면",
+};
 
 // --- 요일/시간대 최댓값 ---
 const getMaxDay = (p) => {
@@ -192,10 +192,7 @@ const MarketResult = () => {
     { name: "최고", value: Number(data?.maxAmt) || 0 },
   ];
 
-  const saleSiCnt =
-    Array.isArray(data?.storeCnt) && data.storeCnt.length
-      ? Number(data.storeCnt[0].storeCnt) || 0
-      : 0;
+  const saleSiCnt = Number(data?.storeCnt[0].storeCnt) || 0;
 
   const eachDay = [
     { name: "월", value: Number(pop?.mon) || 0 }, // pop에서 옵셔널 체이닝(?)이 빠지면 터짐
@@ -252,7 +249,7 @@ const MarketResult = () => {
       {/* 0. 간단 요약 */}
       <div className="text-white text-[36px] pt-36 font-bold flex flex-col items-center">
         <div className="flex items-center">
-          <img src={analysis} alt="analysis" className="mr-4.5" /> {" "}
+          <img src={analysis} alt="analysis" className="mr-4.5" /> 
           <span>분석 결과 간단 요약</span>
         </div>
         <div className="mt-8 flex justify-center gap-4">
@@ -446,7 +443,7 @@ const MarketResult = () => {
       {/* 2. 업종 분석 */}
       <div className="text-white text-[36px] pt-36 font-bold flex flex-col items-center">
         <div className="flex items-center">
-          <img src={industry} alt="industry" className="mr-4.5" /> {" "}
+          <img src={industry} alt="industry" className="mr-4.5" /> 
           <span>업종 분석</span>
         </div>
         <div className="mt-8 flex justify-center gap-7">
@@ -719,8 +716,8 @@ const MarketResult = () => {
                   <div className="relative w-[500px] h-[250px]">
                     <PieChart
                       data={[
-                        { value: 30, color: "#FFFFFF" },
                         { value: 70, color: "#0047AB" },
+                        { value: 30, color: "#FFFFFF" },
                       ]}
                       startAngle={180}
                       lengthAngle={180}
@@ -767,15 +764,24 @@ const MarketResult = () => {
                 <div className="mt-6">
                   <div className="flex justify-center gap-8">
                     <div className="flex items-center justify-center w-[100px] h-[100px] bg-[#80849B] rounded-full text-white text-[20px] font-semibold shrink-0">
-                      {dongName}
+                      {pracData?.top3
+                        ? codeToName[pracData.top3[0].admiCd] ||
+                          pracData.top3[0].admiCd
+                        : "-"}
                     </div>
 
                     <div className="flex items-center justify-center w-[100px] h-[100px] bg-[#80849B] rounded-full text-white text-[20px] font-semibold shrink-0">
-                      {guName}
+                      {pracData?.top3
+                        ? codeToName[pracData.top3[1].admiCd] ||
+                          pracData.top3[1].admiCd
+                        : "-"}
                     </div>
 
                     <div className="flex items-center justify-center w-[100px] h-[100px] bg-[#80849B] rounded-full text-white text-[20px] font-semibold shrink-0">
-                      {siName}
+                      {pracData?.top3
+                        ? codeToName[pracData.top3[2].admiCd] ||
+                          pracData.top3[2].admiCd
+                        : "-"}
                     </div>
                   </div>
                 </div>
