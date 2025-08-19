@@ -1,7 +1,8 @@
-import React, { useState, useRef } from "react";
-import SIcon from "../assets/S.png";        // 챗봇 내부 상단 로고 (변경 없음)
+import React, { useState, useRef, useEffect } from "react";
+import SIcon from "../assets/S.png";        // 챗봇 내부 상단 로고
 import SBadge from "../assets/SBadge.png";  // 닫힘 상태 아이콘
 import SWhite from "../assets/swhite.png";  // 열림 상태 아이콘
+import { postAsk, /* getConversation */ } from "../api/chatbot"; // FAQ는 보류
 
 export default function ChatBot() {
   const [open, setOpen] = useState(false);
@@ -9,24 +10,74 @@ export default function ChatBot() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [thinking, setThinking] = useState(false);
-  const [isInputFocused, setIsInputFocused] = useState(false); // 🔹 추가: 포커스 상태
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [contextId, setContextId] = useState(undefined); // 🔹 명세: contextId 저장
   const inputRef = useRef(null);
   const thinkTimer = useRef(null);
 
-  const items = [
-    { label: "창업 절차 안내", action: "faq" },
-    { label: "사업 신고 행정 안내", action: "faq" },
-    { label: "사업 행정 정책 안내", action: "faq" }
-  ];
+  useEffect(() => {
+    console.log("[ENV] VITE_API_BASE =", import.meta.env?.VITE_API_BASE);
+  }, []);
 
-  const sendMessage = () => {
+  // (선택) 열 때 기존 대화 불러오기 — 서버가 세션+contextId를 필요로 할 때만 사용
+  // useEffect(() => {
+  //   if (open && contextId) {
+  //     getConversation(contextId)
+  //       .then((arr) => {
+  //         if (Array.isArray(arr)) {
+  //           const restored = arr.map((it) => [
+  //             { role: "user", text: it.question },
+  //             { role: "bot", text: it.answer },
+  //           ]).flat();
+  //           setMessages(restored);
+  //         }
+  //       })
+  //       .catch(() => {});
+  //   }
+  // }, [open, contextId]);
+
+  const items = [
+    { id: "regulation", label: "창업 절차 안내" },
+    { id: "report",     label: "사업 법규 정책 안내" },
+    { id: "support",    label: "사업 행정 정책 안내" }
+  ];
+  const handleCategoryClick = () => {
+    alert("해당 FAQ는 준비 중입니다.");
+  };
+
+  const sendMessage = async () => {
     const text = input.trim();
     if (!text) return;
+
     setMessages((prev) => [...prev, { role: "user", text }]);
     setInput("");
     setThinking(true);
     clearTimeout(thinkTimer.current);
-    thinkTimer.current = setTimeout(() => setThinking(false), 2000);
+
+    try {
+      const res = await postAsk(text); // { answer, contextId, _raw }
+      console.log("[/ask response]", res);
+
+      if (res?.contextId && res.contextId !== contextId) {
+        setContextId(res.contextId); // 최초 대화면 서버가 내려준 contextId 저장
+      }
+
+      const answer =
+        typeof res?.answer === "string" && res.answer.trim().length > 0
+          ? res.answer
+          : // 백엔드가 형식을 지키지 않았을 때 원본 가드
+            `서버 응답 형식이 예상과 달라요.\n원본: ${JSON.stringify(res?._raw ?? res, null, 2)}`;
+
+      setMessages((prev) => [...prev, { role: "bot", text: answer }]);
+    } catch (e) {
+      console.error("[/ask error catch]", e);
+      setMessages((prev) => [
+        ...prev,
+        { role: "bot", text: "서버와 통신에 실패했습니다. 잠시 후 다시 시도해주세요." },
+      ]);
+    } finally {
+      thinkTimer.current = setTimeout(() => setThinking(false), 200);
+    }
   };
 
   const stopThinking = () => {
@@ -34,7 +85,6 @@ export default function ChatBot() {
     setThinking(false);
   };
 
-  // 닫힘 상태: 말풍선 + 기본 아이콘 (호버 효과 추가)
   if (!open) {
     return (
       <div className="fixed right-5 bottom-5 flex flex-col items-end gap-2">
@@ -64,7 +114,6 @@ export default function ChatBot() {
     );
   }
 
-  // 입력 중에도 메인 유지되도록 input 길이 조건 제거
   const isChatting = thinking || messages.length > 0;
   const showHome = stage === "faq" || (stage === "main" && isChatting);
 
@@ -72,10 +121,12 @@ export default function ChatBot() {
     setStage("main");
     setInput("");
     setMessages([]);
-    stopThinking();
+    setThinking(false);
+    clearTimeout(thinkTimer.current);
+    // contextId는 유지/초기화 선택 가능. 유지하면 같은 세션 계속.
+    // setContextId(undefined);
   };
 
-  // 열림 상태: 챗봇 패널은 아이콘 바로 위(겹치지 않게), 패널 배경은 완전 불투명
   return (
     <>
       <div
@@ -136,8 +187,8 @@ export default function ChatBot() {
                   <div className="flex flex-col gap-2">
                     {items.map((it) => (
                       <button
-                        key={it.label}
-                        onClick={() => setStage("faq")}
+                        key={it.id}
+                        onClick={handleCategoryClick}
                         className="w-full h-[36px] rounded-lg bg-[#EEF3F7] text-[#526478] text-[12px] px-4 text-left border border-[#E3EAF3] hover:bg-[#F9FBFD] transition-colors"
                       >
                         {it.label}
@@ -147,7 +198,7 @@ export default function ChatBot() {
                 </div>
               )}
 
-              {/* ✅ 아래에서부터 쌓이도록: 컨테이너를 바닥 정렬, 메시지는 원래 순서대로 */}
+              {/* 입력창 바로 위부터 쌓이도록 하단 정렬 */}
               <div className={`flex-1 flex flex-col justify-end gap-2 ${isChatting ? "mt-4" : "mt-3"}`}>
                 {messages.map((m, idx) => (
                   <div
@@ -161,10 +212,7 @@ export default function ChatBot() {
                     {m.text}
                   </div>
                 ))}
-                {thinking && (
-                <div className="text-[12px] text-[#8C9AAA] mt-1 mb-3">생각 중입니다...</div>
-                  )}
-
+                {thinking && <div className="text-[12px] text-[#8C9AAA] mt-1 mb-3">생각 중입니다...</div>}
               </div>
 
               <div
@@ -179,11 +227,11 @@ export default function ChatBot() {
                     !isInputFocused && input.length === 0
                       ? "창업 관련 고민이 있나요? 스포티에게 무엇이든 물어보세요."
                       : ""
-                  } // 🔹 포커스 중엔 placeholder 숨김
+                  }
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  onFocus={() => setIsInputFocused(true)}   // 🔹 추가
-                  onBlur={() => setIsInputFocused(false)}    // 🔹 추가
+                  onFocus={() => setIsInputFocused(true)}
+                  onBlur={() => setIsInputFocused(false)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
                       e.preventDefault();
@@ -216,34 +264,6 @@ export default function ChatBot() {
                 </div>
               </div>
             </>
-          )}
-
-          {stage === "faq" && (
-            <div className="flex-1 flex">
-              <ul className="my-auto mx-auto w-full max-w-[340px] divide-y divide-[#CBD5E1]">
-                {[
-                  { q: "Questions 1", a: "" },
-                  { q: "Questions 2", a: "여기는 answer 창입니다" },
-                  { q: "Questions 3", a: "" },
-                  { q: "Questions 4", a: "" }
-                ].map((it, i) => (
-                  <li key={i} className="py-2">
-                    <details className="group">
-                      <summary className="list-none flex items-center gap-3 text-[14px] text-[#27384B] font-medium cursor-pointer">
-                        <span className="text-lg leading-none text-[#8FA0B2] group-open:hidden">+</span>
-                        <span className="text-lg leading-none text-[#8FA0B2] hidden group-open:inline">−</span>
-                        <span>{it.q}</span>
-                      </summary>
-                      {it.a && (
-                        <p className="mt-2 mb-2 pl-7 whitespace-pre-line text-[13px] leading-[18px] text-[#334155]">
-                          {it.a}
-                        </p>
-                      )}
-                    </details>
-                  </li>
-                ))}
-              </ul>
-            </div>
           )}
         </div>
       </div>
