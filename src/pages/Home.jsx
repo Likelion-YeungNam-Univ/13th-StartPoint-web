@@ -181,7 +181,7 @@ function Section2() {
     <Element
       name="market-research"
       id="market-research"
-      className="flex items-center justify-center relative isolate min-h-[calc(100vh-64px)] bg-[#121B2A]"
+      className="flex items-center justify-center relative isolate min-h-[calc(100vh-56px)] bg-[#121B2A]"
     >
       {/* 배경 이미지 */}
       <img
@@ -494,7 +494,8 @@ function Section3() {
     {
       t: "탐색(Discover)",
       lines: [
-        "나와 비슷한 길을 먼저 걸은 사람을 찾는 시간",
+        "나와 비슷한 길을",
+        "먼저 걸은 사람을 찾는 시간",
         "분야별, 경험별 멘토 프로필을 한눈에",
       ],
     },
@@ -503,15 +504,15 @@ function Section3() {
       lines: [
         "단순한 매칭이 아닌,",
         "진짜 대화가 시작되는 연결",
-        "SPO와 함께하는 멘토와의 1:1 창업 컨설팅",
+        "멘토와의 1:1 창업 컨설팅",
       ],
     },
     {
       t: "도약(Grow)",
       lines: [
-        "멘토링 그 이후를 고민하는 당신에게",
-        "현실적인 조언과 방향성으로",
-        "나만의 창업 여정, 한 걸음 더 나아가기",
+        "시작 그 이후를 고민하는 당신에게",
+        "현실적인 조언으로 나만의 창업,",
+        "한 걸음 더 나아가기",
       ],
     },
   ];
@@ -520,7 +521,7 @@ function Section3() {
     <Element
       name="mentoring"
       id="mentoring"
-      className="relative isolate flex items-center min-h-[calc(100vh-64px)] scroll-mt-14 bg-[#121B2A]"
+      className="relative isolate flex items-center min-h-[calc(100vh-56px)] scroll-mt-14 bg-[#121B2A]"
     >
       <img
         src={imgSection3}
@@ -532,20 +533,22 @@ function Section3() {
 
       <div className="flex flex-col justify-center items-center mx-auto max-w-screen-xl px-6 py-12">
         {/* 큰 제목 */}
-        <h2 className="text-white text-[56px] font-extrabold text-center leading-tight [text-wrap:balance]">
+        <h2 className="text-white text-[47px] font-[PretendardB] font-bold text-center leading-tight [text-wrap:balance]">
           SPO에서 당신의 멘토를 만나보세요!
         </h2>
 
         {/* 카드 3개 내용 */}
-        <div className="mt-6 grid grid-cols-9 gap-14">
+        <div className="mt-4 grid grid-cols-9 gap-14">
           {CARDS.map((it) => (
             <div
               key={it.t}
               className="col-span-3 py-20 text-white text-center rounded-sm"
             >
-              <h3 className="text-[30px] font-semibold">{it.t}</h3>
+              <h3 className="text-[28px] font-[PretendardB] font-bold">
+                {it.t}
+              </h3>
 
-              <p className="mt-4 text-white text-sm leading-5">
+              <p className="mt-10 text-[19px] font-[PretendardSemiB] leading-7">
                 {it.lines.map((line, i) => (
                   <span key={i} className="block">
                     {line}
@@ -556,11 +559,11 @@ function Section3() {
           ))}
         </div>
 
-        <div className="mt-10 flex justify-center">
+        <div className="mt-2 flex justify-center">
           <button
             type="button"
             onClick={() => navigate("/mentoring")}
-            className="rounded-lg bg-[#547DA0] px-8.5 py-4 text-[20px] font-semibold text-white hover:bg-[#547DA0]/80 transition"
+            className="rounded-sm bg-[#547DA0] px-8 py-3 text-[15px] font-[PretendardB] text-white hover:bg-[#547DA0]/80 transition"
           >
             멘토 탐색 바로가기
           </button>
