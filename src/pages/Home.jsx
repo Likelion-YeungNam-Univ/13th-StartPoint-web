@@ -23,15 +23,15 @@ function Section1() {
       />
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent from-10% to-[#121B2A] to-85%" />
       <div className="min-h-[100vh] flex items-center justify-center">
-        <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-white text-[80px] font-extrabold">
+        <div className="flex flex-col items-center text-center">
+          <h1 className="text-white text-[62px] font-[PretendardB] font-bold">
             Start Pointer &gt;&gt; <span>SPO</span>
           </h1>
           <div>
-            <p className="text-white text-[29.5px]">
+            <p className="text-white text-[25.5px] font-[PretendardR]">
               경산시에서 어떻게 창업해야 할지 모르겠을 땐 스포하세요!
             </p>
-            <p className="text-white text-[29.5px]">
+            <p className="text-white text-[25.5px] font-[PretendardR]">
               상권분석부터 지원금, 멘토까지 창업의 A to Z를 한 번에
             </p>
           </div>
