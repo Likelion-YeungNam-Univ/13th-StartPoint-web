@@ -450,17 +450,13 @@ const MarketResult = () => {
               }`}
             >
               {Math.abs(data?.prevYearRate)?.toFixed(1) ?? "—"}%
-              <img
-                src={
-                  (Number(data?.prevYearRate) || 0) > 0
-                    ? upIcon
-                    : (Number(data?.prevYearRate) || 0) < 0
-                    ? downIcon
-                    : ""
-                }
-                alt="trend"
-                className="ml-1 w-6 h-6"
-              />
+              <div alt="trend" className="ml-2">
+                {(Number(data?.prevYearRate) || 0) > 0
+                  ? "↑"
+                  : (Number(data?.prevYearRate) || 0) < 0
+                  ? "↓"
+                  : "-"}
+              </div>
             </div>
             <div className="text-[22px] text-[#121B2A] font-semibold mb-1">
               전월대비

@@ -13,7 +13,7 @@ function Section1() {
     <Element
       name="home"
       id="home"
-      className="relative isolate min-h-[100vh] scroll-mt-16 bg-[#121B2A]"
+      className="relative isolate min-h-[100vh] scroll-mt-14 bg-[#121B2A]"
     >
       <img
         src={imgSection1}
@@ -520,7 +520,7 @@ function Section3() {
     <Element
       name="mentoring"
       id="mentoring"
-      className="relative isolate flex items-center min-h-[calc(100vh-64px)] scroll-mt-16 bg-[#121B2A]"
+      className="relative isolate flex items-center min-h-[calc(100vh-64px)] scroll-mt-14 bg-[#121B2A]"
     >
       <img
         src={imgSection3}

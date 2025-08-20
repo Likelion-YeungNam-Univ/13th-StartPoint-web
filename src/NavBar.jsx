@@ -5,7 +5,7 @@ import Logo from "./assets/SPO_Logo.svg";
 import userIcon from "./assets/User_Icon.svg";
 import useScrollSpy from "./hooks/useScrollSpy";
 
-const NAV_H = 64;
+const NAV_H = 56;
 
 const SECTION_IDS = ["home", "market-research", "mentoring"];
 
@@ -113,7 +113,7 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="fixed inset-x-0 top-0 z-50 h-16 bg-white">
+    <nav className="fixed inset-x-0 top-0 z-50 h-14 bg-white">
       <div className="mx-auto max-w-screen-xl h-full flex items-center justify-around px-4">
         {isHome ? (
           <Link
@@ -151,7 +151,7 @@ const NavBar = () => {
             type="button"
             // onClick={() => setUserOpen((v) => !v)}
 
-            className="py-4 rounded-full"
+            className="py-3 rounded-full"
             aria-haspopup="menu"
             aria-expanded={userOpen}
           >
@@ -165,7 +165,7 @@ const NavBar = () => {
           {userOpen && (
             <div
               role="menu"
-              className="absolute left-1/2 top-full w-56 -translate-x-1/2 bg-white z-50 border border-[#757575]"
+              className="absolute left-1/2 top-full w-56 -translate-x-1/2 bg-white z-50 border-t border-[#757575]"
             >
               {!isLoggedIn ? (
                 // 로그인 X
