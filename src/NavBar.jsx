@@ -165,7 +165,7 @@ const NavBar = () => {
           {userOpen && (
             <div
               role="menu"
-              className="absolute left-1/2 top-full w-56 -translate-x-1/2 bg-white z-50 border-t border-[#757575]"
+              className="absolute left-1/2 top-full w-56 -translate-x-1/2 bg-white z-50 border-t border-[#757575] drop-shadow"
             >
               {!isLoggedIn ? (
                 // 로그인 X
