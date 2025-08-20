@@ -44,10 +44,9 @@ function Section1() {
 function Section2() {
   // 왼쪽 버튼 기본, 조건부 스타일
   const leftBtnBase =
-    "w-120 h-30 rounded-xl text-xl font-semibold border border-3 transition";
-  const leftBtnActive =
-    "bg-white text-[#121B2A] border-[#121B2A] hover:brightness-95";
-  const leftBtnInactive = "bg-[#121B2A] text-white border-white";
+    "w-100 h-17 rounded-lg text-[19px] font-[PretendardSemiB] font-semibold transition";
+  const leftBtnActive = "bg-white text-[#121B2A] hover:brightness-95";
+  const leftBtnInactive = "bg-[#B3B3B3] text-white";
 
   // 패널 상태: 'none' | 'area' | 'major' | 'middle' | 'sub'
   const [panel, setPanel] = useState("none");
@@ -192,23 +191,25 @@ function Section2() {
       />
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#121B2A] from-10% via-transparent via-50% to-[#121B2A] to-90%" />
 
-      <div className="flex flex-col justify-center mb-20">
+      <div className="flex flex-col justify-center">
         {/* 좌측 상단 텍스트 */}
         <div className="flex flex-col text-white">
-          <h3 className="mb-1 text-[20px] font-bold">상권분석</h3>
-          <div className="mb-6 text-[14px]">
+          <h3 className="mb-4 text-[28px] font-[PretendardB] font-bold">
+            상권분석
+          </h3>
+          <div className="mb-16 text-[19px] font-[PretendardSemiB]">
             상권부터 유동인구, 가능성 예측까지 한 번에 분석하기
           </div>
         </div>
 
         {/* 버튼 및 패널 */}
-        <div className="grid grid-cols-12 gap-7 items-start">
+        <div className="grid grid-cols-11 gap-10 items-start">
           {/* 좌측 버튼 */}
-          <div className="col-span-6 flex flex-col">
+          <div className="col-span-5 flex flex-col">
             <button
               type="button"
               onClick={() => openPanel("area")}
-              className={`mb-20 cursor-pointer ${leftBtnBase} ${
+              className={`mb-2 cursor-pointer ${leftBtnBase} ${
                 areaActive ? leftBtnActive : leftBtnInactive
               }`}
             >
@@ -229,7 +230,7 @@ function Section2() {
           {/* 우측 패널 */}
           <div
             className={[
-              "col-span-6 bg-white border-3 border-black rounded-2xl",
+              "col-span-6 bg-white rounded-xl",
               "transition-all duration-300",
               "w-full h-80",
               "flex flex-col",
@@ -254,10 +255,10 @@ function Section2() {
                           )
                         }
                         className={[
-                          "h-11 w-25 rounded-lg text-[14px] border transition-colors cursor-pointer",
+                          "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
                           active
-                            ? "bg-[#547DA0] text-[#FDFDFD] border-[#D4EBFF]"
-                            : "bg-white text-[#547DA0] border-[#547DA0] border-dashed hover:border-sky-500 hover:text-sky-700",
+                            ? "bg-[#547DA0]"
+                            : "bg-[#CFCFCF] hover:brightness-95",
                         ].join(" ")}
                       >
                         {areaName} {/* 화면엔 이름 표시 */}
@@ -294,10 +295,10 @@ function Section2() {
                               setSelectedSub(null);
                             }}
                             className={[
-                              "h-11 w-25 rounded-lg text-[14px] border transition-colors cursor-pointer",
+                              "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
                               active
-                                ? "bg-[#547DA0] text-[#FDFDFD] border-[#D4EBFF]"
-                                : "bg-white text-[#547DA0] border-[#547DA0] border-dashed hover:border-sky-500 hover:text-sky-700",
+                                ? "bg-[#547DA0]"
+                                : "bg-[#CFCFCF] hover:brightness-95",
                             ].join(" ")}
                           >
                             {major.name} {/* 대분류명 */}
@@ -331,10 +332,10 @@ function Section2() {
                             setSelectedSub(null);
                           }}
                           className={[
-                            "h-11 w-25 rounded-lg text-[14px] border transition-colors cursor-pointer",
+                            "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
                             active
-                              ? "bg-[#547DA0] text-[#FDFDFD] border-[#D4EBFF]"
-                              : "bg-white text-[#547DA0] border-[#547DA0] border-dashed hover:border-sky-500 hover:text-sky-700",
+                              ? "bg-[#547DA0]"
+                              : "bg-[#CFCFCF] hover:brightness-95",
                           ].join(" ")}
                         >
                           {mid.name}
@@ -368,10 +369,10 @@ function Section2() {
                           )
                         }
                         className={[
-                          "h-11 w-25 rounded-lg text-[14px] border transition-colors cursor-pointer",
+                          "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
                           active
-                            ? "bg-[#547DA0] text-[#FDFDFD] border-[#D4EBFF]"
-                            : "bg-white text-[#547DA0] border-[#547DA0] border-dashed hover:border-sky-500 hover:text-sky-700",
+                            ? "bg-[#547DA0]"
+                            : "bg-[#CFCFCF] hover:brightness-95",
                         ].join(" ")}
                       >
                         {sub.name}
@@ -391,7 +392,7 @@ function Section2() {
             </div>
 
             {/* 하단 CTA 버튼 */}
-            <div className="mt-auto shrink-0 px-6 pb-5.5 flex items-center justify-center">
+            <div className="mt-auto shrink-0 px-6 pb-7 flex items-center justify-center">
               {panel === "area" && (
                 <button
                   type="button"
@@ -404,7 +405,7 @@ function Section2() {
                     if (!majors.length && !UpjongLoading) loadUpjong();
                   }}
                   className={[
-                    "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
+                    "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
                     canNextFromArea
                       ? "bg-[#547DA0] text-white cursor-pointer hover:brightness-95"
                       : "bg-[#CFCFCF] text-white cursor-not-allowed",
@@ -420,7 +421,7 @@ function Section2() {
                   disabled={!canNextFromMajor}
                   onClick={() => setPanel("middle")}
                   className={[
-                    "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
+                    "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
                     canNextFromMajor
                       ? "bg-[#547DA0] text-white cursor-pointer hover:brightness-95"
                       : "bg-[#CFCFCF] text-white cursor-not-allowed",
@@ -436,7 +437,7 @@ function Section2() {
                   disabled={!canNextFromMiddle}
                   onClick={() => setPanel("sub")}
                   className={[
-                    "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
+                    "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
                     canNextFromMiddle
                       ? "bg-[#547DA0] text-white cursor-pointer hover:brightness-95"
                       : "bg-[#CFCFCF] text-white cursor-not-allowed",
@@ -470,7 +471,7 @@ function Section2() {
                     });
                   }}
                   className={[
-                    "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
+                    "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
                     canAnalyzeFromSub
                       ? "bg-[#547DA0] text-white cursor-pointer hover:brightness-95"
                       : "bg-[#CFCFCF] text-white cursor-not-allowed",
