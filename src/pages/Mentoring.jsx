@@ -1,4 +1,3 @@
-// src/pages/Mentoring.jsx
 import React, { useState } from "react";
 
 // ----- 더미 데이터 (API로 교체 해야 함) -----
@@ -6,106 +5,101 @@ const mentors = [
   {
     id: 1,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
+    storeName: "비둘기는 멍청해 보여",
+    category: "대동",
+    area: "음식",
     bio: "카페 업계에서 창업/운영을 경험한 멘토입니다. 상권 분석과 메뉴 구성, 초기 마케팅까지 함께 설계해드립니다.",
-    tags: ["대동", "음식"],
-    photo: "https://i.pravatar.cc/120?img=47",
+    photo: "https://i.pravatar.cc/120?img=3",
   },
   {
     id: 2,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
-    bio: "프랜차이즈와 개인 카페 모두 경험 있습니다. 원재료 발주, 인력 운영, 손익 계산 실무 위주로 도와드려요.",
-    tags: ["조영동", "카페"],
-    photo: "https://i.pravatar.cc/120?img=12",
+    storeName: "비둘기는 멍청해 보여",
+    category: "대동",
+    area: "음식",
+    bio: "카페 업계에서 창업/운영을 경험한 멘토입니다. 상권 분석과 메뉴 구성, 초기 마케팅까지 함께 설계해드립니다.",
+    photo: "https://i.pravatar.cc/120?img=3",
   },
   {
     id: 3,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
-    bio: "초기 창업자 대상 1:1 멘토링. 임대차 계약 체크리스트와 인허가 절차까지 단계별로 안내합니다.",
-    tags: ["사동", "창업초기"],
-    photo: "https://i.pravatar.cc/120?img=32",
+    storeName: "비둘기는 멍청해 보여",
+    category: "대동",
+    area: "음식",
+    bio: "카페 업계에서 창업/운영을 경험한 멘토입니다. 상권 분석과 메뉴 구성, 초기 마케팅까지 함께 설계해드립니다.",
+    photo: "https://i.pravatar.cc/120?img=3",
   },
   {
     id: 4,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
-    bio: "지역 상권 특성에 맞춘 콘셉트 기획과 포지셔닝을 함께 고민합니다. SNS 채널 운영 가이드 제공.",
-    tags: ["대동", "SNS"],
-    photo: "https://i.pravatar.cc/120?img=5",
+    storeName: "비둘기는 멍청해 보여",
+    category: "대동",
+    area: "음식",
+    bio: "카페 업계에서 창업/운영을 경험한 멘토입니다. 상권 분석과 메뉴 구성, 초기 마케팅까지 함께 설계해드립니다.",
+    photo: "https://i.pravatar.cc/120?img=3",
   },
   {
     id: 5,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
-    bio: "원두 선택과 추출 세팅, 장비 셋업까지 실무형 코칭. 오픈준비 일정표를 공유해드립니다.",
-    tags: ["카페", "장비"],
-    photo: "https://i.pravatar.cc/120?img=15",
+    storeName: "비둘기는 멍청해 보여",
+    category: "대동",
+    area: "음식",
+    bio: "카페 업계에서 창업/운영을 경험한 멘토입니다. 상권 분석과 메뉴 구성, 초기 마케팅까지 함께 설계해드립니다.",
+    photo: "https://i.pravatar.cc/120?img=3",
   },
   {
     id: 6,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
-    bio: "손익분기 계산과 비용 구조 점검, 메뉴 엔지니어링으로 객단가를 개선하는 방법을 제안합니다.",
-    tags: ["비용관리", "메뉴"],
-    photo: "https://i.pravatar.cc/120?img=23",
+    storeName: "비둘기는 멍청해 보여",
+    category: "대동",
+    area: "음식",
+    bio: "카페 업계에서 창업/운영을 경험한 멘토입니다. 상권 분석과 메뉴 구성, 초기 마케팅까지 함께 설계해드립니다.",
+    photo: "https://i.pravatar.cc/120?img=3",
   },
   {
     id: 7,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
-    bio: "손익분기 계산과 비용 구조 점검, 메뉴 엔지니어링으로 객단가를 개선하는 방법을 제안합니다.",
-    tags: ["비용관리", "메뉴"],
-    photo: "https://i.pravatar.cc/120?img=23",
+    storeName: "비둘기는 멍청해 보여",
+    category: "대동",
+    area: "음식",
+    bio: "카페 업계에서 창업/운영을 경험한 멘토입니다. 상권 분석과 메뉴 구성, 초기 마케팅까지 함께 설계해드립니다.",
+    photo: "https://i.pravatar.cc/120?img=3",
   },
   {
     id: 8,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
-    bio: "손익분기 계산과 비용 구조 점검, 메뉴 엔지니어링으로 객단가를 개선하는 방법을 제안합니다.",
-    tags: ["비용관리", "메뉴"],
-    photo: "https://i.pravatar.cc/120?img=23",
+    storeName: "비둘기는 멍청해 보여",
+    category: "대동",
+    area: "음식",
+    bio: "카페 업계에서 창업/운영을 경험한 멘토입니다. 상권 분석과 메뉴 구성, 초기 마케팅까지 함께 설계해드립니다.",
+    photo: "https://i.pravatar.cc/120?img=3",
   },
   {
     id: 9,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
-    bio: "손익분기 계산과 비용 구조 점검, 메뉴 엔지니어링으로 객단가를 개선하는 방법을 제안합니다.",
-    tags: ["비용관리", "메뉴"],
-    photo: "https://i.pravatar.cc/120?img=23",
+    storeName: "비둘기는 멍청해 보여",
+    category: "대동",
+    area: "음식",
+    bio: "카페 업계에서 창업/운영을 경험한 멘토입니다. 상권 분석과 메뉴 구성, 초기 마케팅까지 함께 설계해드립니다.",
+    photo: "https://i.pravatar.cc/120?img=3",
   },
   {
     id: 10,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
-    bio: "손익분기 계산과 비용 구조 점검, 메뉴 엔지니어링으로 객단가를 개선하는 방법을 제안합니다.",
-    tags: ["비용관리", "메뉴"],
-    photo: "https://i.pravatar.cc/120?img=23",
+    storeName: "비둘기는 멍청해 보여",
+    category: "대동",
+    area: "음식",
+    bio: "카페 업계에서 창업/운영을 경험한 멘토입니다. 상권 분석과 메뉴 구성, 초기 마케팅까지 함께 설계해드립니다.",
+    photo: "https://i.pravatar.cc/120?img=3",
   },
   {
     id: 11,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
-    bio: "손익분기 계산과 비용 구조 점검, 메뉴 엔지니어링으로 객단가를 개선하는 방법을 제안합니다.",
-    tags: ["비용관리", "메뉴"],
-    photo: "https://i.pravatar.cc/120?img=23",
-  },
-  {
-    id: 12,
-    name: "김사자",
-    headline: "비둘기는 엄청해보여",
-    bio: "손익분기 계산과 비용 구조 점검, 메뉴 엔지니어링으로 객단가를 개선하는 방법을 제안합니다.",
-    tags: ["비용관리", "메뉴"],
-    photo: "https://i.pravatar.cc/120?img=23",
-  },
-  {
-    id: 13,
-    name: "김사자",
-    headline: "비둘기는 엄청해보여",
-    bio: "손익분기 계산과 비용 구조 점검, 메뉴 엔지니어링으로 객단가를 개선하는 방법을 제안합니다.",
-    tags: ["비용관리", "메뉴"],
-    photo: "https://i.pravatar.cc/120?img=23",
+    storeName: "비둘기는 멍청해 보여",
+    category: "대동",
+    area: "음식",
+    bio: "카페 업계에서 창업/운영을 경험한 멘토입니다. 상권 분석과 메뉴 구성, 초기 마케팅까지 함께 설계해드립니다.",
+    photo: "https://i.pravatar.cc/120?img=3",
   },
 ];
 
@@ -137,7 +131,7 @@ const Mentoring = () => {
 
   return (
     <main className="min-h-screen bg-[#121B2A]">
-      <div className="mx-auto max-w-screen-xl px-6 py-12">
+      <div className="mx-auto w-260 px-6 py-12">
         <h1 className="text-center text-4xl font-extrabold text-white">
           멘토 탐색
         </h1>
@@ -267,20 +261,18 @@ const Mentoring = () => {
                 {mentor.name}
               </h3>
               <p className="mt-1 text-center text-sm text-gray-500">
-                {mentor.headline}
+                {mentor.storeName}
               </p>
               <p className="mt-4 px-12 text-sm leading-relaxed text-gray-700">
                 {mentor.bio}
               </p>
               <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-                {mentor.tags.map((t) => (
-                  <span
-                    key={t}
-                    className="rounded-full border border-gray-300 px-2 py-0.5 text-xs text-gray-600"
-                  >
-                    {t}
-                  </span>
-                ))}
+                <div className="rounded-full border border-gray-300 px-2 py-0.5 text-xs text-gray-600">
+                  {mentor.category}
+                </div>
+                <div className="rounded-full border border-gray-300 px-2 py-0.5 text-xs text-gray-600">
+                  {mentor.area}
+                </div>
               </div>
             </article>
           ))}

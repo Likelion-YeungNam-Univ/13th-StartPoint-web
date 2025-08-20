@@ -1,22 +1,22 @@
-// src/hooks/useScrollSpy.js
 import { useEffect, useRef, useState } from "react";
 
-/**
+/*
  * sectionIds: 상단에서부터의 섹션 id 배열 (["home","market-research","mentoring"])
  * headerOffset: 고정 NavBar 높이(px)
  */
 export default function useScrollSpy(sectionIds, headerOffset = 64) {
-  const [activeId, setActiveId] = useState(sectionIds[0] ?? "");  // 활성 Id 보관하는 상태
+  const [activeId, setActiveId] = useState(sectionIds[0] ?? ""); // 활성 Id 보관하는 상태
   const rafRef = useRef(null);
 
   // 최신 activeId와 비교하기 위한 ref (불필요한 setState 호출 줄이기, 선택 사항)
   const activeRef = useRef(activeId); // 현재 활성 Id를 담아둘 ref
   useEffect(() => {
     activeRef.current = activeId;
-  }, [activeId]);   // 활성 Id가 바뀔 때마다 ref값도 최신화
+  }, [activeId]); // 활성 Id가 바뀔 때마다 ref값도 최신화
 
   useEffect(() => {
-    if (typeof window === "undefined" || typeof document === "undefined") return;
+    if (typeof window === "undefined" || typeof document === "undefined")
+      return;
 
     const getSections = () =>
       sectionIds.map((id) => document.getElementById(id)).filter(Boolean);
@@ -40,7 +40,7 @@ export default function useScrollSpy(sectionIds, headerOffset = 64) {
         for (let i = 0; i < list.length - 1; i += 1) {
           const mid = (list[i].top + list[i + 1].top) / 2; // 두 섹션 사이 중앙
           if (line >= mid) {
-            pick = list[i + 1].id;     // 중앙선을 넘을 때 다음 섹션으로
+            pick = list[i + 1].id; // 중앙선을 넘을 때 다음 섹션으로
           } else {
             break;
           }

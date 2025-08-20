@@ -13,7 +13,7 @@ function Section1() {
     <Element
       name="home"
       id="home"
-      className="relative isolate min-h-[100vh] scroll-mt-16 bg-[#121B2A]"
+      className="relative isolate min-h-[100vh] scroll-mt-14 bg-[#121B2A]"
     >
       <img
         src={imgSection1}
@@ -23,15 +23,15 @@ function Section1() {
       />
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent from-10% to-[#121B2A] to-85%" />
       <div className="min-h-[100vh] flex items-center justify-center">
-        <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-white text-[80px] font-extrabold">
+        <div className="flex flex-col items-center text-center">
+          <h1 className="text-white text-[62px] font-[PretendardB] font-bold">
             Start Pointer &gt;&gt; <span>SPO</span>
           </h1>
           <div>
-            <p className="text-white text-[29.5px]">
+            <p className="text-white text-[25.5px] font-[PretendardR]">
               경산시에서 어떻게 창업해야 할지 모르겠을 땐 스포하세요!
             </p>
-            <p className="text-white text-[29.5px]">
+            <p className="text-white text-[25.5px] font-[PretendardR]">
               상권분석부터 지원금, 멘토까지 창업의 A to Z를 한 번에
             </p>
           </div>
@@ -44,10 +44,9 @@ function Section1() {
 function Section2() {
   // 왼쪽 버튼 기본, 조건부 스타일
   const leftBtnBase =
-    "w-120 h-30 rounded-xl text-xl font-semibold border border-3 transition";
-  const leftBtnActive =
-    "bg-white text-[#121B2A] border-[#121B2A] hover:brightness-95";
-  const leftBtnInactive = "bg-[#121B2A] text-white border-white";
+    "w-100 h-17 rounded-lg text-[19px] font-[PretendardSemiB] font-semibold transition";
+  const leftBtnActive = "bg-white text-[#121B2A] hover:brightness-95";
+  const leftBtnInactive = "bg-[#B3B3B3] text-white";
 
   // 패널 상태: 'none' | 'area' | 'major' | 'middle' | 'sub'
   const [panel, setPanel] = useState("none");
@@ -181,7 +180,7 @@ function Section2() {
     <Element
       name="market-research"
       id="market-research"
-      className="flex items-center justify-center relative isolate min-h-[calc(100vh-64px)] bg-[#121B2A]"
+      className="flex items-center justify-center relative isolate min-h-[calc(100vh-56px)] bg-[#121B2A]"
     >
       {/* 배경 이미지 */}
       <img
@@ -192,23 +191,25 @@ function Section2() {
       />
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#121B2A] from-10% via-transparent via-50% to-[#121B2A] to-90%" />
 
-      <div className="flex flex-col justify-center mb-20">
+      <div className="flex flex-col justify-center">
         {/* 좌측 상단 텍스트 */}
         <div className="flex flex-col text-white">
-          <h3 className="mb-1 text-[20px] font-bold">상권분석</h3>
-          <div className="mb-6 text-[14px]">
+          <h3 className="mb-4 text-[28px] font-[PretendardB] font-bold">
+            상권분석
+          </h3>
+          <div className="mb-16 text-[19px] font-[PretendardSemiB]">
             상권부터 유동인구, 가능성 예측까지 한 번에 분석하기
           </div>
         </div>
 
         {/* 버튼 및 패널 */}
-        <div className="grid grid-cols-12 gap-7 items-start">
+        <div className="grid grid-cols-11 gap-10 items-start">
           {/* 좌측 버튼 */}
-          <div className="col-span-6 flex flex-col">
+          <div className="col-span-5 flex flex-col">
             <button
               type="button"
               onClick={() => openPanel("area")}
-              className={`mb-20 cursor-pointer ${leftBtnBase} ${
+              className={`mb-2 cursor-pointer ${leftBtnBase} ${
                 areaActive ? leftBtnActive : leftBtnInactive
               }`}
             >
@@ -229,7 +230,7 @@ function Section2() {
           {/* 우측 패널 */}
           <div
             className={[
-              "col-span-6 bg-white border-3 border-black rounded-2xl",
+              "col-span-6 bg-white rounded-xl",
               "transition-all duration-300",
               "w-full h-80",
               "flex flex-col",
@@ -254,10 +255,10 @@ function Section2() {
                           )
                         }
                         className={[
-                          "h-11 w-25 rounded-lg text-[14px] border transition-colors cursor-pointer",
+                          "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
                           active
-                            ? "bg-[#547DA0] text-[#FDFDFD] border-[#D4EBFF]"
-                            : "bg-white text-[#547DA0] border-[#547DA0] border-dashed hover:border-sky-500 hover:text-sky-700",
+                            ? "bg-[#547DA0]"
+                            : "bg-[#CFCFCF] hover:brightness-95",
                         ].join(" ")}
                       >
                         {areaName} {/* 화면엔 이름 표시 */}
@@ -294,10 +295,10 @@ function Section2() {
                               setSelectedSub(null);
                             }}
                             className={[
-                              "h-11 w-25 rounded-lg text-[14px] border transition-colors cursor-pointer",
+                              "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
                               active
-                                ? "bg-[#547DA0] text-[#FDFDFD] border-[#D4EBFF]"
-                                : "bg-white text-[#547DA0] border-[#547DA0] border-dashed hover:border-sky-500 hover:text-sky-700",
+                                ? "bg-[#547DA0]"
+                                : "bg-[#CFCFCF] hover:brightness-95",
                             ].join(" ")}
                           >
                             {major.name} {/* 대분류명 */}
@@ -331,10 +332,10 @@ function Section2() {
                             setSelectedSub(null);
                           }}
                           className={[
-                            "h-11 w-25 rounded-lg text-[14px] border transition-colors cursor-pointer",
+                            "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
                             active
-                              ? "bg-[#547DA0] text-[#FDFDFD] border-[#D4EBFF]"
-                              : "bg-white text-[#547DA0] border-[#547DA0] border-dashed hover:border-sky-500 hover:text-sky-700",
+                              ? "bg-[#547DA0]"
+                              : "bg-[#CFCFCF] hover:brightness-95",
                           ].join(" ")}
                         >
                           {mid.name}
@@ -368,10 +369,10 @@ function Section2() {
                           )
                         }
                         className={[
-                          "h-11 w-25 rounded-lg text-[14px] border transition-colors cursor-pointer",
+                          "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
                           active
-                            ? "bg-[#547DA0] text-[#FDFDFD] border-[#D4EBFF]"
-                            : "bg-white text-[#547DA0] border-[#547DA0] border-dashed hover:border-sky-500 hover:text-sky-700",
+                            ? "bg-[#547DA0]"
+                            : "bg-[#CFCFCF] hover:brightness-95",
                         ].join(" ")}
                       >
                         {sub.name}
@@ -391,7 +392,7 @@ function Section2() {
             </div>
 
             {/* 하단 CTA 버튼 */}
-            <div className="mt-auto shrink-0 px-6 pb-5.5 flex items-center justify-center">
+            <div className="mt-auto shrink-0 px-6 pb-7 flex items-center justify-center">
               {panel === "area" && (
                 <button
                   type="button"
@@ -404,7 +405,7 @@ function Section2() {
                     if (!majors.length && !UpjongLoading) loadUpjong();
                   }}
                   className={[
-                    "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
+                    "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
                     canNextFromArea
                       ? "bg-[#547DA0] text-white cursor-pointer hover:brightness-95"
                       : "bg-[#CFCFCF] text-white cursor-not-allowed",
@@ -420,7 +421,7 @@ function Section2() {
                   disabled={!canNextFromMajor}
                   onClick={() => setPanel("middle")}
                   className={[
-                    "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
+                    "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
                     canNextFromMajor
                       ? "bg-[#547DA0] text-white cursor-pointer hover:brightness-95"
                       : "bg-[#CFCFCF] text-white cursor-not-allowed",
@@ -436,7 +437,7 @@ function Section2() {
                   disabled={!canNextFromMiddle}
                   onClick={() => setPanel("sub")}
                   className={[
-                    "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
+                    "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
                     canNextFromMiddle
                       ? "bg-[#547DA0] text-white cursor-pointer hover:brightness-95"
                       : "bg-[#CFCFCF] text-white cursor-not-allowed",
@@ -470,7 +471,7 @@ function Section2() {
                     });
                   }}
                   className={[
-                    "rounded-lg w-30 h-9 text-sm font-semibold transition-colors",
+                    "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
                     canAnalyzeFromSub
                       ? "bg-[#547DA0] text-white cursor-pointer hover:brightness-95"
                       : "bg-[#CFCFCF] text-white cursor-not-allowed",
@@ -494,7 +495,8 @@ function Section3() {
     {
       t: "탐색(Discover)",
       lines: [
-        "나와 비슷한 길을 먼저 걸은 사람을 찾는 시간",
+        "나와 비슷한 길을",
+        "먼저 걸은 사람을 찾는 시간",
         "분야별, 경험별 멘토 프로필을 한눈에",
       ],
     },
@@ -503,15 +505,15 @@ function Section3() {
       lines: [
         "단순한 매칭이 아닌,",
         "진짜 대화가 시작되는 연결",
-        "SPO와 함께하는 멘토와의 1:1 창업 컨설팅",
+        "멘토와의 1:1 창업 컨설팅",
       ],
     },
     {
       t: "도약(Grow)",
       lines: [
-        "멘토링 그 이후를 고민하는 당신에게",
-        "현실적인 조언과 방향성으로",
-        "나만의 창업 여정, 한 걸음 더 나아가기",
+        "시작 그 이후를 고민하는 당신에게",
+        "현실적인 조언으로 나만의 창업,",
+        "한 걸음 더 나아가기",
       ],
     },
   ];
@@ -520,7 +522,7 @@ function Section3() {
     <Element
       name="mentoring"
       id="mentoring"
-      className="relative isolate flex items-center min-h-[calc(100vh-64px)] scroll-mt-16 bg-[#121B2A]"
+      className="relative isolate flex items-center min-h-[calc(100vh-56px)] scroll-mt-14 bg-[#121B2A]"
     >
       <img
         src={imgSection3}
@@ -532,20 +534,22 @@ function Section3() {
 
       <div className="flex flex-col justify-center items-center mx-auto max-w-screen-xl px-6 py-12">
         {/* 큰 제목 */}
-        <h2 className="text-white text-[56px] font-extrabold text-center leading-tight [text-wrap:balance]">
+        <h2 className="text-white text-[47px] font-[PretendardB] font-bold text-center leading-tight [text-wrap:balance]">
           SPO에서 당신의 멘토를 만나보세요!
         </h2>
 
         {/* 카드 3개 내용 */}
-        <div className="mt-6 grid grid-cols-9 gap-14">
+        <div className="mt-4 grid grid-cols-9 gap-14">
           {CARDS.map((it) => (
             <div
               key={it.t}
               className="col-span-3 py-20 text-white text-center rounded-sm"
             >
-              <h3 className="text-[30px] font-semibold">{it.t}</h3>
+              <h3 className="text-[28px] font-[PretendardB] font-bold">
+                {it.t}
+              </h3>
 
-              <p className="mt-4 text-white text-sm leading-5">
+              <p className="mt-10 text-[19px] font-[PretendardSemiB] leading-7">
                 {it.lines.map((line, i) => (
                   <span key={i} className="block">
                     {line}
@@ -556,11 +560,11 @@ function Section3() {
           ))}
         </div>
 
-        <div className="mt-10 flex justify-center">
+        <div className="mt-2 flex justify-center">
           <button
             type="button"
             onClick={() => navigate("/mentoring")}
-            className="rounded-lg bg-[#547DA0] px-8.5 py-4 text-[20px] font-semibold text-white hover:bg-[#547DA0]/80 transition"
+            className="rounded-sm bg-[#547DA0] px-8 py-3 text-[15px] font-[PretendardB] text-white hover:bg-[#547DA0]/80 transition"
           >
             멘토 탐색 바로가기
           </button>
