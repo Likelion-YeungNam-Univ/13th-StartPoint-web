@@ -6,106 +6,182 @@ const mentors = [
   {
     id: 1,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
+    headline: "비둘기는 멍청해보여",
+    introduce:
+      "카페 <비둘기는 멍청해보여> 사장입니다. 영남대 상권에서 배우고 쌓은 창업과 운영 노하우를 공유해드립니다.",
     bio: "카페 업계에서 창업/운영을 경험한 멘토입니다. 상권 분석과 메뉴 구성, 초기 마케팅까지 함께 설계해드립니다.",
     tags: ["대동", "음식"],
     photo: "https://i.pravatar.cc/120?img=47",
+    topics: [
+      "SNS 마케팅 운영 전략",
+      "온라인 리뷰 관리와 고객 반응 대응",
+      "카페 인테리어와 브랜딩의 연결 포인트",
+    ],
   },
   {
     id: 2,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
+    headline: "비둘기는 멍청해보여",
+    introduce:
+      "카페 <비둘기는 멍청해보여> 사장입니다. 영남대 상권에서 배우고 쌓은 창업과 운영 노하우를 공유해드립니다.",
     bio: "프랜차이즈와 개인 카페 모두 경험 있습니다. 원재료 발주, 인력 운영, 손익 계산 실무 위주로 도와드려요.",
     tags: ["조영동", "카페"],
     photo: "https://i.pravatar.cc/120?img=12",
+    topics: [
+      "SNS 마케팅 운영 전략",
+      "온라인 리뷰 관리와 고객 반응 대응",
+      "카페 인테리어와 브랜딩의 연결 포인트",
+    ],
   },
   {
     id: 3,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
+    headline: "비둘기는 멍청해보여",
+    introduce:
+      "카페 <비둘기는 멍청해보여> 사장입니다. 영남대 상권에서 배우고 쌓은 창업과 운영 노하우를 공유해드립니다.",
     bio: "초기 창업자 대상 1:1 멘토링. 임대차 계약 체크리스트와 인허가 절차까지 단계별로 안내합니다.",
     tags: ["사동", "창업초기"],
     photo: "https://i.pravatar.cc/120?img=32",
+    topics: [
+      "SNS 마케팅 운영 전략",
+      "온라인 리뷰 관리와 고객 반응 대응",
+      "카페 인테리어와 브랜딩의 연결 포인트",
+    ],
   },
   {
     id: 4,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
+    headline: "비둘기는 멍청해보여",
+    introduce:
+      "카페 <비둘기는 멍청해보여> 사장입니다. 영남대 상권에서 배우고 쌓은 창업과 운영 노하우를 공유해드립니다.",
     bio: "지역 상권 특성에 맞춘 콘셉트 기획과 포지셔닝을 함께 고민합니다. SNS 채널 운영 가이드 제공.",
     tags: ["대동", "SNS"],
     photo: "https://i.pravatar.cc/120?img=5",
+    topics: [
+      "SNS 마케팅 운영 전략",
+      "온라인 리뷰 관리와 고객 반응 대응",
+      "카페 인테리어와 브랜딩의 연결 포인트",
+    ],
   },
   {
     id: 5,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
+    headline: "비둘기는 멍청해보여",
+    introduce:
+      "카페 <비둘기는 멍청해보여> 사장입니다. 영남대 상권에서 배우고 쌓은 창업과 운영 노하우를 공유해드립니다.",
     bio: "원두 선택과 추출 세팅, 장비 셋업까지 실무형 코칭. 오픈준비 일정표를 공유해드립니다.",
     tags: ["카페", "장비"],
     photo: "https://i.pravatar.cc/120?img=15",
+    topics: [
+      "SNS 마케팅 운영 전략",
+      "온라인 리뷰 관리와 고객 반응 대응",
+      "카페 인테리어와 브랜딩의 연결 포인트",
+    ],
   },
   {
     id: 6,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
+    headline: "비둘기는 멍청해보여",
+    introduce:
+      "카페 <비둘기는 멍청해보여> 사장입니다. 영남대 상권에서 배우고 쌓은 창업과 운영 노하우를 공유해드립니다.",
     bio: "손익분기 계산과 비용 구조 점검, 메뉴 엔지니어링으로 객단가를 개선하는 방법을 제안합니다.",
     tags: ["비용관리", "메뉴"],
     photo: "https://i.pravatar.cc/120?img=23",
+    topics: [
+      "SNS 마케팅 운영 전략",
+      "온라인 리뷰 관리와 고객 반응 대응",
+      "카페 인테리어와 브랜딩의 연결 포인트",
+    ],
   },
   {
     id: 7,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
+    headline: "비둘기는 멍청해보여",
+    introduce:
+      "카페 <비둘기는 멍청해보여> 사장입니다. 영남대 상권에서 배우고 쌓은 창업과 운영 노하우를 공유해드립니다.",
     bio: "손익분기 계산과 비용 구조 점검, 메뉴 엔지니어링으로 객단가를 개선하는 방법을 제안합니다.",
     tags: ["비용관리", "메뉴"],
     photo: "https://i.pravatar.cc/120?img=23",
+    topics: [
+      "SNS 마케팅 운영 전략",
+      "온라인 리뷰 관리와 고객 반응 대응",
+      "카페 인테리어와 브랜딩의 연결 포인트",
+    ],
   },
   {
     id: 8,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
+    headline: "비둘기는 멍청해보여",
+    introduce:
+      "카페 <비둘기는 멍청해보여> 사장입니다. 영남대 상권에서 배우고 쌓은 창업과 운영 노하우를 공유해드립니다.",
     bio: "손익분기 계산과 비용 구조 점검, 메뉴 엔지니어링으로 객단가를 개선하는 방법을 제안합니다.",
     tags: ["비용관리", "메뉴"],
     photo: "https://i.pravatar.cc/120?img=23",
+    topics: [
+      "SNS 마케팅 운영 전략",
+      "온라인 리뷰 관리와 고객 반응 대응",
+      "카페 인테리어와 브랜딩의 연결 포인트",
+    ],
   },
   {
     id: 9,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
+    headline: "비둘기는 멍청해보여",
+    introduce:
+      "카페 <비둘기는 멍청해보여> 사장입니다. 영남대 상권에서 배우고 쌓은 창업과 운영 노하우를 공유해드립니다.",
     bio: "손익분기 계산과 비용 구조 점검, 메뉴 엔지니어링으로 객단가를 개선하는 방법을 제안합니다.",
     tags: ["비용관리", "메뉴"],
     photo: "https://i.pravatar.cc/120?img=23",
+    topics: [
+      "SNS 마케팅 운영 전략",
+      "온라인 리뷰 관리와 고객 반응 대응",
+      "카페 인테리어와 브랜딩의 연결 포인트",
+    ],
   },
   {
     id: 10,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
+    headline: "비둘기는 멍청해보여",
+    introduce:
+      "카페 <비둘기는 멍청해보여> 사장입니다. 영남대 상권에서 배우고 쌓은 창업과 운영 노하우를 공유해드립니다.",
     bio: "손익분기 계산과 비용 구조 점검, 메뉴 엔지니어링으로 객단가를 개선하는 방법을 제안합니다.",
     tags: ["비용관리", "메뉴"],
     photo: "https://i.pravatar.cc/120?img=23",
+    topics: [
+      "SNS 마케팅 운영 전략",
+      "온라인 리뷰 관리와 고객 반응 대응",
+      "카페 인테리어와 브랜딩의 연결 포인트",
+    ],
   },
   {
     id: 11,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
+    headline: "비둘기는 멍청해보여",
+    introduce:
+      "카페 <비둘기는 멍청해보여> 사장입니다. 영남대 상권에서 배우고 쌓은 창업과 운영 노하우를 공유해드립니다.",
     bio: "손익분기 계산과 비용 구조 점검, 메뉴 엔지니어링으로 객단가를 개선하는 방법을 제안합니다.",
     tags: ["비용관리", "메뉴"],
     photo: "https://i.pravatar.cc/120?img=23",
+    topics: [
+      "SNS 마케팅 운영 전략",
+      "온라인 리뷰 관리와 고객 반응 대응",
+      "카페 인테리어와 브랜딩의 연결 포인트",
+    ],
   },
   {
     id: 12,
     name: "김사자",
-    headline: "비둘기는 엄청해보여",
+    headline: "비둘기는 멍청해보여",
+    introduce:
+      "카페 <비둘기는 멍청해보여> 사장입니다. 영남대 상권에서 배우고 쌓은 창업과 운영 노하우를 공유해드립니다.",
     bio: "손익분기 계산과 비용 구조 점검, 메뉴 엔지니어링으로 객단가를 개선하는 방법을 제안합니다.",
     tags: ["비용관리", "메뉴"],
     photo: "https://i.pravatar.cc/120?img=23",
-  },
-  {
-    id: 13,
-    name: "김사자",
-    headline: "비둘기는 엄청해보여",
-    bio: "손익분기 계산과 비용 구조 점검, 메뉴 엔지니어링으로 객단가를 개선하는 방법을 제안합니다.",
-    tags: ["비용관리", "메뉴"],
-    photo: "https://i.pravatar.cc/120?img=23",
+    topics: [
+      "SNS 마케팅 운영 전략",
+      "온라인 리뷰 관리와 고객 반응 대응",
+      "카페 인테리어와 브랜딩의 연결 포인트",
+    ],
   },
 ];
 
@@ -164,15 +240,15 @@ const Mentoring = () => {
   return (
     <main className="min-h-screen bg-[#121B2A]">
       <div className="mx-auto max-w-screen-xl px-6 py-12">
-        <h1 className="text-center text-4xl font-extrabold text-white">
+        <h1 className="pt-4 text-center text-4xl font-extrabold text-white">
           멘토 탐색
         </h1>
-        <p className="mt-3 text-center text-white">
+        <p className="mt-4 text-center text-white">
           관심 동네와 업종에 맞는 멘토를 쉽고 빠르게 찾아드립니다.
         </p>
 
         {/* 카테고리 선택 바 */}
-        <div className="relative mt-8 mx-auto max-w-3xl isolate z-20">
+        <div className="relative mt-10 mx-auto max-w-3xl isolate z-20">
           <div className="relative z-20 flex items-center justify-between rounded-xl bg-[#424242] px-8 py-3 text-sm text-white">
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
               <span>동네</span>
@@ -273,33 +349,36 @@ const Mentoring = () => {
         {/* 프로필 카드 */}
         <div
           aria-hidden={open}
-          className={`relative z-0 mt-12 overflow-hidden grid grid-cols-3 gap-10 transition duration-100
+          className={`relative z-0 mt-15 overflow-hidden grid grid-cols-3 gap-10 px-13 transition duration-100
             ${open ? "blur-xs pointer-events-none select-none" : ""}`}
         >
           {mentors.map((mentor) => (
             <article
               key={mentor.id}
-              className="rounded-xl bg-white py-12 transition hover:bg-white/90 cursor-pointer"
+              className="w-[350px] rounded-[10px] bg-white py-12 transition hover:bg-white/90 cursor-pointer"
               onClick={() => setSelectedMentor(mentor)}
             >
-              <div className="mx-auto h-20 w-20 overflow-hidden rounded-full ring-2 ring-gray-200">
+              <div className="mx-auto h-[105px] w-[105px] overflow-hidden rounded-full">
                 <img
                   src={mentor.photo}
                   alt={`${mentor.name} 프로필 이미지`}
                   className="h-full w-full object-cover"
                 />
               </div>
-              <h3 className="mt-4 text-center text-lg font-semibold text-gray-900">
+              <h3 className="mt-4 text-center text-[24px] font-semibold text-[#464646]">
                 {mentor.name}
               </h3>
-              <p className="mt-1 text-center text-sm text-gray-500">
+              <p className="mt-2 text-center text-[18px] text-[#464646] font-medium">
                 {mentor.headline}
               </p>
-              <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+              <p className="mt-2 text-center text-[15px] text-[#727272] font-medium px-7">
+                {mentor.introduce}
+              </p>
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
                 {mentor.tags.map((t) => (
                   <span
                     key={t}
-                    className="rounded-full border border-gray-300 px-2 py-0.5 text-xs text-gray-600"
+                    className="rounded-full border-[0.5px] border-[#4D4D4D] px-4 py-1 text-[14px] text-[#616161]"
                   >
                     {t}
                   </span>
@@ -314,18 +393,24 @@ const Mentoring = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-6">
           <div className="relative w-full max-w-3xl rounded-2xl bg-white shadow-xl flex overflow-hidden">
             {/* 왼쪽 */}
-            <div className="w-1/2 p-6 flex flex-col items-center mt-5 ml-5 mr-5">
+            <div className="w-1/2 p-5 flex flex-col items-center mt-5 ml-5">
               <img
                 src={selectedMentor.photo}
                 alt={selectedMentor.name}
-                className="h-[90px] w-[90px] rounded-full object-cover ring-2 ring-gray-200"
+                className="h-[90px] w-[90px] rounded-full object-cover"
               />
-              <h3 className="mt-3 text-[24px] font-semibold text-[#464646]">
+              <h3 className="mt-4 text-[24px] font-semibold text-[#464646]">
                 {selectedMentor.name}
               </h3>
-              <p className="text-sm text-gray-500">{selectedMentor.headline}</p>
+              <p className="mt-1 text-[14px] text-[#464646] font-medium">
+                {selectedMentor.headline}
+              </p>
 
-              <div className="mt-6 w-full">
+              <p className="mt-7 text-[14px] text-[#464646] font-medium">
+                날짜와 시간을 선택해 주세요
+              </p>
+
+              <div className="mt-4 w-[240px]">
                 <div className="flex items-center justify-center gap-4 mb-2">
                   <button onClick={handlePrevMonth}>◀</button>
                   <span className="font-bold text-[14px]">
@@ -372,12 +457,12 @@ const Mentoring = () => {
               </div>
 
               {/* 시간 선택 */}
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-wrap gap-1.5">
                 {times.map((t) => (
                   <button
                     key={t}
                     onClick={() => setSelectedTime(t)}
-                    className={`px-4 py-1 rounded-[10px] border text-[12px] cursor-pointer ${
+                    className={`px-3.5 py-1 rounded-[10px] border text-[12px] cursor-pointer ${
                       selectedTime === t
                         ? "bg-[#2E47A4] text-white border-[#2E47A4]"
                         : "bg-white text-black border-[#DBDBDB] hover:bg-[#DBDBDB]"
@@ -388,25 +473,27 @@ const Mentoring = () => {
                 ))}
               </div>
 
-              <p className="mt-5 mb-5 text-[12px] text-[#464646]">
+              <p className="mt-7 mb-7 text-[12px] text-[#464646]">
                 상세 일정은 멘토 확정 후 조율될 수 있습니다.
               </p>
 
-              <button className="w-[104px] h-[34px] rounded-[6px] bg-[#2E47A4] px-4 py-4 text-white font-[10px] flex items-center justify-center cursor-pointer">
+              <button className="w-[104px] h-[34px] rounded-[6px] bg-[#2E47A4] mb-3 px-4 py-4 text-[12px] text-white font-[10px] flex items-center justify-center cursor-pointer">
                 신청하기
               </button>
             </div>
 
             {/* 오른쪽 */}
-            <div className="w-1/2 p-8">
-              <h2 className="text-[20px] font-semibold text-[#464646]">
-                프로필
-              </h2>
-              <hr className="text-[#464646] mt-4" />
-              <h3 className="mt-4 text-[16px] font-semibold text-[#464646]">
+            <div className="w-1/2 p-5 mt-10 mr-10">
+              <div>
+                <span className="text-[20px] font-semibold text-[#464646]">
+                  프로필
+                </span>
+              </div>
+              <hr className="text-[#464646] mt-3" />
+              <h3 className="mt-5 text-[16px] font-semibold text-[#464646]">
                 소개글
               </h3>
-              <p className="mt-2 text-[#464646] text-14px font-medium leading-relaxed">
+              <p className="mt-3 text-[#464646] text-[14px] font-medium leading-relaxed">
                 {selectedMentor.bio}
               </p>
 
@@ -414,22 +501,22 @@ const Mentoring = () => {
               <h3 className="mt-5 text-[16px] text-[#464646] font-semibold">
                 키워드
               </h3>
-              <div className="mt-2 flex flex-wrap gap-2">
+              <div className="mt-3 flex flex-wrap gap-2">
                 {selectedMentor.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full bg-white px-3 py-1 text-[12px] text-black border-[0.5px] border-[#DBDBDB]"
+                    className="rounded-full bg-white px-4 py-1 text-[12px] text-black border-[0.5px] border-[#DBDBDB]"
                   >
-                    #{tag}
+                    {tag}
                   </span>
                 ))}
               </div>
 
-              <hr className="text-[#D7D7D7] mt-5" />
+              <hr className="text-[#D7D7D7] mt-6" />
               <h3 className="mt-5 text-[16px] text-[#464646] font-semibold">
                 대화 가능한 주제
               </h3>
-              <ul className="mt-2 list-disc pl-5 text-gray-700">
+              <ul className="mt-3 list-disc pl-5.5 text-[#464646] text-[14px] font-medium space-y-2">
                 {selectedMentor.topics?.map((topic) => (
                   <li key={topic}>{topic}</li>
                 ))}
@@ -437,10 +524,10 @@ const Mentoring = () => {
             </div>
 
             <button
-              onClick={() => setOpen(false)}
-              className="absolute top-4 right-4 w-[27px] h-[27px] bg-[#4C5060] flex items-center justify-center text-white text-xl font-bold rounded-full cursor-pointer"
+              onClick={() => setSelectedMentor(null)}
+              className="absolute top-5 right-5 w-[18px] h-[18px] bg-[#B5B5B5] flex items-center justify-center text-white text-xl font-bold rounded-full cursor-pointer"
             >
-              <img src={back} alt="back" className="w-[9] h-[9]" />
+              <img src={back} alt="back" className="w-[8px] h-[8px]" />
             </button>
           </div>
         </div>
