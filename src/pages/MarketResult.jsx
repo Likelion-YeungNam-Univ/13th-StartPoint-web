@@ -592,7 +592,7 @@ const MarketResult = () => {
             <div className="text-[22px] text-[#121B2A] font-semibold mb-10">
               일 평균 유동인구
             </div>
-            <img src={shop} alt="shop" />
+            <img src={people} alt="people" />
             <div className="text-[#30C0D0] font-bold text-[32px]">
               {data?.population?.dayAvg ?? "—"}명
             </div>
