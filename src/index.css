@@ -1,5 +1,7 @@
 @import "tailwindcss";
-
+/*
+@import "tailwind-scrollbar-hide/v4";
+*/
 @font-face {
   font-family: "PretendardB";
   src: url("./font/Pretendard-Bold.ttf");
@@ -14,3 +16,15 @@
   font-family: "PretendardR";
   src: url("./font/Pretendard-Regular.ttf");
 }
+/*  
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #dbdbdb;
+}
+::-webkit-scrollbar-thumb {
+  background: #999;
+  border-radius: 6px;
+}
+*/
