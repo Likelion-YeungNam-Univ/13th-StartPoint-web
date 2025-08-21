@@ -89,6 +89,18 @@ function Section2() {
   const [UpjongLoading, setUpjongLoading] = useState(false);
   const [UpjongError, setUpjongError] = useState(null);
 
+  // --- 페이지 넘기기 상태 ---
+  const PAGE_SIZE = 16;
+  const [areaPage, setAreaPage] = useState(1);
+  const [majorPage, setMajorPage] = useState(1);
+  const [middlePage, setMiddlePage] = useState(1);
+  const [subPage, setSubPage] = useState(1);
+
+  const slicePage = (arr, page) =>
+    arr.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const pageCount = (arr) =>
+    Math.max(1, Math.ceil((arr?.length || 0) / PAGE_SIZE));
+
   // 예시: 'N10805' → { major:'N1', middle:'08', small:'05' }
   const splitUpjong = (code) => {
     const split = String(code).trim();
@@ -101,9 +113,9 @@ function Section2() {
 
   // API 배열 → 대/중/소 분류
   const categorization = (rows) => {
-    const majorMap = new Map(); // 대분류 코드와 이름을 맵핑
-    const middleMap = {}; // 대분류 코드에 해당하는 중분류 목록을 저장
-    const subMap = {}; // 대분류와 중분류 코드를 합친 key값에 해당하는 소분류 목록을 저장
+    const majorMap = new Map();
+    const middleMap = {};
+    const subMap = {};
 
     for (const item of rows) {
       const parts = splitUpjong(item.upjong3cd);
@@ -116,17 +128,16 @@ function Section2() {
 
       if (!largeName || !mediumName || !smallName || !fullCode) continue;
 
-      // 데이터들을 순회하면서 대분류가 이미 추가되었는지 확인하고, 추가되지 않았을 경우에만 majorMap에 새로운 대분류로 등록
       if (!majorMap.has(major)) majorMap.set(major, largeName);
 
       if (!middleMap[major]) middleMap[major] = [];
-      if (!middleMap[major].some((major) => major.code === middle)) {
+      if (!middleMap[major].some((m) => m.code === middle)) {
         middleMap[major].push({ code: middle, name: mediumName });
       }
 
       const key = `${major}/${middle}`;
       if (!subMap[key]) subMap[key] = [];
-      if (!subMap[key].some((sub) => sub.code === fullCode)) {
+      if (!subMap[key].some((s) => s.code === fullCode)) {
         subMap[key].push({ code: fullCode, name: smallName });
       }
     }
@@ -157,11 +168,15 @@ function Section2() {
   const openPanel = (type) => {
     if (type === "area") {
       setPanel("area");
+      setAreaPage(1); // 페이지 리셋
     } else {
       setSelectedMajor(null);
       setSelectedMiddle(null);
       setSelectedSub(null);
       setPanel("major");
+      setMajorPage(1);
+      setMiddlePage(1);
+      setSubPage(1);
       if (!majors.length && !UpjongLoading) loadUpjong();
     }
   };
@@ -175,6 +190,81 @@ function Section2() {
   const areaActive = panel === "area";
   const UpjongActive =
     panel === "major" || panel === "middle" || panel === "sub";
+
+  // --- 페이지 넘기기 ---
+  const middleSource = selectedMajor ? middlesByMajor[selectedMajor] || [] : [];
+  const subSource =
+    selectedMajor && selectedMiddle
+      ? subsByMiddle[`${selectedMajor}/${selectedMiddle}`] || []
+      : [];
+
+  const areaTotal = pageCount(areaList);
+  const majorTotal = pageCount(majors);
+  const middleTotal = pageCount(middleSource);
+  const subTotal = pageCount(subSource);
+
+  const areaPageItems = slicePage(areaList, Math.min(areaPage, areaTotal));
+  const majorPageItems = slicePage(majors, Math.min(majorPage, majorTotal));
+  const middlePageItems = slicePage(
+    middleSource,
+    Math.min(middlePage, middleTotal)
+  );
+  const subPageItems = slicePage(subSource, Math.min(subPage, subTotal));
+
+  // 선택 변경 시 페이지 보정/리셋
+  useEffect(() => {
+    setMiddlePage(1);
+    setSubPage(1);
+  }, [selectedMajor]);
+
+  useEffect(() => {
+    setSubPage(1);
+  }, [selectedMiddle]);
+
+  // 범위 초과 보정
+  useEffect(() => {
+    if (majorPage > majorTotal) setMajorPage(majorTotal);
+  }, [majorTotal, majorPage]);
+  useEffect(() => {
+    if (middlePage > middleTotal) setMiddlePage(middleTotal);
+  }, [middleTotal, middlePage]);
+  useEffect(() => {
+    if (subPage > subTotal) setSubPage(subTotal);
+  }, [subTotal, subPage]);
+
+  // 하단 페이지 네비 컴포넌트
+  const PageNav = ({ page, total, onPrev, onNext }) => {
+    if (total <= 1) return null;
+    const off = "opacity-0";
+    const on = "cursor-pointer";
+    return (
+      <div className="flex items-center gap-1 text-sm select-none">
+        <button
+          type="button"
+          onClick={onPrev}
+          disabled={page <= 1}
+          className={`px-1 text-[#547DA0] text-[16px] ${page <= 1 ? off : on}`}
+          aria-label="이전 페이지"
+        >
+          &lt;
+        </button>
+        <span className="text-[#547DA0] text-[16px]">
+          {page} / {total}
+        </span>
+        <button
+          type="button"
+          onClick={onNext}
+          disabled={page >= total}
+          className={`px-1 text-[#547DA0] text-[16px] ${
+            page >= total ? off : on
+          }`}
+          aria-label="다음 페이지"
+        >
+          &gt;
+        </button>
+      </div>
+    );
+  };
 
   return (
     <Element
@@ -243,8 +333,8 @@ function Section2() {
               {/* 동네 선택 패널 */}
               {panel === "area" && (
                 <div className="grid grid-cols-4 gap-2">
-                  {areaList.map(({ areaName, areaCode }) => {
-                    const active = selectedArea === areaCode; // 선택값은 areaCode로 저장
+                  {areaPageItems.map(({ areaName, areaCode }) => {
+                    const active = selectedArea === areaCode;
                     return (
                       <button
                         key={areaCode}
@@ -259,7 +349,7 @@ function Section2() {
                           active ? "bg-[#547DA0]" : "bg-[#CFCFCF]",
                         ].join(" ")}
                       >
-                        {areaName} {/* 화면엔 이름 표시 */}
+                        {areaName}
                       </button>
                     );
                   })}
@@ -279,8 +369,8 @@ function Section2() {
                   )}
                   {!UpjongLoading && !UpjongError && (
                     <div className="grid grid-cols-4 gap-2">
-                      {majors.map((major) => {
-                        const active = selectedMajor === major.prefix; // "N1" 등
+                      {majorPageItems.map((major) => {
+                        const active = selectedMajor === major.prefix;
                         return (
                           <button
                             key={major.prefix}
@@ -291,13 +381,15 @@ function Section2() {
                               );
                               setSelectedMiddle(null);
                               setSelectedSub(null);
+                              setMiddlePage(1);
+                              setSubPage(1);
                             }}
                             className={[
                               "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
                               active ? "bg-[#547DA0]" : "bg-[#CFCFCF]",
                             ].join(" ")}
                           >
-                            {major.name} {/* 대분류명 */}
+                            {major.name}
                           </button>
                         );
                       })}
@@ -314,30 +406,29 @@ function Section2() {
               {/* 중분류 선택 패널 */}
               {panel === "middle" && (
                 <div className="grid grid-cols-4 gap-2">
-                  {(selectedMajor ? middlesByMajor[selectedMajor] : []).map(
-                    (mid) => {
-                      const active = selectedMiddle === mid.code; // "08" 등
-                      return (
-                        <button
-                          key={`${selectedMajor}-${mid.code}`}
-                          type="button"
-                          onClick={() => {
-                            setSelectedMiddle((prev) =>
-                              prev === mid.code ? null : mid.code
-                            );
-                            setSelectedSub(null);
-                          }}
-                          className={[
-                            "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
-                            active ? "bg-[#547DA0]" : "bg-[#CFCFCF]",
-                          ].join(" ")}
-                        >
-                          {mid.name}
-                        </button>
-                      );
-                    }
-                  )}
-                  {selectedMajor && !middlesByMajor[selectedMajor]?.length && (
+                  {middlePageItems.map((mid) => {
+                    const active = selectedMiddle === mid.code;
+                    return (
+                      <button
+                        key={`${selectedMajor}-${mid.code}`}
+                        type="button"
+                        onClick={() => {
+                          setSelectedMiddle((prev) =>
+                            prev === mid.code ? null : mid.code
+                          );
+                          setSelectedSub(null);
+                          setSubPage(1);
+                        }}
+                        className={[
+                          "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
+                          active ? "bg-[#547DA0]" : "bg-[#CFCFCF]",
+                        ].join(" ")}
+                      >
+                        {mid.name}
+                      </button>
+                    );
+                  })}
+                  {selectedMajor && !middleSource?.length && (
                     <div className="col-span-4 text-sm text-gray-500">
                       이 대분류에 해당하는 중분류가 없습니다.
                     </div>
@@ -348,11 +439,8 @@ function Section2() {
               {/* 소분류 선택 패널 */}
               {panel === "sub" && (
                 <div className="grid grid-cols-4 gap-2">
-                  {(selectedMajor && selectedMiddle
-                    ? subsByMiddle[`${selectedMajor}/${selectedMiddle}`]
-                    : []
-                  ).map((sub) => {
-                    const active = selectedSub?.code === sub.code; // "N10805"
+                  {subPageItems.map((sub) => {
+                    const active = selectedSub?.code === sub.code;
                     return (
                       <button
                         key={sub.code}
@@ -371,20 +459,17 @@ function Section2() {
                       </button>
                     );
                   })}
-                  {selectedMajor &&
-                    selectedMiddle &&
-                    !subsByMiddle[`${selectedMajor}/${selectedMiddle}`]
-                      ?.length && (
-                      <div className="col-span-4 text-sm text-gray-500">
-                        이 중분류에 해당하는 소분류가 없습니다.
-                      </div>
-                    )}
+                  {selectedMajor && selectedMiddle && !subSource?.length && (
+                    <div className="col-span-4 text-sm text-gray-500">
+                      이 중분류에 해당하는 소분류가 없습니다.
+                    </div>
+                  )}
                 </div>
               )}
             </div>
 
-            {/* 하단 CTA 버튼 */}
-            <div className="mt-auto shrink-0 px-6 pb-7 flex items-center justify-center">
+            {/* 하단 CTA + 페이지 네비 */}
+            <div className="mt-auto shrink-0 px-6 pb-7 relative flex items-center justify-center">
               {panel === "area" && (
                 <button
                   type="button"
@@ -394,6 +479,9 @@ function Section2() {
                     setSelectedMiddle(null);
                     setSelectedSub(null);
                     setPanel("major");
+                    setMajorPage(1);
+                    setMiddlePage(1);
+                    setSubPage(1);
                     if (!majors.length && !UpjongLoading) loadUpjong();
                   }}
                   className={[
@@ -447,19 +535,13 @@ function Section2() {
                     const picked = areaList.find(
                       (area) => area.areaCode === selectedArea
                     );
-                    const areaCode = picked?.areaCode ?? null; // 8자리 코드
+                    const areaCode = picked?.areaCode ?? null;
                     const areaName = picked?.areaName ?? null;
-                    const upjong3cd = selectedSub?.code ?? null; // 예: "N10805"
-
+                    const upjong3cd = selectedSub?.code ?? null;
                     if (!areaCode || !areaName || !upjong3cd) return;
 
-                    // areaCode, areaName, upjong3cd 전달
                     navigate("/market-result", {
-                      state: {
-                        areaCode: areaCode,
-                        upjong3cd: upjong3cd,
-                        areaName: areaName,
-                      },
+                      state: { areaCode, upjong3cd, areaName },
                     });
                   }}
                   className={[
@@ -472,6 +554,48 @@ function Section2() {
                   분석하기
                 </button>
               )}
+
+              {/* CTA 우측 페이지 네비(패널별) */}
+              <div className="absolute right-6">
+                {panel === "area" && (
+                  <PageNav
+                    page={areaPage}
+                    total={areaTotal}
+                    onPrev={() => setAreaPage((p) => Math.max(1, p - 1))}
+                    onNext={() =>
+                      setAreaPage((p) => Math.min(areaTotal, p + 1))
+                    }
+                  />
+                )}
+                {panel === "major" && !UpjongLoading && !UpjongError && (
+                  <PageNav
+                    page={majorPage}
+                    total={majorTotal}
+                    onPrev={() => setMajorPage((p) => Math.max(1, p - 1))}
+                    onNext={() =>
+                      setMajorPage((p) => Math.min(majorTotal, p + 1))
+                    }
+                  />
+                )}
+                {panel === "middle" && (
+                  <PageNav
+                    page={middlePage}
+                    total={middleTotal}
+                    onPrev={() => setMiddlePage((p) => Math.max(1, p - 1))}
+                    onNext={() =>
+                      setMiddlePage((p) => Math.min(middleTotal, p + 1))
+                    }
+                  />
+                )}
+                {panel === "sub" && (
+                  <PageNav
+                    page={subPage}
+                    total={subTotal}
+                    onPrev={() => setSubPage((p) => Math.max(1, p - 1))}
+                    onNext={() => setSubPage((p) => Math.min(subTotal, p + 1))}
+                  />
+                )}
+              </div>
             </div>
           </div>
         </div>
