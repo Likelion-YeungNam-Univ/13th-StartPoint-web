@@ -265,6 +265,7 @@ function Section2() {
                 : "opacity-100 translate-y-0",
             ].join(" ")}
           >
+
             {/* 그리드 영역(스크롤) */}
             <div className="px-6 py-7 flex-1 min-h-0">
               <div
@@ -362,6 +363,7 @@ function Section2() {
                           }}
                           className={[
                             "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
+
                             active ? "bg-[#547DA0]" : "bg-[#CFCFCF]",
                           ].join(" ")}
                         >
