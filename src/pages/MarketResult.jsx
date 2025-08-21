@@ -422,6 +422,7 @@ const MarketResult = () => {
               </div>
             </div>
           </div>
+
           {/* 1-3 전년동월, 전월 대비 매출 증감률 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mb-1">
@@ -465,6 +466,7 @@ const MarketResult = () => {
           </div>
         </div>
       </div>
+
       {/* 2. 업종 분석 */}
       <div className="text-white text-[36px] pt-36 font-bold flex flex-col items-center">
         <div className="flex items-center">
@@ -538,6 +540,7 @@ const MarketResult = () => {
               </div>
             </div>
           </div>
+
           {/* 2-3 전년동월, 전월 대비 업종 수 증감률 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mb-1">
@@ -581,12 +584,14 @@ const MarketResult = () => {
           </div>
         </div>
       </div>
+
       {/* 3. 유동인구 분석 */}
       <div className="text-white text-[36px] pt-36 font-bold flex flex-col items-center">
         <div className="flex items-center">
           <img src={population} alt="population" className="mr-4.5" />
           <span>유동인구 분석</span>
         </div>
+
         <div className="mt-8 flex justify-center gap-7">
           {/* 3-1 일 평균 유동인구 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
@@ -786,6 +791,7 @@ const MarketResult = () => {
                       fill={data.name == maxHour.label ? "#D04797" : "#121B2A"}
                       fontSize={14}
                       formatter={(v) => `${v}%`}
+
                     />
                     <LabelList
                       dataKey="name"
@@ -806,6 +812,7 @@ const MarketResult = () => {
       <div className="text-white text-[24px] pt-36 font-semibold flex flex-col items-center">
         창업 가능성 및 상위 동네 추천은 상세분석에서 확인할 수 있습니다.
       </div>
+
       <div className="pt-36 pb-25 flex justify-center gap-4 text-[24px]">
         <div
           onClick={() => setOpen(true)}
@@ -813,6 +820,7 @@ const MarketResult = () => {
         >
           상세 분석
         </div>
+
         <div
           onClick={() => navigate("/mentoring")}
           className="w-[224px] h-[60px] p-8 bg-[#03B4C8] rounded-[6px] flex flex-col items-center justify-center text-center text-[18px] text-white font-semibold cursor-pointer hover:bg-[#0290a3] transition"
@@ -820,6 +828,7 @@ const MarketResult = () => {
           멘토 탐색 바로가기
         </div>
       </div>
+
       {open && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="absolute inset-0 bg-black opacity-80"></div> 
@@ -954,7 +963,6 @@ const MarketResult = () => {
           </div>
         </div>
       )}
-         
     </div>
   );
 };
