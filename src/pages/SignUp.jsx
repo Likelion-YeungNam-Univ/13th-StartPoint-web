@@ -241,7 +241,7 @@ const SignUp = () => {
               </label>
             </div>
             <div className="block" aria-hidden />
-
+              
             {/* 구분선: 전체 열 가로지름 */}
             <div className="col-span-3 my-4 border-b-2 border-[#2E47A4]" />
 

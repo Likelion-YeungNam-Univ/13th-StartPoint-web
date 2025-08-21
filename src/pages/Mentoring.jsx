@@ -6,6 +6,7 @@ const mentors = [
   {
     id: 1,
     name: "김사자",
+
     storeName: "비둘기는 멍청해 보여",
     category: "대동",
     area: "음식",
@@ -15,6 +16,7 @@ const mentors = [
   {
     id: 2,
     name: "김사자",
+
     storeName: "비둘기는 멍청해 보여",
     category: "대동",
     area: "음식",
@@ -24,6 +26,7 @@ const mentors = [
   {
     id: 3,
     name: "김사자",
+
     storeName: "비둘기는 멍청해 보여",
     category: "대동",
     area: "음식",
@@ -33,6 +36,7 @@ const mentors = [
   {
     id: 4,
     name: "김사자",
+
     storeName: "비둘기는 멍청해 보여",
     category: "대동",
     area: "음식",
@@ -42,6 +46,7 @@ const mentors = [
   {
     id: 5,
     name: "김사자",
+
     storeName: "비둘기는 멍청해 보여",
     category: "대동",
     area: "음식",
@@ -51,6 +56,7 @@ const mentors = [
   {
     id: 6,
     name: "김사자",
+
     storeName: "비둘기는 멍청해 보여",
     category: "대동",
     area: "음식",
@@ -60,6 +66,7 @@ const mentors = [
   {
     id: 7,
     name: "김사자",
+
     storeName: "비둘기는 멍청해 보여",
     category: "대동",
     area: "음식",
@@ -69,6 +76,7 @@ const mentors = [
   {
     id: 8,
     name: "김사자",
+
     storeName: "비둘기는 멍청해 보여",
     category: "대동",
     area: "음식",
@@ -78,6 +86,7 @@ const mentors = [
   {
     id: 9,
     name: "김사자",
+
     storeName: "비둘기는 멍청해 보여",
     category: "대동",
     area: "음식",
@@ -87,6 +96,7 @@ const mentors = [
   {
     id: 10,
     name: "김사자",
+
     storeName: "비둘기는 멍청해 보여",
     category: "대동",
     area: "음식",
