@@ -14,7 +14,7 @@ export default function ScrollToTop({ selector = null }) {
     if (location.state && location.state.scrollTo) return;
 
     const el = selector ? document.querySelector(selector) : null;
-    (el ?? window).scrollTo({ top: 0, left: 0, behavior: "auto" });
+    (el ?? window).scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }, [location.pathname, location.hash, location.state, navType, selector]);
 
   return null;
