@@ -83,7 +83,7 @@ export default function ChatBot() {
     report: [
       { q: "정부나 지자체는 창업을 어떻게 지원하나요?", a: "정부와 지자체는 창업 활성화를 위해 재정적·행정적 지원, 인프라 조성, 교육 및 컨설팅 제공 등의 역할을 수행합니다. 또한, 창업기업의 생애주기에 맞춘 다양한 지원 프로그램을 운영하며, 창업 관련 제도 개선에도 힘쓰고 있습니다.", open: false },
       { q: "창업에 필요한 교육이나 훈련도 받을 수 있나요?", a: "네, 창업자는 창업 단계별 맞춤형 교육 프로그램을 받을 수 있습니다. 정부는 대학, 창업교육기관, 민간전문가와 협력해 아이디어 개발, 사업계획 수립, 경영 실무 등에 관한 실질적인 교육 기회를 제공합니다.", open: false },
-      { q: "창업할 때 귲나 부담이 너무 많은데, 개선책이 있나요?", a: "정부는 창업을 저해하는 불합리한 규제를 지속적으로 발굴해 개선하고 있으며, 창업 과정에서 발생하는 행정 절차나 비용을 간소화하고 완화하는 정책을 추진하고 있습니다. 예를 들어, 통합창업지원 플랫폼 구축이나, 절차 간소화, 창업비용 절감 등 다양한 제도가 마련돼 있습니다.", open: false },
+      { q: "창업할 때 규제나 부담이 너무 많은데, 개선책이 있나요?", a: "정부는 창업을 저해하는 불합리한 규제를 지속적으로 발굴해 개선하고 있으며, 창업 과정에서 발생하는 행정 절차나 비용을 간소화하고 완화하는 정책을 추진하고 있습니다. 예를 들어, 통합창업지원 플랫폼 구축이나, 절차 간소화, 창업비용 절감 등 다양한 제도가 마련돼 있습니다.", open: false },
       { q: "온라인으로 창업 지원 서비스를 받을 수 있나요?", a: "네, 정부는 온라인 창업지원 시스템을 통해 창업자가 지원사업 신청, 교육 수강, 정보 검색, 통합 상담 등을 받을 수 있도록 하고 있습니다. 이 플랫폼을 통해 시간과 장소에 구애받지 않고 편리하게 창업 관련 서비스를 이용할 수 있습니다.", open: false },
     ],
     support: [
@@ -156,7 +156,7 @@ export default function ChatBot() {
       <div className="fixed right-5 flex flex-col items-end gap-2" style={{ bottom: `${20 + footerBump}px` }}>
         {badgeHover && (
           <div className="max-w-[300px] rounded-2xl px-4 py-3 shadow-xl" style={{ background: "rgba(39,56,75,0.9)" }}>
-            <p className="text-white text-[12px] leading-[18px] whitespace-pre-line text-center">
+            <p className="text-[#FFFFFF] text-[12px] leading-[18px] whitespace-pre-line text-center">
               {"당신의 창업 비서 스포티입니다!\n행정안내, 창업 관련 고민은\n저에게 물어봐주세요."}
             </p>
           </div>
@@ -191,7 +191,7 @@ export default function ChatBot() {
               className="absolute left-3 top-1 w-6 h-6 grid place-items-center rounded-md hover:bg-white/60"
               aria-label="home"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-[#7A879A]">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-[#4D6487]">
                 <path d="M12 3l8 7h-3v8h-4v-5H11v5H7v-8H4l8-7z" />
               </svg>
             </button>
@@ -201,7 +201,7 @@ export default function ChatBot() {
             className="absolute right-3 top-1 w-6 h-6 grid place-items-center rounded-md hover:bg-white/60"
             aria-label="close"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" className="text-[#7A879A]">
+            <svg width="14" height="14" viewBox="0 0 24 24" className="text-[#4D6487]">
               <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             </svg>
           </button>
@@ -218,8 +218,8 @@ export default function ChatBot() {
               </div>
             </div>
             <div className="w-full text-left ml-[30px]">
-              <p className="text-[11px] leading-[16px] text-[#8D9AA9]">안녕하세요, 당신의 창업 비서 스포티입니다</p>
-              <h2 className="mt-0.5 text-[18px] leading-[24px] font-extrabold text-[#27384B]">무엇을 도와드릴까요?</h2>
+              <p className="text-[11px] leading-[16px] text-[#4D6487]">안녕하세요, 당신의 창업 비서 스포티입니다</p>
+              <h2 className="mt-0.5 text-[18px] leading-[24px] font-extrabold text-[#4D6487]">무엇을 도와드릴까요?</h2>
             </div>
           </div>
 
@@ -228,13 +228,13 @@ export default function ChatBot() {
             <>
               {!thinking && messages.length === 0 && (
                 <div className="mt-9">
-                  <p className="text-[12px] text-[#8C9AAA] mb-2">아래 목록에서 필요한 행정 안내를 선택해 주세요</p>
+                  <p className="text-[12px] text-[#4D6487] mb-2">아래 목록에서 필요한 행정 안내를 선택해 주세요</p>
                   <div className="flex flex-col gap-2">
                     {items.map((it) => (
                       <button
                         key={it.id}
                         onClick={() => handleCategoryClick(it.id)}
-                        className="w-full h-[36px] rounded-lg bg-[#EEF3F7] text-[#526478] text-[12px] px-4 text-left border border-[#E3EAF3] hover:bg-[#F9FBFD] transition-colors"
+                        className="w-full h-[36px] rounded-lg bg-[#EEF3F7] text-[#4D6487] text-[12px] px-4 text-left border border-[#E3EAF3] hover:bg-[#F9FBFD] transition-colors"
                       >
                         {it.label}
                       </button>
@@ -250,24 +250,24 @@ export default function ChatBot() {
                     className={
                       m.role === "user"
                         ? "self-end max-w-[70%] rounded-full px-3 py-1 text-[12px] bg-[#5f7fbf] text-white shadow"
-                        : "self-start max-w-[90%] rounded-lg px-3 py-2 text-[12px] bg-white text-[#27384B] border border-[#E4EBF3] whitespace-pre-line"
+                        : "self-start max-w-[90%] rounded-lg px-3 py-2 text-[12px] bg-white text-[#4D6487] border border-[#E4EBF3] whitespace-pre-line"
                     }
                   >
                     {m.text}
                   </div>
                 ))}
-                {thinking && <div className="text-[12px] text-[#8C9AAA] mt-1 mb-3">생각 중입니다...</div>}
+                {thinking && <div className="text-[12px] text-[#4D6487] mt-1 mb-3">생각 중입니다...</div>}
               </div>
 
               <div
-                className="mt-auto mb-2 rounded-[14px] border border-[#C9D3E0] bg-white px-4 py-3 shadow-sm"
+                className="mt-auto mb-2 rounded-[14px] border border-[#C9D3E0] bg-white px-4 py-1 shadow-sm"
                 onClick={() => setTimeout(() => inputRef.current?.focus(), 0)}
               >
                 <textarea
                   ref={inputRef}
-                  className="w-full outline-none resize-none text-[12px] leading-[18px] text-[#2C3A4B] placeholder:text-[#9AA7B6] bg-transparent"
+                  className="w-full outline-none resize-none text-[12px] leading-[18px] text-[#4D6487] placeholder:text-[#4D6487] bg-transparent"
                   rows={2}
-                  placeholder={!isInputFocused && input.length === 0 ? "창업 관련 고민이 있나요? 스포티에게 무엇이든 물어보세요." : ""}
+                  placeholder={!isInputFocused && input.length === 0 ? "창업 관련 고민이 있나요?\n스포티에게 무엇이든 물어보세요." : ""}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onFocus={() => setIsInputFocused(true)}
@@ -305,12 +305,12 @@ export default function ChatBot() {
                         onClick={() => toggleFaq(idx)}
                         className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-[#F9FBFD]"
                       >
-                        <span className="text-[12px] leading-[18px] text-[#27384B]">{item.q}</span>
-                        <span className="text-[18px] leading-none text-[#7A879A]">{item.open ? "−" : "+"}</span>
+                        <span className="text-[12px] leading-[18px] text-[#4D6487]">{item.q}</span>
+                        <span className="text-[18px] leading-none text-[#4D6487]">{item.open ? "−" : "+"}</span>
                       </button>
                       {item.open && (
                         <div className="px-4 pb-3 pt-0">
-                          <p className="text-[12px] leading-[18px] text-[#526478] whitespace-pre-line">{item.a}</p>
+                          <p className="text-[12px] leading-[18px] text-[#4D6487] whitespace-pre-line">{item.a}</p>
                         </div>
                       )}
                     </li>
