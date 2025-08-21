@@ -151,7 +151,7 @@ const NavBar = () => {
             type="button"
             // onClick={() => setUserOpen((v) => !v)}
 
-            className="py-3 mx-5 rounded-full"
+            className="py-3 rounded-full"
             aria-haspopup="menu"
             aria-expanded={userOpen}
           >

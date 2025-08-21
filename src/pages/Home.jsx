@@ -50,7 +50,6 @@ function Section2() {
   const leftBtnInactive = "bg-[#B3B3B3] text-white";
 
   // 패널: 'none' | 'area' | 'major' | 'middle' | 'sub'
-
   const [panel, setPanel] = useState("none");
 
   // 선택 상태
@@ -236,6 +235,7 @@ function Section2() {
                 : "opacity-100 translate-y-0",
             ].join(" ")}
           >
+
             {/* 그리드 영역(스크롤) */}
             <div className="px-6 pt-7 pb-2 flex-1 min-h-0">
               <div
@@ -333,6 +333,7 @@ function Section2() {
                           }}
                           className={[
                             "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
+
                             active ? "bg-[#547DA0]" : "bg-[#CFCFCF]",
                           ].join(" ")}
                         >
@@ -506,7 +507,6 @@ function Section3() {
         "시작 그 이후를 고민하는 당신에게",
         "현실적인 조언으로 나만의 창업,",
         "한 걸음 더 나아가기",
-
       ],
     },
   ];
