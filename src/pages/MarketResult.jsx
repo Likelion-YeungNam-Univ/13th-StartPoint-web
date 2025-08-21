@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
   LabelList,
+  Cell,
 } from "recharts";
 
 import marketResultApi from "../apis/marketResultApi";
@@ -476,7 +477,7 @@ const MarketResult = () => {
             <div className="text-[22px] text-[#121B2A] font-semibold mb-10">
               선택업종 업종 수
             </div>
-            <img src={people} alt="people" />
+            <img src={shop} alt="shop" />
             <div className="text-[#30C0D0] font-bold">
               {data?.saleCnt
                 ? Number(data.saleCnt) != 0
@@ -612,38 +613,90 @@ const MarketResult = () => {
                     ]}
                     margin={{ top: 40, right: 0, left: 8, bottom: 10 }}
                   >
-                    <Bar
-                      dataKey="value"
-                      fill="#03B4C8"
-                      radius={[10, 10, 0, 0]}
-                      barSize={30}
-                    >
+                    <Bar dataKey="value" radius={[10, 10, 0, 0]} barSize={30}>
+                      {/* 막대 색상 개별 지정 */}
+                      {[
+                        { name: "주중", value: Number(pop?.day) || 0 },
+                        { name: "주말", value: Number(pop?.weekend) || 0 },
+                      ].map((d, i, arr) => {
+                        const maxVal = Math.max(...arr.map((e) => e.value));
+                        const isMax = d.value === maxVal;
+                        return (
+                          <Cell key={i} fill={isMax ? "#D04797" : "#03B4C8"} />
+                        );
+                      })}
+
+                      {/* 막대 위 value 라벨 */}
                       <LabelList
                         dataKey="value"
-                        position="top"
-                        offset={8}
-                        fill="#121B2A"
-                        fontSize={16}
-                        formatter={(v) => `${v}%`}
+                        content={({ value, index, viewBox }) => {
+                          const arr = [
+                            { name: "주중", value: Number(pop?.day) || 0 },
+                            { name: "주말", value: Number(pop?.weekend) || 0 },
+                          ];
+                          const maxVal = Math.max(...arr.map((e) => e.value));
+                          const isMax = arr[index].value === maxVal;
+                          const color = isMax ? "#D04797" : "#121B2A";
+                          const { x, y, width } = viewBox;
+                          const cx = x + width / 2;
+                          return (
+                            <text
+                              x={cx}
+                              y={y - 8}
+                              textAnchor="middle"
+                              fontSize={16}
+                              fill={color}
+                            >
+                              {value}%
+                            </text>
+                          );
+                        }}
                       />
 
+                      {/* 막대 아래 name 라벨 */}
                       <LabelList
                         dataKey="name"
-                        position="bottom"
-                        offset={8}
-                        fill="#121B2A"
-                        fontSize={16}
+                        content={({ value, index, viewBox }) => {
+                          const arr = [
+                            { name: "주중", value: Number(pop?.day) || 0 },
+                            { name: "주말", value: Number(pop?.weekend) || 0 },
+                          ];
+                          const maxVal = Math.max(...arr.map((e) => e.value));
+                          const isMax = arr[index].value === maxVal;
+                          const color = isMax ? "#D04797" : "#121B2A";
+                          const { x, y, width, height } = viewBox;
+                          const cx = x + width / 2;
+                          return (
+                            <text
+                              x={cx}
+                              y={y + height + 16}
+                              textAnchor="middle"
+                              fontSize={16}
+                              fill={color}
+                            >
+                              {value}
+                            </text>
+                          );
+                        }}
                       />
                     </Bar>
+
                     <XAxis hide />
-                    <YAxis hide /> 
+                    <YAxis hide />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
 
               <ul className="flex-1 flex flex-col justify-center items-start text-[16px] text-[#121B2A] font-semibold pl-6">
                 {eachDay.map((day) => (
-                  <li key={day.name} className="mb-1">
+                  <li
+                    key={day.name}
+                    className={`mb-1 ${
+                      day.name === maxDay.label
+                        ? "text-[#D04797]"
+                        : "text-[#121B2A]"
+                    } `}
+                  >
                     {day.name}: {day.value}%
                   </li>
                 ))}
@@ -661,12 +714,76 @@ const MarketResult = () => {
                   data={eachHour}
                   margin={{ top: 40, right: 0, left: 0, bottom: 20 }}
                 >
-                  <Bar dataKey="value" fill="#03B4C8" radius={[10, 10, 0, 0]}>
+                  <Bar dataKey="value" radius={[10, 10, 0, 0]}>
+                    {eachHour.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={
+                          entry.name === maxHour.label ? "#D04797" : "#03B4C8"
+                        }
+                      />
+                    ))}
                     <LabelList
                       dataKey="value"
                       position="top"
                       offset={10}
-                      fill="#121B2A"
+                      content={({ x, y, value, index }) => {
+                        const isMax =
+                          eachHour?.[index]?.name === maxHour?.label;
+                        const color = isMax ? "#D04797" : "#121B2A";
+                        return (
+                          <text x={x} y={y - 10} fontSize={14} fill={color}>
+                            {value}%
+                          </text>
+                        );
+                      }}
+                      fontSize={14}
+                      formatter={(v) => `${v}%`}
+                    />
+
+                    <LabelList
+                      dataKey="name"
+                      content={({ value, index, viewBox }) => {
+                        const { x, y, width, height } = viewBox;
+                        const cx = x + width / 2;
+                        const isMax =
+                          eachHour?.[index]?.name === maxHour?.label;
+                        const color = isMax ? "#D04797" : "#121B2A";
+                        return (
+                          <text
+                            x={cx}
+                            y={y + height + 14} // 막대 아래쪽
+                            textAnchor="middle"
+                            fontSize={14}
+                            fill={color}
+                          >
+                            {value}
+                          </text>
+                        );
+                      }}
+                    />
+                  </Bar>
+                  <XAxis hide />
+                  <YAxis hide />
+                </BarChart>
+              </ResponsiveContainer>
+              {/* <ResponsiveContainer width="90%" height="85%">
+                <BarChart
+                  data={eachHour}
+                  margin={{ top: 40, right: 0, left: 0, bottom: 20 }}
+                >
+                  <Bar
+                    dataKey="value"
+                    fill={(data) =>
+                      data.name === maxHour.label ? "#D04797" : "#121B2A"
+                    }
+                    radius={[10, 10, 0, 0]}
+                  >
+                    <LabelList
+                      dataKey="value"
+                      position="top"
+                      offset={10}
+                      fill={data.name == maxHour.label ? "#D04797" : "#121B2A"}
                       fontSize={14}
                       formatter={(v) => `${v}%`}
                     />
@@ -674,14 +791,14 @@ const MarketResult = () => {
                       dataKey="name"
                       position="bottom"
                       offset={10}
-                      fill="#121B2A"
+                      fill={data.name == maxHour.label ? "#D04797" : "#121B2A"}
                       fontSize={14}
                     />
                   </Bar>
                   <XAxis hide />
                   <YAxis hide />
                 </BarChart>
-              </ResponsiveContainer>
+              </ResponsiveContainer> */}
             </div>
           </div>
         </div>
