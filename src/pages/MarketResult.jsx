@@ -16,7 +16,7 @@ import analysis from "../assets/Analysis.svg";
 import sales from "../assets/Sales.svg";
 import industry from "../assets/Industry.svg";
 import population from "../assets/Population.svg";
-import vector from "../assets/Vector.svg";
+import dongIcon from "../assets/dongIcon.svg";
 import check from "../assets/Check.svg";
 import icon from "../assets/Icon.svg";
 import sadIcon from "../assets/SadIcon.svg";
@@ -370,21 +370,20 @@ const MarketResult = () => {
               지역 내 다른 동네와의 비교 결과
             </div>
             <div className="flex flex-1 w-full items-center justify-center gap-1 h-full">
-              <div className="flex flex-col items-center justify-end h-full ml-6 mt-16">
-                <img
-                  src={vector}
-                  alt="vector"
-                  className="w-[41px] h-[80px] object-contain"
-                />
-
-                <div className="text-[#121B2A] font-medium mt-2 text-[14px]">
-                  {dongName} /{" "}
+              <div className="flex flex-col items-center justify-center h-full ml-6 mt-16">
+                <div className="text-[#121B2A] font-semibold mt-2 text-[14px]">
+                  {dongName}
                   {data?.saleAmt
                     ? data.saleAmt != 0
                       ? `${data.saleAmt}만원`
-                      : "-"
-                    : "—"}
+                      : ""
+                    : ""}
                 </div>
+                <img
+                  src={dongIcon}
+                  alt="dongIcon"
+                  className="w-[41px] h-[80px] object-contain"
+                />
               </div>
 
               <div className="flex-1 flex items-center justify-center font-medium h-full">
@@ -492,16 +491,15 @@ const MarketResult = () => {
               지역 내 다른 동네와의 비교 결과
             </div>
             <div className="flex flex-1 w-full items-center justify-center gap-1 h-full">
-              <div className="flex flex-col items-center justify-end h-full ml-6 mt-16">
-                <img
-                  src={vector}
-                  alt="vector"
-                  className="w-[41px] h-[80px] object-contain"
-                />
-
+              <div className="flex flex-col items-center justify-center h-full ml-6 mt-16">
                 <div className="text-[#121B2A] font-semibold text-[15px]">
                   {dongName}
                 </div>
+                <img
+                  src={dongIcon}
+                  alt="dongIcon"
+                  className="w-[41px] h-[80px] object-contain"
+                />
               </div>
 
               <div className="flex-1 flex items-center justify-center font-medium h-full">
@@ -626,7 +624,7 @@ const MarketResult = () => {
                         offset={8}
                         fill="#121B2A"
                         fontSize={16}
-                        formatter={(v) => `${v}명`}
+                        formatter={(v) => `${v}%`}
                       />
 
                       <LabelList
@@ -646,7 +644,7 @@ const MarketResult = () => {
               <ul className="flex-1 flex flex-col justify-center items-start text-[16px] text-[#121B2A] font-semibold pl-6">
                 {eachDay.map((day) => (
                   <li key={day.name} className="mb-1">
-                    {day.name}: {day.value}명  
+                    {day.name}: {day.value}%
                   </li>
                 ))}
               </ul>
@@ -670,7 +668,7 @@ const MarketResult = () => {
                       offset={10}
                       fill="#121B2A"
                       fontSize={14}
-                      formatter={(v) => `${v}명`}
+                      formatter={(v) => `${v}%`}
                     />
                     <LabelList
                       dataKey="name"
