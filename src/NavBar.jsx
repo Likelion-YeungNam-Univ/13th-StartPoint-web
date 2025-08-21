@@ -131,7 +131,7 @@ const NavBar = () => {
             src={Logo}
             alt="Logo"
             onClick={() => goViaRouterState("home")}
-            className="cursor-pointer object-cover h-10"
+            className="cursor-pointer object-cover h-[44px]"
           />
         )}
 
