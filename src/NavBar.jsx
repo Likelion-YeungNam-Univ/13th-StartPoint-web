@@ -124,7 +124,7 @@ const NavBar = () => {
             className="cursor-pointer"
             onClick={() => setTempActive("home")}
           >
-            <img src={Logo} alt="Logo" className="object-cover h-10" />
+            <img src={Logo} alt="Logo" className="object-cover h-[44px]" />
           </Link>
         ) : (
           <img
@@ -151,7 +151,7 @@ const NavBar = () => {
             type="button"
             // onClick={() => setUserOpen((v) => !v)}
 
-            className="py-3 rounded-full"
+            className="py-3 mx-5 rounded-full"
             aria-haspopup="menu"
             aria-expanded={userOpen}
           >
