@@ -124,14 +124,14 @@ const NavBar = () => {
             className="cursor-pointer"
             onClick={() => setTempActive("home")}
           >
-            <img src={Logo} alt="Logo" className="object-cover h-10" />
+            <img src={Logo} alt="Logo" className="object-cover h-[44px]" />
           </Link>
         ) : (
           <img
             src={Logo}
             alt="Logo"
             onClick={() => goViaRouterState("home")}
-            className="cursor-pointer object-cover h-10"
+            className="cursor-pointer object-cover h-[44px]"
           />
         )}
 

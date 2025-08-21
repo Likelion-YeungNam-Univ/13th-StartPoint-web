@@ -19,11 +19,14 @@ import population from "../assets/Population.svg";
 import vector from "../assets/Vector.svg";
 import check from "../assets/Check.svg";
 import icon from "../assets/Icon.svg";
+import sadIcon from "../assets/SadIcon.svg";
 import shop from "../assets/Shop.svg";
 import people from "../assets/People.svg";
 import downIcon from "../assets/Down.svg";
 import upIcon from "../assets/Up.svg";
 import back from "../assets/Back.svg";
+import notandum from "../assets/Notandum.svg";
+
 import practicalApi from "../apis/practicalApi";
 
 // ----- 동네 코드 -> 이름 -----
@@ -186,31 +189,10 @@ const MarketResult = () => {
   const maxDay = getMaxDay(pop);
   const maxHour = getMaxHour(pop);
 
-  const minAvgMax = [
-    {
-      name: "최저",
-      value: data?.minAmt
-        ? Number(data.minAmt) != 0
-          ? Number(data.minAmt)
-          : Number(data.guMin) // 지금은 없는 값
-        : 0,
-    },
-    {
-      name: "평균",
-      value: data?.saleAmt
-        ? Number(data.saleAmt) != 0
-          ? Number(data.saleAmt)
-          : Number(data.guAmt)
-        : 0,
-    },
-    {
-      name: "최고",
-      value: data?.maxAmt
-        ? Number(data?.maxAmt) != 0
-          ? Number(data.maxAmt)
-          : Number(data.guMax) // 지금은 없는 값
-        : 0,
-    },
+  const minAvgMax 
+    { name: "최저", value: Number(data?.minAmt) || 0 },
+    { name: "평균", value: Number(data?.saleAmt) || 0 },
+    { name: "최고", value: Number(data?.maxAmt) || 0 },
   ];
 
   const saleSiCnt = Number(data?.storeCnt[0].storeCnt) || 0;
@@ -267,6 +249,12 @@ const MarketResult = () => {
         <span className="text-[#30C0D0] ml-2">‘{upjongName}’</span>에 대한 분석
         결과입니다.
       </div>
+      <div className="flex items-center justify-center text-[16px] text-white font-medium mt-4">
+        <img src={notandum} alt="notandum" className="mr-2" />
+        상권분석에 필요한 데이터가 충분하지 않은 경우, 일부 항목은 0으로
+        표시됩니다.
+      </div>
+
       {/* 0. 간단 요약 */}
       <div className="text-white text-[36px] pt-36 font-bold flex flex-col items-center">
         <div className="flex items-center">
@@ -512,8 +500,8 @@ const MarketResult = () => {
                   className="w-[41px] h-[80px] object-contain"
                 />
 
-                <div className="text-[#121B2A] font-medium mt-2 text-[14px]">
-                  {dongName} / {data?.saleCnt ?? "—"}개
+                <div className="text-[#121B2A] font-semibold text-[15px]">
+                  {dongName}
                 </div>
               </div>
 
@@ -701,11 +689,11 @@ const MarketResult = () => {
           </div>
         </div>
       </div>
-      {/* 모달 */}
+
       <div className="text-white text-[24px] pt-36 font-semibold flex flex-col items-center">
         창업 가능성 및 상위 동네 추천은 상세분석에서 확인할 수 있습니다.
       </div>
-      <div className="pt-36 pb-20 flex justify-center gap-4 text-[24px]">
+      <div className="pt-36 pb-25 flex justify-center gap-4 text-[24px]">
         <div
           onClick={() => setOpen(true)}
           className="w-[224px] h-[60px] p-8 bg-[#32C376] rounded-[6px] flex flex-col items-center justify-center text-center text-[18px] text-white font-semibold cursor-pointer hover:bg-[#28a866] transition"
@@ -722,10 +710,10 @@ const MarketResult = () => {
       {open && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="absolute inset-0 bg-black opacity-80"></div> 
-          <div className="bg-white w-[450px] p-15 rounded-xl shadow-lg text-center relative">
+          <div className="bg-white w-[550px] p-12 rounded-xl shadow-lg text-center relative">
             <button
               onClick={() => setOpen(false)}
-              className="absolute top-4 right-4 w-[27px] h-[27px] bg-[#4C5060] flex items-center justify-center text-white text-xl font-bold rounded-full cursor-pointer"
+              className="absolute top-4 right-4 w-[27px] h-[27px] bg-[#42437D] flex items-center justify-center text-white text-xl font-bold rounded-full cursor-pointer"
             >
               <img src={back} alt="back" className="w-[9] h-[9]" />
             </button>
@@ -745,10 +733,11 @@ const MarketResult = () => {
               </div>
             ) : (
               <>
-                <h2 className="text-[24px] font-bold mb-6 text-[#333]">
+
+                <h2 className="text-[24px] font-bold mb-8 text-[#42437D]">
                   상세분석 결과 리포트
                 </h2>
-                <div className="flex items-center mb-3">
+                <div className="flex items-center mb-5">
                   <img src={check} alt="check" className="mr-3" />
                   <span className="text-[20px] text-[#42437D] font-semibold">
                     창업 가능성 점수
@@ -758,35 +747,51 @@ const MarketResult = () => {
                   <div className="relative w-[500px] h-[250px]">
                     <PieChart
                       data={[
-                        { value: 70, color: "#0047AB" },
-                        { value: 30, color: "#FFFFFF" },
+                        {
+                          value: pracData?.feasibilityScore
+                            ? Number(pracData.feasibilityScore)
+                            : 0,
+                          color: "#0047AB",
+                        },
+                        {
+                          value: pracData?.feasibilityScore
+                            ? 10 - Number(pracData.feasibilityScore)
+                            : 10,
+                          color: "#22234B",
+                        },
                       ]}
                       startAngle={180}
                       lengthAngle={180}
                       lineWidth={15}
-                      rounded
+                      lineCap="round"
                       animate
                       animationDuration={500}
                       style={{ height: "250px", width: "100%" }}
                     />
 
                     <img
-                      src={icon}
+                      src={
+                        pracData?.feasibilityScore !== undefined &&
+                        pracData.feasibilityScore < 5
+                          ? sadIcon
+                          : icon
+                      }
                       alt="icon"
                       className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12"
                     />
 
-                    <div className="absolute top-[65%] -translate-y-1/2 left-1/2 -translate-x-1/2 w-[293px] h-[82px] bg-gray-700 rounded-[20px] flex flex-col items-center justify-center">
-                      <div className="relative w-[180px] flex justify-between items-center text-sm">
+                    <div className="absolute top-[66.5%] -translate-y-1/2 left-1/2 -translate-x-1/2 w-[320px] h-[85px] bg-gray-700 rounded-[20px] flex flex-col items-center justify-center">
+                      <div className="relative w-[250px] flex items-center justify-between mt-3">
                         <span className="text-[15px] text-[#A0AEC0]">0점</span>
-                        <span className="text-[28px] text-white font-bold">
+                        <span className="absolute left-1/2 transform -translate-x-1/2 text-[28px] text-white font-bold">
                           {pracData?.feasibilityScore
-                            ? `${pracData?.feasibilityScore}`
+                            ? `${pracData?.feasibilityScore}점`
                             : "-"}
                         </span>
                         <span className="text-[15px] text-[#A0AEC0]">10점</span>
                       </div>
-                      <div className="mt-2 text-center text-[15px] text-[#A0AEC0]">
+                      
+                      <div className="mt-2.5 mb-1 text-center text-[15px] text-[#A0AEC0]">
                         창업 가능성  
                       </div>
                     </div>
@@ -798,10 +803,16 @@ const MarketResult = () => {
                     창업 추천 동네
                   </span>
                 </div>
-                <span className="text-[15px] text-[#42437D] font-semibold">
-                  업종별 매출, 점포 수, 상권·유동인구, 창업 가능성 등을 종합해
-                  상위 3개 동네를 추천합니다.
-                </span>
+
+                <div className="text-left ml-7.5">
+                  <span className="block text-[15px] text-[#42437D] font-semibold">
+                    업종별 매출, 점포 수, 상권·유동인구, 창업 가능성 등을 종합해
+                  </span>
+                  <span className="block text-[15px] text-[#42437D] font-semibold">
+                    상위 3개 동네를 추천합니다.
+                  </span>
+                </div>
+
                 <div className="mt-6">
                   <div className="flex justify-center gap-8">
                     <div className="flex items-center justify-center w-[100px] h-[100px] bg-[#80849B] rounded-full text-white text-[20px] font-semibold shrink-0">

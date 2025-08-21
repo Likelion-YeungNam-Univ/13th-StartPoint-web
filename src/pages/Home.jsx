@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createSearchParams, useLocation, useNavigate } from "react-router-dom";
 import { Element, scroller } from "react-scroll";
 import imgSection1 from "../assets/Home_Section1.png";
@@ -42,13 +42,14 @@ function Section1() {
 }
 
 function Section2() {
-  // 왼쪽 버튼 기본, 조건부 스타일
+  // 왼쪽 버튼 스타일
+
   const leftBtnBase =
     "w-100 h-17 rounded-lg text-[19px] font-[PretendardSemiB] font-semibold transition";
-  const leftBtnActive = "bg-white text-[#121B2A] hover:brightness-95";
+  const leftBtnActive = "bg-white text-[#121B2A]";
   const leftBtnInactive = "bg-[#B3B3B3] text-white";
 
-  // 패널 상태: 'none' | 'area' | 'major' | 'middle' | 'sub'
+  // 패널: 'none' | 'area' | 'major' | 'middle' | 'sub'
   const [panel, setPanel] = useState("none");
 
   // 선택 상태
@@ -59,7 +60,15 @@ function Section2() {
 
   const navigate = useNavigate();
 
-  // ------- 동네 이름 코드 -------
+  // 스크롤 컨테이너 ref (패널 내부 그리드 영역)
+  const gridRef = useRef(null);
+  // 패널/상위선택 변경 시 스크롤 맨 위로
+  useEffect(() => {
+    if (gridRef.current) gridRef.current.scrollTop = 0;
+  }, [panel, selectedMajor, selectedMiddle]);
+
+  // ------- 동네 목록 -------
+
   const areaList = [
     { areaName: "서부1동", areaCode: "47290541" },
     { areaName: "서부2동", areaCode: "47290542" },
@@ -79,58 +88,46 @@ function Section2() {
   ];
 
   // ------- 업종 코드 -------
-  // 대분류: 앞에 두 자리
-  const [majors, setMajors] = useState([]);
-  // 중분류: 가운데 두 자리
-  const [middlesByMajor, setMiddlesByMajor] = useState({});
-  // 소분류: 끝에 두 자리
-  const [subsByMiddle, setSubsByMiddle] = useState({});
-
+  const [majors, setMajors] = useState([]); // [{prefix,name}]
+  const [middlesByMajor, setMiddlesByMajor] = useState({}); // {N1:[{code,name}]}
+  const [subsByMiddle, setSubsByMiddle] = useState({}); // {"N1/08":[{code,name}]}
   const [UpjongLoading, setUpjongLoading] = useState(false);
   const [UpjongError, setUpjongError] = useState(null);
 
-  // 예시: 'N10805' → { major:'N1', middle:'08', small:'05' }
   const splitUpjong = (code) => {
-    const split = String(code).trim();
+    const s = String(code).trim();
     return {
-      major: split.slice(0, 2),
-      middle: split.slice(2, 4),
-      small: split.slice(4, 6),
+      major: s.slice(0, 2),
+      middle: s.slice(2, 4),
+      small: s.slice(4, 6),
     };
   };
 
-  // API 배열 → 대/중/소 분류
   const categorization = (rows) => {
-    const majorMap = new Map(); // 대분류 코드와 이름을 맵핑
-    const middleMap = {}; // 대분류 코드에 해당하는 중분류 목록을 저장
-    const subMap = {}; // 대분류와 중분류 코드를 합친 key값에 해당하는 소분류 목록을 저장
-
+    const majorMap = new Map();
+    const middleMap = {};
+    const subMap = {};
     for (const item of rows) {
-      const parts = splitUpjong(item.upjong3cd);
+      const { major, middle } = splitUpjong(item.upjong3cd);
+      const large = String(item.largeCategory).trim();
+      const medium = String(item.mediumCategory).trim();
+      const small = String(item.smallCategory).trim();
+      const full = String(item.upjong3cd).trim();
+      if (!large || !medium || !small || !full) continue;
 
-      const { major, middle } = parts;
-      const largeName = String(item.largeCategory).trim();
-      const mediumName = String(item.mediumCategory).trim();
-      const smallName = String(item.smallCategory).trim();
-      const fullCode = String(item.upjong3cd).trim();
-
-      if (!largeName || !mediumName || !smallName || !fullCode) continue;
-
-      // 데이터들을 순회하면서 대분류가 이미 추가되었는지 확인하고, 추가되지 않았을 경우에만 majorMap에 새로운 대분류로 등록
-      if (!majorMap.has(major)) majorMap.set(major, largeName);
+      if (!majorMap.has(major)) majorMap.set(major, large);
 
       if (!middleMap[major]) middleMap[major] = [];
-      if (!middleMap[major].some((major) => major.code === middle)) {
-        middleMap[major].push({ code: middle, name: mediumName });
+      if (!middleMap[major].some((m) => m.code === middle)) {
+        middleMap[major].push({ code: middle, name: medium });
       }
 
       const key = `${major}/${middle}`;
       if (!subMap[key]) subMap[key] = [];
-      if (!subMap[key].some((sub) => sub.code === fullCode)) {
-        subMap[key].push({ code: fullCode, name: smallName });
+      if (!subMap[key].some((s) => s.code === full)) {
+        subMap[key].push({ code: full, name: small });
       }
     }
-
     const majors = Array.from(majorMap, ([prefix, name]) => ({ prefix, name }));
     return { majors, middlesByMajor: middleMap, subsByMiddle: subMap };
   };
@@ -141,10 +138,10 @@ function Section2() {
     setUpjongError(null);
     try {
       const data = await upjongListApi();
-      const categorizedData = categorization(data);
-      setMajors(categorizedData.majors);
-      setMiddlesByMajor(categorizedData.middlesByMajor);
-      setSubsByMiddle(categorizedData.subsByMiddle);
+      const c = categorization(data);
+      setMajors(c.majors);
+      setMiddlesByMajor(c.middlesByMajor);
+      setSubsByMiddle(c.subsByMiddle);
     } catch (e) {
       console.error(e);
       setUpjongError("업종 목록을 불러오지 못했습니다.");
@@ -153,7 +150,7 @@ function Section2() {
     }
   };
 
-  // 패널 열기 (업종은 첫 진입 때만 로드)
+  // 패널 열기
   const openPanel = (type) => {
     if (type === "area") {
       setPanel("area");
@@ -176,13 +173,13 @@ function Section2() {
   const UpjongActive =
     panel === "major" || panel === "middle" || panel === "sub";
 
+  // 렌더
   return (
     <Element
       name="market-research"
       id="market-research"
       className="flex items-center justify-center relative isolate min-h-[calc(100vh-56px)] bg-[#121B2A]"
     >
-      {/* 배경 이미지 */}
       <img
         src={imgSection2}
         alt="상권 분석 섹션 배경"
@@ -202,7 +199,7 @@ function Section2() {
           </div>
         </div>
 
-        {/* 버튼 및 패널 */}
+        {/* 버튼 + 우측 패널 */}
         <div className="grid grid-cols-11 gap-10 items-start">
           {/* 좌측 버튼 */}
           <div className="col-span-5 flex flex-col">
@@ -215,7 +212,6 @@ function Section2() {
             >
               동네 선택하기
             </button>
-
             <button
               type="button"
               onClick={() => openPanel("Upjong")}
@@ -232,95 +228,99 @@ function Section2() {
             className={[
               "col-span-6 bg-white rounded-xl",
               "transition-all duration-300",
-              "w-full h-80",
-              "flex flex-col",
+              "w-full h-80", // 패널 높이 고정
+              "flex flex-col", // 위(그리드) - 아래(CTA)
               panel === "none"
                 ? "opacity-0 translate-y-2 pointer-events-none"
                 : "opacity-100 translate-y-0",
             ].join(" ")}
           >
-            <div className="px-6 py-7">
-              {/* 동네 선택 패널 */}
-              {panel === "area" && (
-                <div className="grid grid-cols-4 gap-2">
-                  {areaList.map(({ areaName, areaCode }) => {
-                    const active = selectedArea === areaCode; // 선택값은 areaCode로 저장
-                    return (
-                      <button
-                        key={areaCode}
-                        type="button"
-                        onClick={() =>
-                          setSelectedArea((prev) =>
-                            prev === areaCode ? null : areaCode
-                          )
-                        }
-                        className={[
-                          "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
-                          active
-                            ? "bg-[#547DA0]"
-                            : "bg-[#CFCFCF] hover:brightness-95",
-                        ].join(" ")}
-                      >
-                        {areaName} {/* 화면엔 이름 표시 */}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
 
-              {/* 대분류 선택 패널 */}
-              {panel === "major" && (
-                <>
-                  {UpjongLoading && (
-                    <div className="text-sm text-gray-500">
-                      업종 불러오는 중…
-                    </div>
-                  )}
-                  {UpjongError && (
-                    <div className="text-sm text-red-600">{UpjongError}</div>
-                  )}
-                  {!UpjongLoading && !UpjongError && (
-                    <div className="grid grid-cols-4 gap-2">
-                      {majors.map((major) => {
-                        const active = selectedMajor === major.prefix; // "N1" 등
-                        return (
-                          <button
-                            key={major.prefix}
-                            type="button"
-                            onClick={() => {
-                              setSelectedMajor((prev) =>
-                                prev === major.prefix ? null : major.prefix
-                              );
-                              setSelectedMiddle(null);
-                              setSelectedSub(null);
-                            }}
-                            className={[
-                              "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
-                              active
-                                ? "bg-[#547DA0]"
-                                : "bg-[#CFCFCF] hover:brightness-95",
-                            ].join(" ")}
-                          >
-                            {major.name} {/* 대분류명 */}
-                          </button>
-                        );
-                      })}
-                      {!majors.length && (
-                        <div className="col-span-4 text-sm text-gray-500">
-                          표시할 대분류가 없습니다.
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </>
-              )}
+            {/* 그리드 영역(스크롤) */}
+            <div className="px-6 pt-7 pb-2 flex-1 min-h-0">
+              <div
+                ref={gridRef}
+                className="h-full overflow-y-auto overscroll-contain scrollbar-hide"
+              >
+                {/* AREA */}
+                {panel === "area" && (
+                  <div className="grid grid-cols-4 gap-2">
+                    {areaList.map(({ areaName, areaCode }) => {
+                      const active = selectedArea === areaCode;
+                      return (
+                        <button
+                          key={areaCode}
+                          type="button"
+                          onClick={() =>
+                            setSelectedArea((prev) =>
+                              prev === areaCode ? null : areaCode
+                            )
+                          }
+                          className={[
+                            "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
+                            active ? "bg-[#547DA0]" : "bg-[#CFCFCF]",
+                          ].join(" ")}
+                        >
+                          {areaName}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
 
-              {/* 중분류 선택 패널 */}
-              {panel === "middle" && (
-                <div className="grid grid-cols-4 gap-2">
-                  {(selectedMajor ? middlesByMajor[selectedMajor] : []).map(
-                    (mid) => {
-                      const active = selectedMiddle === mid.code; // "08" 등
+                {/* MAJOR */}
+                {panel === "major" && (
+                  <>
+                    {UpjongLoading && (
+                      <div className="text-sm text-gray-500">
+                        업종 불러오는 중…
+                      </div>
+                    )}
+                    {UpjongError && (
+                      <div className="text-sm text-red-600">{UpjongError}</div>
+                    )}
+                    {!UpjongLoading && !UpjongError && (
+                      <div className="grid grid-cols-4 gap-2">
+                        {majors.map((major) => {
+                          const active = selectedMajor === major.prefix;
+                          return (
+                            <button
+                              key={major.prefix}
+                              type="button"
+                              onClick={() => {
+                                setSelectedMajor((prev) =>
+                                  prev === major.prefix ? null : major.prefix
+                                );
+                                setSelectedMiddle(null);
+                                setSelectedSub(null);
+                              }}
+                              className={[
+                                "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
+                                active ? "bg-[#547DA0]" : "bg-[#CFCFCF]",
+                              ].join(" ")}
+                            >
+                              {major.name}
+                            </button>
+                          );
+                        })}
+                        {!majors.length && (
+                          <div className="col-span-4 text-sm text-gray-500">
+                            표시할 대분류가 없습니다.
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* MIDDLE */}
+                {panel === "middle" && (
+                  <div className="grid grid-cols-4 gap-2">
+                    {(selectedMajor
+                      ? middlesByMajor[selectedMajor] || []
+                      : []
+                    ).map((mid) => {
+                      const active = selectedMiddle === mid.code;
                       return (
                         <button
                           key={`${selectedMajor}-${mid.code}`}
@@ -333,65 +333,64 @@ function Section2() {
                           }}
                           className={[
                             "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
-                            active
-                              ? "bg-[#547DA0]"
-                              : "bg-[#CFCFCF] hover:brightness-95",
+
+                            active ? "bg-[#547DA0]" : "bg-[#CFCFCF]",
                           ].join(" ")}
                         >
                           {mid.name}
                         </button>
                       );
-                    }
-                  )}
-                  {selectedMajor && !middlesByMajor[selectedMajor]?.length && (
-                    <div className="col-span-4 text-sm text-gray-500">
-                      이 대분류에 해당하는 중분류가 없습니다.
-                    </div>
-                  )}
-                </div>
-              )}
+                    })}
+                    {selectedMajor &&
+                      !(middlesByMajor[selectedMajor] || []).length && (
+                        <div className="col-span-4 text-sm text-gray-500">
+                          이 대분류에 해당하는 중분류가 없습니다.
+                        </div>
+                      )}
+                  </div>
+                )}
 
-              {/* 소분류 선택 패널 */}
-              {panel === "sub" && (
-                <div className="grid grid-cols-4 gap-2">
-                  {(selectedMajor && selectedMiddle
-                    ? subsByMiddle[`${selectedMajor}/${selectedMiddle}`]
-                    : []
-                  ).map((sub) => {
-                    const active = selectedSub?.code === sub.code; // "N10805"
-                    return (
-                      <button
-                        key={sub.code}
-                        type="button"
-                        onClick={() =>
-                          setSelectedSub((prev) =>
-                            prev?.code === sub.code ? null : sub
-                          )
-                        }
-                        className={[
-                          "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
-                          active
-                            ? "bg-[#547DA0]"
-                            : "bg-[#CFCFCF] hover:brightness-95",
-                        ].join(" ")}
-                      >
-                        {sub.name}
-                      </button>
-                    );
-                  })}
-                  {selectedMajor &&
-                    selectedMiddle &&
-                    !subsByMiddle[`${selectedMajor}/${selectedMiddle}`]
-                      ?.length && (
-                      <div className="col-span-4 text-sm text-gray-500">
-                        이 중분류에 해당하는 소분류가 없습니다.
-                      </div>
-                    )}
-                </div>
-              )}
+                {/* SUB */}
+                {panel === "sub" && (
+                  <div className="grid grid-cols-4 gap-2">
+                    {(selectedMajor && selectedMiddle
+                      ? subsByMiddle[`${selectedMajor}/${selectedMiddle}`] || []
+                      : []
+                    ).map((sub) => {
+                      const active = selectedSub?.code === sub.code;
+                      return (
+                        <button
+                          key={sub.code}
+                          type="button"
+                          onClick={() =>
+                            setSelectedSub((prev) =>
+                              prev?.code === sub.code ? null : sub
+                            )
+                          }
+                          className={[
+                            "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
+                            active ? "bg-[#547DA0]" : "bg-[#CFCFCF]",
+                          ].join(" ")}
+                        >
+                          {sub.name}
+                        </button>
+                      );
+                    })}
+                    {selectedMajor &&
+                      selectedMiddle &&
+                      !(
+                        subsByMiddle[`${selectedMajor}/${selectedMiddle}`] || []
+                      ).length && (
+                        <div className="col-span-4 text-sm text-gray-500">
+                          이 중분류에 해당하는 소분류가 없습니다.
+                        </div>
+                      )}
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* 하단 CTA 버튼 */}
+            {/* 하단 CTA (중앙 고정) */}
             <div className="mt-auto shrink-0 px-6 pb-7 flex items-center justify-center">
               {panel === "area" && (
                 <button
@@ -407,7 +406,7 @@ function Section2() {
                   className={[
                     "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
                     canNextFromArea
-                      ? "bg-[#547DA0] text-white cursor-pointer hover:brightness-95"
+                      ? "bg-[#547DA0] text-white cursor-pointer "
                       : "bg-[#CFCFCF] text-white cursor-not-allowed",
                   ].join(" ")}
                 >
@@ -423,7 +422,7 @@ function Section2() {
                   className={[
                     "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
                     canNextFromMajor
-                      ? "bg-[#547DA0] text-white cursor-pointer hover:brightness-95"
+                      ? "bg-[#547DA0] text-white cursor-pointer"
                       : "bg-[#CFCFCF] text-white cursor-not-allowed",
                   ].join(" ")}
                 >
@@ -439,7 +438,7 @@ function Section2() {
                   className={[
                     "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
                     canNextFromMiddle
-                      ? "bg-[#547DA0] text-white cursor-pointer hover:brightness-95"
+                      ? "bg-[#547DA0] text-white cursor-pointer"
                       : "bg-[#CFCFCF] text-white cursor-not-allowed",
                   ].join(" ")}
                 >
@@ -453,27 +452,21 @@ function Section2() {
                   disabled={!canAnalyzeFromSub}
                   onClick={() => {
                     const picked = areaList.find(
-                      (area) => area.areaCode === selectedArea
+                      (a) => a.areaCode === selectedArea
                     );
-                    const areaCode = picked?.areaCode ?? null; // 8자리 코드
+                    const areaCode = picked?.areaCode ?? null;
                     const areaName = picked?.areaName ?? null;
-                    const upjong3cd = selectedSub?.code ?? null; // 예: "N10805"
-
+                    const upjong3cd = selectedSub?.code ?? null;
                     if (!areaCode || !areaName || !upjong3cd) return;
 
-                    // areaCode, areaName, upjong3cd 전달
                     navigate("/market-result", {
-                      state: {
-                        areaCode: areaCode,
-                        upjong3cd: upjong3cd,
-                        areaName: areaName,
-                      },
+                      state: { areaCode, upjong3cd, areaName },
                     });
                   }}
                   className={[
                     "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
                     canAnalyzeFromSub
-                      ? "bg-[#547DA0] text-white cursor-pointer hover:brightness-95"
+                      ? "bg-[#547DA0] text-white cursor-pointer"
                       : "bg-[#CFCFCF] text-white cursor-not-allowed",
                   ].join(" ")}
                 >
@@ -564,7 +557,7 @@ function Section3() {
           <button
             type="button"
             onClick={() => navigate("/mentoring")}
-            className="rounded-sm bg-[#547DA0] px-8 py-3 text-[15px] font-[PretendardB] text-white hover:bg-[#547DA0]/80 transition"
+            className="rounded-sm bg-[#547DA0] px-8 py-3 text-[15px] font-[PretendardB] text-white"
           >
             멘토 탐색 바로가기
           </button>
