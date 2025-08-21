@@ -45,7 +45,7 @@ function Section2() {
   // 왼쪽 버튼 기본, 조건부 스타일
   const leftBtnBase =
     "w-100 h-17 rounded-lg text-[19px] font-[PretendardSemiB] font-semibold transition";
-  const leftBtnActive = "bg-white text-[#121B2A] hover:brightness-95";
+  const leftBtnActive = "bg-white text-[#121B2A]";
   const leftBtnInactive = "bg-[#B3B3B3] text-white";
 
   // 패널 상태: 'none' | 'area' | 'major' | 'middle' | 'sub'
@@ -256,9 +256,7 @@ function Section2() {
                         }
                         className={[
                           "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
-                          active
-                            ? "bg-[#547DA0]"
-                            : "bg-[#CFCFCF] hover:brightness-95",
+                          active ? "bg-[#547DA0]" : "bg-[#CFCFCF]",
                         ].join(" ")}
                       >
                         {areaName} {/* 화면엔 이름 표시 */}
@@ -296,9 +294,7 @@ function Section2() {
                             }}
                             className={[
                               "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
-                              active
-                                ? "bg-[#547DA0]"
-                                : "bg-[#CFCFCF] hover:brightness-95",
+                              active ? "bg-[#547DA0]" : "bg-[#CFCFCF]",
                             ].join(" ")}
                           >
                             {major.name} {/* 대분류명 */}
@@ -333,9 +329,7 @@ function Section2() {
                           }}
                           className={[
                             "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
-                            active
-                              ? "bg-[#547DA0]"
-                              : "bg-[#CFCFCF] hover:brightness-95",
+                            active ? "bg-[#547DA0]" : "bg-[#CFCFCF]",
                           ].join(" ")}
                         >
                           {mid.name}
@@ -370,9 +364,7 @@ function Section2() {
                         }
                         className={[
                           "h-11 w-26 rounded-lg text-[14px] text-white font-[PretendardR] transition-colors cursor-pointer",
-                          active
-                            ? "bg-[#547DA0]"
-                            : "bg-[#CFCFCF] hover:brightness-95",
+                          active ? "bg-[#547DA0]" : "bg-[#CFCFCF]",
                         ].join(" ")}
                       >
                         {sub.name}
@@ -407,7 +399,7 @@ function Section2() {
                   className={[
                     "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
                     canNextFromArea
-                      ? "bg-[#547DA0] text-white cursor-pointer hover:brightness-95"
+                      ? "bg-[#547DA0] text-white cursor-pointer "
                       : "bg-[#CFCFCF] text-white cursor-not-allowed",
                   ].join(" ")}
                 >
@@ -423,7 +415,7 @@ function Section2() {
                   className={[
                     "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
                     canNextFromMajor
-                      ? "bg-[#547DA0] text-white cursor-pointer hover:brightness-95"
+                      ? "bg-[#547DA0] text-white cursor-pointer"
                       : "bg-[#CFCFCF] text-white cursor-not-allowed",
                   ].join(" ")}
                 >
@@ -439,7 +431,7 @@ function Section2() {
                   className={[
                     "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
                     canNextFromMiddle
-                      ? "bg-[#547DA0] text-white cursor-pointer hover:brightness-95"
+                      ? "bg-[#547DA0] text-white cursor-pointer"
                       : "bg-[#CFCFCF] text-white cursor-not-allowed",
                   ].join(" ")}
                 >
@@ -473,7 +465,7 @@ function Section2() {
                   className={[
                     "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
                     canAnalyzeFromSub
-                      ? "bg-[#547DA0] text-white cursor-pointer hover:brightness-95"
+                      ? "bg-[#547DA0] text-white cursor-pointer"
                       : "bg-[#CFCFCF] text-white cursor-not-allowed",
                   ].join(" ")}
                 >
@@ -564,7 +556,7 @@ function Section3() {
           <button
             type="button"
             onClick={() => navigate("/mentoring")}
-            className="rounded-sm bg-[#547DA0] px-8 py-3 text-[15px] font-[PretendardB] text-white hover:bg-[#547DA0]/80 transition"
+            className="rounded-sm bg-[#547DA0] px-8 py-3 text-[15px] font-[PretendardB] text-white"
           >
             멘토 탐색 바로가기
           </button>
