@@ -136,7 +136,7 @@ const NavBar = () => {
         )}
 
         <div className="flex items-center gap-6">
-          <MenuItem id="home">Home</MenuItem>
+          <MenuItem id="home"> Home </MenuItem>
           <MenuItem id="market-research">상권 분석</MenuItem>
           <MenuItem id="mentoring">멘토 탐색</MenuItem>
         </div>
@@ -151,7 +151,7 @@ const NavBar = () => {
             type="button"
             // onClick={() => setUserOpen((v) => !v)}
 
-            className="py-3 rounded-full"
+            className="py-3 ml-5 rounded-full"
             aria-haspopup="menu"
             aria-expanded={userOpen}
           >

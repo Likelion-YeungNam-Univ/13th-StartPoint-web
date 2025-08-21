@@ -189,7 +189,7 @@ const MarketResult = () => {
   const maxDay = getMaxDay(pop);
   const maxHour = getMaxHour(pop);
 
-  const minAvgMax 
+  const minAvgMax = [
     { name: "최저", value: Number(data?.minAmt) || 0 },
     { name: "평균", value: Number(data?.saleAmt) || 0 },
     { name: "최고", value: Number(data?.maxAmt) || 0 },
@@ -254,7 +254,6 @@ const MarketResult = () => {
         상권분석에 필요한 데이터가 충분하지 않은 경우, 일부 항목은 0으로
         표시됩니다.
       </div>
-
       {/* 0. 간단 요약 */}
       <div className="text-white text-[36px] pt-36 font-bold flex flex-col items-center">
         <div className="flex items-center">
@@ -689,7 +688,6 @@ const MarketResult = () => {
           </div>
         </div>
       </div>
-
       <div className="text-white text-[24px] pt-36 font-semibold flex flex-col items-center">
         창업 가능성 및 상위 동네 추천은 상세분석에서 확인할 수 있습니다.
       </div>
@@ -733,7 +731,6 @@ const MarketResult = () => {
               </div>
             ) : (
               <>
-
                 <h2 className="text-[24px] font-bold mb-8 text-[#42437D]">
                   상세분석 결과 리포트
                 </h2>
@@ -790,7 +787,7 @@ const MarketResult = () => {
                         </span>
                         <span className="text-[15px] text-[#A0AEC0]">10점</span>
                       </div>
-                      
+
                       <div className="mt-2.5 mb-1 text-center text-[15px] text-[#A0AEC0]">
                         창업 가능성  
                       </div>

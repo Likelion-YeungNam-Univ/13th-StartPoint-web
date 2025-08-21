@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { createSearchParams, useLocation, useNavigate } from "react-router-dom";
 import { Element, scroller } from "react-scroll";
 import imgSection1 from "../assets/Home_Section1.png";
@@ -43,7 +43,6 @@ function Section1() {
 
 function Section2() {
   // 왼쪽 버튼 스타일
-
   const leftBtnBase =
     "w-100 h-17 rounded-lg text-[19px] font-[PretendardSemiB] font-semibold transition";
   const leftBtnActive = "bg-white text-[#121B2A]";
@@ -67,8 +66,37 @@ function Section2() {
     if (gridRef.current) gridRef.current.scrollTop = 0;
   }, [panel, selectedMajor, selectedMiddle]);
 
-  // ------- 동네 목록 -------
+  // ------- 우측 패널 그리드 스크롤 유무 감지 -------
+  const [hasScroll, setHasScroll] = useState(false);
+  const updateHasScroll = useCallback(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    // +1은 서브픽셀/반올림 오차 대비
+    setHasScroll(el.scrollHeight > el.clientHeight + 1);
+  }, []);
 
+  // 패널/선택/데이터 변경 시 재측정
+  useEffect(() => {
+    const id = requestAnimationFrame(updateHasScroll);
+    return () => cancelAnimationFrame(id);
+  }, [
+    updateHasScroll,
+    panel,
+    selectedMajor,
+    selectedMiddle,
+    selectedSub,
+    // 데이터 변동에 따른 레이아웃 변화도 반영
+    // 객체/배열 참조가 바뀔 때만 트리거됨
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  ]);
+
+  // 리사이즈 대응
+  useEffect(() => {
+    window.addEventListener("resize", updateHasScroll);
+    return () => window.removeEventListener("resize", updateHasScroll);
+  }, [updateHasScroll]);
+
+  // ------- 동네 목록 -------
   const areaList = [
     { areaName: "서부1동", areaCode: "47290541" },
     { areaName: "서부2동", areaCode: "47290542" },
@@ -147,6 +175,8 @@ function Section2() {
       setUpjongError("업종 목록을 불러오지 못했습니다.");
     } finally {
       setUpjongLoading(false);
+      // 데이터 로딩 완료 후 레이아웃 반영 타이밍에 재측정
+      requestAnimationFrame(updateHasScroll);
     }
   };
 
@@ -237,7 +267,7 @@ function Section2() {
           >
 
             {/* 그리드 영역(스크롤) */}
-            <div className="px-6 pt-7 pb-2 flex-1 min-h-0">
+            <div className="px-6 py-7 flex-1 min-h-0">
               <div
                 ref={gridRef}
                 className="h-full overflow-y-auto overscroll-contain scrollbar-hide"
@@ -393,57 +423,79 @@ function Section2() {
             {/* 하단 CTA (중앙 고정) */}
             <div className="mt-auto shrink-0 px-6 pb-7 flex items-center justify-center">
               {panel === "area" && (
-                <button
-                  type="button"
-                  disabled={!canNextFromArea}
-                  onClick={() => {
-                    setSelectedMajor(null);
-                    setSelectedMiddle(null);
-                    setSelectedSub(null);
-                    setPanel("major");
-                    if (!majors.length && !UpjongLoading) loadUpjong();
-                  }}
-                  className={[
-                    "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
-                    canNextFromArea
-                      ? "bg-[#547DA0] text-white cursor-pointer "
-                      : "bg-[#CFCFCF] text-white cursor-not-allowed",
-                  ].join(" ")}
-                >
-                  다음
-                </button>
+                <div className="flex items-center justify-center gap-3">
+                  <button
+                    type="button"
+                    disabled={!canNextFromArea}
+                    onClick={() => {
+                      setSelectedMajor(null);
+                      setSelectedMiddle(null);
+                      setSelectedSub(null);
+                      setPanel("major");
+                      if (!majors.length && !UpjongLoading) loadUpjong();
+                    }}
+                    className={[
+                      "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
+                      canNextFromArea
+                        ? "bg-[#547DA0] text-white cursor-pointer "
+                        : "bg-[#CFCFCF] text-white cursor-not-allowed",
+                    ].join(" ")}
+                  >
+                    다음
+                  </button>
+                  {hasScroll && (
+                    <span className="text-xs text-gray-500">
+                      스크롤해서 더 확인하세요
+                    </span>
+                  )}
+                </div>
               )}
 
               {panel === "major" && (
-                <button
-                  type="button"
-                  disabled={!canNextFromMajor}
-                  onClick={() => setPanel("middle")}
-                  className={[
-                    "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
-                    canNextFromMajor
-                      ? "bg-[#547DA0] text-white cursor-pointer"
-                      : "bg-[#CFCFCF] text-white cursor-not-allowed",
-                  ].join(" ")}
-                >
-                  다음
-                </button>
+                <div className="flex items-center justify-center gap-3">
+                  <button
+                    type="button"
+                    disabled={!canNextFromMajor}
+                    onClick={() => setPanel("middle")}
+                    className={[
+                      "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
+                      canNextFromMajor
+                        ? "bg-[#547DA0] text-white cursor-pointer"
+                        : "bg-[#CFCFCF] text-white cursor-not-allowed",
+                    ].join(" ")}
+                  >
+                    다음
+                  </button>
+                  {hasScroll && (
+                    <span className="text-xs text-gray-500">
+                      스크롤해서 더 확인하세요
+                    </span>
+                  )}
+                </div>
               )}
 
               {panel === "middle" && (
-                <button
-                  type="button"
-                  disabled={!canNextFromMiddle}
-                  onClick={() => setPanel("sub")}
-                  className={[
-                    "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
-                    canNextFromMiddle
-                      ? "bg-[#547DA0] text-white cursor-pointer"
-                      : "bg-[#CFCFCF] text-white cursor-not-allowed",
-                  ].join(" ")}
-                >
-                  다음
-                </button>
+                <div className="flex items-center justify-between gap-3">
+                  <div className="w-35"></div>
+                  <button
+                    type="button"
+                    disabled={!canNextFromMiddle}
+                    onClick={() => setPanel("sub")}
+                    className={[
+                      "rounded-lg w-30 h-9 text-sm font-[PretendardR] transition-colors",
+                      canNextFromMiddle
+                        ? "bg-[#547DA0] text-white cursor-pointer"
+                        : "bg-[#CFCFCF] text-white cursor-not-allowed",
+                    ].join(" ")}
+                  >
+                    다음
+                  </button>
+                  {hasScroll && (
+                    <div className="text-xs text-gray-500 text-top h-8">
+                      스크롤해서 더 확인하세요
+                    </div>
+                  )}
+                </div>
               )}
 
               {panel === "sub" && (
