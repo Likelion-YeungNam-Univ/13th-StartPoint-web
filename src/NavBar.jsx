@@ -5,7 +5,7 @@ import Logo from "./assets/SPO_Logo.svg";
 import userIcon from "./assets/User_Icon.svg";
 import useScrollSpy from "./hooks/useScrollSpy";
 
-const NAV_H = 64;
+const NAV_H = 56;
 
 const SECTION_IDS = ["home", "market-research", "mentoring"];
 
@@ -113,8 +113,8 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="fixed inset-x-0 top-0 z-50 h-16 bg-white">
-      <div className="mx-auto max-w-screen-xl h-full flex items-center justify-between px-4">
+    <nav className="fixed inset-x-0 top-0 z-50 h-14 bg-white">
+      <div className="mx-auto max-w-screen-xl h-full flex items-center justify-around px-4">
         {isHome ? (
           <Link
             to="home"
@@ -124,14 +124,14 @@ const NavBar = () => {
             className="cursor-pointer"
             onClick={() => setTempActive("home")}
           >
-            <img src={Logo} alt="Logo" className="object-cover h-10" />
+            <img src={Logo} alt="Logo" className="object-cover h-[44px]" />
           </Link>
         ) : (
           <img
             src={Logo}
             alt="Logo"
             onClick={() => goViaRouterState("home")}
-            className="cursor-pointer object-cover h-10"
+            className="cursor-pointer object-cover h-[44px]"
           />
         )}
 
@@ -141,32 +141,38 @@ const NavBar = () => {
           <MenuItem id="mentoring">멘토 탐색</MenuItem>
         </div>
 
-        <div className="relative" ref={userMenuRef}>
+        <div
+          className="relative"
+          ref={userMenuRef}
+          onMouseEnter={() => setUserOpen(true)}
+          onMouseLeave={() => setUserOpen(false)}
+        >
           <button
             type="button"
-            onClick={() => setUserOpen((v) => !v)}
-            className="p-2 rounded-full"
+            // onClick={() => setUserOpen((v) => !v)}
+
+            className="py-3 mx-5 rounded-full"
             aria-haspopup="menu"
             aria-expanded={userOpen}
           >
             <img
               src={userIcon}
               alt="User_Icon"
-              className="h-8 w-8 object-cover"
+              className="h-8 w-8 object-cover cursor-pointer"
             />
           </button>
 
           {userOpen && (
             <div
               role="menu"
-              className="absolute left-1/2 top-full mt-2 w-56 -translate-x-1/2 bg-white z-50 border border-[#757575]"
+              className="absolute left-1/2 top-full w-56 -translate-x-1/2 bg-white z-50 border-t border-[#757575] drop-shadow"
             >
               {!isLoggedIn ? (
                 // 로그인 X
                 <ul className="divide-y divide-[#757575]">
                   <li>
                     <button
-                      className="w-full text-center px-4 py-2 text-sm hover:bg-gray-50"
+                      className="w-full text-center px-4 py-2 text-sm cursor-pointer hover:bg-gray-50"
                       onClick={() => {
                         setUserOpen(false);
                         navigate("/signup");
@@ -177,7 +183,7 @@ const NavBar = () => {
                   </li>
                   <li>
                     <button
-                      className="w-full text-cneter px-4 py-2 text-sm hover:bg-gray-50"
+                      className="w-full text-cneter px-4 py-2 text-sm cursor-pointer hover:bg-gray-50"
                       onClick={() => {
                         setUserOpen(false);
                         navigate("/login");
@@ -193,7 +199,7 @@ const NavBar = () => {
                 <ul className="divide-y divide-[#757575]">
                   <li>
                     <button
-                      className="w-full text-center px-4 py-2 text-sm hover:bg-gray-50"
+                      className="w-full text-center px-4 py-2 text-sm cursor-pointer hover:bg-gray-50"
                       onClick={() => {
                         setUserOpen(false);
                         navigate("/mypage");
@@ -204,7 +210,7 @@ const NavBar = () => {
                   </li>
                   <li>
                     <button
-                      className="w-full text-center px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                      className="w-full text-center px-4 py-2 text-sm cursor-pointer text-red-600 hover:bg-red-50"
                       onClick={() => {
                         localStorage.setItem("isLoggedIn", "false");
                         setIsLoggedIn(false);
