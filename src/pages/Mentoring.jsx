@@ -1,5 +1,5 @@
-// src/pages/Mentoring.jsx
 import React, { useState } from "react";
+import back from "../assets/Back.svg";
 
 // ----- 더미 데이터 (API로 교체 해야 함) -----
 const mentors = [
@@ -127,6 +127,33 @@ const Mentoring = () => {
   const [town, setTown] = useState("조영동");
   const [cate, setCate] = useState("카페");
 
+  const [selectedMentor, setSelectedMentor] = useState(null);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
+
+  const times = ["10:00", "14:00", "18:00", "22:00"];
+
+  // 현재 년, 월
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+
+  // 달력 계산
+  const firstDay = new Date(year, month, 1).getDay(); // 이번 달 1일의 요일
+  const lastDate = new Date(year, month + 1, 0).getDate(); // 이번 달 마지막 날짜
+
+  // 달력용 배열 만들기
+  const days = [];
+  for (let i = 0; i < firstDay; i++) days.push(null); // 시작 전 빈칸
+  for (let d = 1; d <= lastDate; d++) days.push(d);
+
+  const handlePrevMonth = () => {
+    setCurrentDate(new Date(year, month - 1, 1));
+  };
+  const handleNextMonth = () => {
+    setCurrentDate(new Date(year, month + 1, 1));
+  };
+
   const chipCls = (active) =>
     `px-4 py-1 rounded-full text-sm border transition
      ${
@@ -253,14 +280,14 @@ const Mentoring = () => {
           {mentors.map((mentor) => (
             <article
               key={mentor.id}
-              className="rounded-xl bg-white py-12 transition hover:bg-white/90"
+              className="rounded-xl bg-white py-12 transition hover:bg-white/90 cursor-pointer"
+              onClick={() => setSelectedMentor(mentor)}
             >
               <div className="mx-auto h-20 w-20 overflow-hidden rounded-full ring-2 ring-gray-200">
                 <img
                   src={mentor.photo}
                   alt={`${mentor.name} 프로필 이미지`}
                   className="h-full w-full object-cover"
-                  loading="lazy"
                 />
               </div>
               <h3 className="mt-4 text-center text-lg font-semibold text-gray-900">
@@ -268,9 +295,6 @@ const Mentoring = () => {
               </h3>
               <p className="mt-1 text-center text-sm text-gray-500">
                 {mentor.headline}
-              </p>
-              <p className="mt-4 px-12 text-sm leading-relaxed text-gray-700">
-                {mentor.bio}
               </p>
               <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
                 {mentor.tags.map((t) => (
@@ -286,6 +310,142 @@ const Mentoring = () => {
           ))}
         </div>
       </div>
+
+      {selectedMentor && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-6">
+          <div className="relative w-full max-w-3xl rounded-2xl bg-white shadow-xl flex overflow-hidden">
+            {/* 왼쪽 */}
+            <div className="w-1/2 p-6 flex flex-col items-center mt-5 ml-5 mr-5">
+              <img
+                src={selectedMentor.photo}
+                alt={selectedMentor.name}
+                className="h-[90px] w-[90px] rounded-full object-cover ring-2 ring-gray-200"
+              />
+              <h3 className="mt-3 text-[24px] font-semibold text-[#464646]">
+                {selectedMentor.name}
+              </h3>
+              <p className="text-sm text-gray-500">{selectedMentor.headline}</p>
+
+              <div className="mt-6 w-full">
+                <div className="flex items-center justify-center gap-4 mb-2">
+                  <button onClick={handlePrevMonth}>◀</button>
+                  <span className="font-bold text-[14px]">
+                    {year}년 {month + 1}월
+                  </span>
+                  <button onClick={handleNextMonth}>▶</button>
+                </div>
+
+                <div className="grid grid-cols-7 text-center text-sm gap-y-2">
+                  {["일", "월", "화", "수", "목", "금", "토"].map((d) => (
+                    <div
+                      key={d}
+                      className="flex items-center justify-center w-[24px] h-[24px] text-[12px] font-medium text-gray-600"
+                    >
+                      {d}
+                    </div>
+                  ))}
+
+                  {/* 날짜 */}
+                  {days.map((d, i) => (
+                    <div
+                      key={i}
+                      className={`
+                        flex items-center justify-center 
+                        w-[24px] h-[24px] cursor-pointer text-[12px]
+                        ${
+                          d
+                            ? selectedDate &&
+                              selectedDate.getDate() === d &&
+                              selectedDate.getMonth() === month
+                              ? "bg-[#0047AB] text-white rounded-full"
+                              : "hover:bg-gray-100 rounded-full"
+                            : ""
+                        }
+                      `}
+                      onClick={() =>
+                        d && setSelectedDate(new Date(year, month, d))
+                      }
+                    >
+                      {d || ""}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 시간 선택 */}
+              <div className="mt-4 flex flex-wrap gap-2">
+                {times.map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setSelectedTime(t)}
+                    className={`px-4 py-1 rounded-[10px] border text-[12px] cursor-pointer ${
+                      selectedTime === t
+                        ? "bg-[#2E47A4] text-white border-[#2E47A4]"
+                        : "bg-white text-black border-[#DBDBDB] hover:bg-[#DBDBDB]"
+                    }`}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+
+              <p className="mt-5 mb-5 text-[12px] text-[#464646]">
+                상세 일정은 멘토 확정 후 조율될 수 있습니다.
+              </p>
+
+              <button className="w-[104px] h-[34px] rounded-[6px] bg-[#2E47A4] px-4 py-4 text-white font-[10px] flex items-center justify-center cursor-pointer">
+                신청하기
+              </button>
+            </div>
+
+            {/* 오른쪽 */}
+            <div className="w-1/2 p-8">
+              <h2 className="text-[20px] font-semibold text-[#464646]">
+                프로필
+              </h2>
+              <hr className="text-[#464646] mt-4" />
+              <h3 className="mt-4 text-[16px] font-semibold text-[#464646]">
+                소개글
+              </h3>
+              <p className="mt-2 text-[#464646] text-14px font-medium leading-relaxed">
+                {selectedMentor.bio}
+              </p>
+
+              <hr className="text-[#D7D7D7] mt-5" />
+              <h3 className="mt-5 text-[16px] text-[#464646] font-semibold">
+                키워드
+              </h3>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {selectedMentor.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full bg-white px-3 py-1 text-[12px] text-black border-[0.5px] border-[#DBDBDB]"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+
+              <hr className="text-[#D7D7D7] mt-5" />
+              <h3 className="mt-5 text-[16px] text-[#464646] font-semibold">
+                대화 가능한 주제
+              </h3>
+              <ul className="mt-2 list-disc pl-5 text-gray-700">
+                {selectedMentor.topics?.map((topic) => (
+                  <li key={topic}>{topic}</li>
+                ))}
+              </ul>
+            </div>
+
+            <button
+              onClick={() => setOpen(false)}
+              className="absolute top-4 right-4 w-[27px] h-[27px] bg-[#4C5060] flex items-center justify-center text-white text-xl font-bold rounded-full cursor-pointer"
+            >
+              <img src={back} alt="back" className="w-[9] h-[9]" />
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 };

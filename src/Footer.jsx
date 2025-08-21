@@ -1,15 +1,15 @@
 import React from "react";
 import Githublogo from "./assets/Githublogo.svg";
-import SPOlogo from "./assets/SPO_Logo_dark.png";
+import SPOlogo from "./assets/SPO_Logo_Footer.svg";
 
 const Footer = () => {
   return (
-    <footer className="w-full h-[199px] bg-[#1D2C44] flex px-6">
-      <div className="flex-1 flex items-center ml-50">
-        <img src={SPOlogo} alt="SPOlogo" />
+    <footer className="w-full h-[165px] bg-[#1D2C44] flex px-6">
+      <div className="flex-1 flex items-center ml-58">
+        <img src={SPOlogo} alt="SPOlogo" className="w-45 h-auto" />
       </div>
 
-      <div className="flex-1 flex flex-col items-end justify-end pb-10 mr-50">
+      <div className="flex-1 flex flex-col items-end justify-end pb-10 mr-58">
         <a
           href="https://github.com/orgs/Likelion-YeungNam-Univ/teams/13th-devism"
           target="_blank"

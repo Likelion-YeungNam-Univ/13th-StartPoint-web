@@ -43,12 +43,14 @@ function Section1() {
 
 function Section2() {
   // 왼쪽 버튼 스타일
+
   const leftBtnBase =
     "w-100 h-17 rounded-lg text-[19px] font-[PretendardSemiB] font-semibold transition";
   const leftBtnActive = "bg-white text-[#121B2A]";
   const leftBtnInactive = "bg-[#B3B3B3] text-white";
 
   // 패널: 'none' | 'area' | 'major' | 'middle' | 'sub'
+
   const [panel, setPanel] = useState("none");
 
   // 선택 상태
@@ -67,6 +69,7 @@ function Section2() {
   }, [panel, selectedMajor, selectedMiddle]);
 
   // ------- 동네 목록 -------
+
   const areaList = [
     { areaName: "서부1동", areaCode: "47290541" },
     { areaName: "서부2동", areaCode: "47290542" },
@@ -178,7 +181,6 @@ function Section2() {
       id="market-research"
       className="flex items-center justify-center relative isolate min-h-[calc(100vh-56px)] bg-[#121B2A]"
     >
-      {/* 배경 */}
       <img
         src={imgSection2}
         alt="상권 분석 섹션 배경"
@@ -504,6 +506,7 @@ function Section3() {
         "시작 그 이후를 고민하는 당신에게",
         "현실적인 조언으로 나만의 창업,",
         "한 걸음 더 나아가기",
+
       ],
     },
   ];
