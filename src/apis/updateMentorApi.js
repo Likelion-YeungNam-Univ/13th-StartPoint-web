@@ -2,7 +2,7 @@ import api from "./api";
 
 const updateMentorApi = async ({ mentorId, date, time }) => {
   try {
-    const res = await api.put(`/mentor/${mentorId}`, {
+    const res = await api.patch(`/mentor/${mentorId}`, {
       registeredDate: date,
       registeredTime: time,
     });
