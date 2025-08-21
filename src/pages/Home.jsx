@@ -238,7 +238,7 @@ function Section2() {
             <div className="px-6 pt-7 pb-2 flex-1 min-h-0">
               <div
                 ref={gridRef}
-                className="h-full overflow-y-auto overscroll-contain pr-1"
+                className="h-full overflow-y-auto overscroll-contain scrollbar-hide"
               >
                 {/* AREA */}
                 {panel === "area" && (
@@ -278,7 +278,7 @@ function Section2() {
                       <div className="text-sm text-red-600">{UpjongError}</div>
                     )}
                     {!UpjongLoading && !UpjongError && (
-                      <div className="grid grid-cols-4 gap-2 pb-2">
+                      <div className="grid grid-cols-4 gap-2">
                         {majors.map((major) => {
                           const active = selectedMajor === major.prefix;
                           return (
@@ -313,7 +313,7 @@ function Section2() {
 
                 {/* MIDDLE */}
                 {panel === "middle" && (
-                  <div className="grid grid-cols-4 gap-2 pb-2">
+                  <div className="grid grid-cols-4 gap-2">
                     {(selectedMajor
                       ? middlesByMajor[selectedMajor] || []
                       : []
@@ -349,7 +349,7 @@ function Section2() {
 
                 {/* SUB */}
                 {panel === "sub" && (
-                  <div className="grid grid-cols-4 gap-2 pb-2">
+                  <div className="grid grid-cols-4 gap-2">
                     {(selectedMajor && selectedMiddle
                       ? subsByMiddle[`${selectedMajor}/${selectedMiddle}`] || []
                       : []

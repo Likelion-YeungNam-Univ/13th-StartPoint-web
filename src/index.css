@@ -1,7 +1,6 @@
 @import "tailwindcss";
-/*
 @import "tailwind-scrollbar-hide/v4";
-*/
+
 @font-face {
   font-family: "PretendardB";
   src: url("./font/Pretendard-Bold.ttf");
