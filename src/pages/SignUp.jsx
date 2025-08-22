@@ -1,10 +1,13 @@
-import React, { useState } from "react";
-import { signup } from "../api/auth";
+// src/pages/SignUp.jsx
+import React, { useMemo, useState } from "react";
+import { signup } from "../apis/auth";
 import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const inputClass =
-    "w-full border rounded-md px-4 py-2 bg-white focus:shadow-inner focus:outline-[#2E47A4] caret-[#2E47A4]";
+    "h-11 w-full border rounded-md px-4 bg-white focus:shadow-inner focus:outline-[#2E47A4] caret-[#2E47A4]";
+
+  const navigate = useNavigate();
 
   const navigate = useNavigate();
 
@@ -19,6 +22,9 @@ const SignUp = () => {
   });
 
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -28,16 +34,37 @@ const SignUp = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (
+      !form.name ||
+      !form.id ||
+      !form.password ||
+      !form.birth ||
+      !form.phone ||
+      !form.email
+    ) {
+      setError("모든 필수 항목을 입력해 주세요.");
+      return;
+    }
+    const phoneOk = /^(01[016789])[-]?\d{3,4}[-]?\d{4}$/.test(
+      form.phone.trim()
+    );
+    if (!phoneOk) {
+      setError("전화번호 형식이 올바르지 않습니다. 예) 010-1234-5678");
+      return;
+    }
+
+    setLoading(true);
     try {
       await signup({
-        name: form.name,
-        birth: form.birth, // YYYY-MM-DD
-        email: form.email,
-        id: form.id,
-        userId: form.id, // 둘 다 보냄
+        name: form.name.trim(),
+        birth: form.birth,
+        email: form.email.trim(),
+        id: form.id.trim(),
+        userId: form.id.trim(), // 백엔드 정리 전까진 둘 다
         password: form.password,
-        role: form.role, // auth.js에서 대문자 변환됨
-        phone: form.phone,
+        role: form.role,
+        phone: form.phone.trim(),
       });
       alert("회원가입 성공!");
       navigate("/login");
@@ -47,88 +74,152 @@ const SignUp = () => {
         err?.response?.data?.message ||
         "회원가입에 실패했습니다. 입력값을 확인하세요.";
       setError(msg);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4">
-      <h1 className="text-[30px] text-[#2E47A4] font-bold px-3 py-2 border-b-2 border-[#2E47A4]">
+    // 상단 NavBar 64px 가정: 화면 중앙 배치
+    <div className="w-full max-w-7xl mx-auto px-4 min-h-[calc(100vh-64px)]">
+      <h1 className="w-full max-w-5xl mx-auto mt-4 text-[30px] text-[#2E47A4] font-bold px-3 py-2 border-b-2 border-[#2E47A4]">
         회원가입
       </h1>
-      <div className="flex flex-col mx-auto w-full max-w-2xl">
-        <div className="mt-10">
-          <h2 className="text-[26px] text-[#2E47A4] font-semibold px-3 mb-2">
-            회원 정보 입력
-          </h2>
-        </div>
-        <form className="border-t-2 border-[#2E47A4]" onSubmit={onSubmit}>
-          <div className="grid grid-cols-[120px_minmax(0,1fr)] gap-x-8 gap-y-6 items-center border-b-2 border-[#2E47A4] py-10 pl-4 pr-20">
-            <label className="text-lg font-semibold text-[#2E47A4]">이름</label>
+
+      {/* 폼 덩어리 자체를 화면 중앙으로 */}
+      <div className="w-full max-w-4xl place-self-center ">
+        <form onSubmit={onSubmit} noValidate>
+          {/* 3열: [라벨 120px] [입력칸] [유령 칼럼 120px]  */}
+          <div className="grid grid-cols-[110px_minmax(0,1fr)_110px] gap-x-8 gap-y-6 items-center py-10 px-12">
+            <h2 className="col-span-3 text-[26px] text-[#2E47A4] font-semibold px-3 pb-3 mb-4 border-b-2 border-[#2E47A4]">
+              회원 정보 입력
+            </h2>
+            {/* 이름 */}
+            <label
+              className="pl-3 text-lg font-semibold text-[#2E47A4]"
+              htmlFor="name"
+            >
+              이름
+            </label>
             <input
+              id="name"
               name="name"
               value={form.name}
               onChange={onChange}
               className={inputClass}
+              autoComplete="name"
+              required
             />
+            <div className="block" aria-hidden />
 
-            <label className="text-lg font-semibold text-[#2E47A4]">
+            {/* 아이디 */}
+            <label
+              className="pl-3 text-lg font-semibold text-[#2E47A4]"
+              htmlFor="uid"
+            >
               아이디
             </label>
             <input
+              id="uid"
               name="id"
               value={form.id}
               onChange={onChange}
               className={inputClass}
+              autoComplete="username"
+              required
             />
+            <div className="block" aria-hidden />
 
-            <label className="text-lg font-semibold text-[#2E47A4]">
+            {/* 비밀번호 */}
+            <label
+              className="pl-3 text-lg font-semibold text-[#2E47A4]"
+              htmlFor="pw"
+            >
               비밀번호
             </label>
             <input
+              id="pw"
               type="password"
               name="password"
               value={form.password}
               onChange={onChange}
               className={inputClass}
+              autoComplete="new-password"
+              required
+              minLength={8}
             />
+            <div className="block" aria-hidden />
 
-            <label className="text-lg font-semibold text-[#2E47A4]">
+            {/* 생년월일 */}
+            <label
+              className="pl-3 text-lg font-semibold text-[#2E47A4]"
+              htmlFor="birth"
+            >
               생년월일
             </label>
             <input
+              id="birth"
               type="date"
               name="birth"
               value={form.birth}
               onChange={onChange}
               className={inputClass}
+              autoComplete="bday"
+              max={today}
+              required
             />
+            <div className="block" aria-hidden />
 
-            <label className="text-lg font-semibold text-[#2E47A4]">
+            {/* 전화번호 */}
+            <label
+              className="pl-3 text-lg font-semibold text-[#2E47A4]"
+              htmlFor="phone"
+            >
               전화번호
             </label>
             <input
+              id="phone"
+              type="tel"
               name="phone"
               placeholder="010-0000-0000"
               value={form.phone}
               onChange={onChange}
               className={inputClass}
+              autoComplete="tel"
+              inputMode="numeric"
+              pattern="^(01[016789])[-]?\d{3,4}[-]?\d{4}$"
+              required
             />
+            <div className="block" aria-hidden />
 
-            <label className="text-lg font-semibold text-[#2E47A4]">
+            {/* 이메일 */}
+            <label
+              className="pl-3 text-lg font-semibold text-[#2E47A4]"
+              htmlFor="email"
+            >
               이메일
             </label>
             <input
+              id="email"
               type="email"
               name="email"
               value={form.email}
               onChange={onChange}
               className={inputClass}
+              autoComplete="email"
+              required
             />
+            <div className="block" aria-hidden />
 
-            <label className="text-lg font-semibold text-[#2E47A4]">
+            {/* 멘토/멘티 */}
+            <label className="pl-3 text-lg font-semibold text-[#2E47A4]">
               멘토/멘티
             </label>
-            <div className="flex items-center gap-6">
+            <div
+              className="flex items-center gap-6 pl-1"
+              role="radiogroup"
+              aria-label="역할 선택"
+            >
               <label className="flex items-center gap-2">
                 <input
                   type="radio"
@@ -152,20 +243,29 @@ const SignUp = () => {
                 <span className="text-[17px] text-[#2E47A4]">멘토</span>
               </label>
             </div>
+            <div className="block" aria-hidden />
+
+            {/* 구분선: 전체 열 가로지름 */}
+            <div className="col-span-3 my-4 border-b-2 border-[#2E47A4]" />
+
+            {/* 버튼: 같은 그리드의 2열(입력칸 폭 그대로) */}
+            <div className="col-start-2">
+              <button
+                type="submit"
+                className="w-full h-12 bg-[#2E47A4] text-white text-base rounded-lg hover:bg-[#2E47A4]/90 transition disabled:opacity-60 disabled:cursor-not-allowed"
+                disabled={loading}
+              >
+                {loading ? "처리 중..." : "가입완료"}
+              </button>
+            </div>
+            <div className="block" aria-hidden />
           </div>
 
           {error && (
-            <div className="text-red-600 text-center mt-4">{error}</div>
+            <div className="text-red-600 text-center -mt-6 mb-6" role="alert">
+              {error}
+            </div>
           )}
-
-          <div className="my-10 flex justify-center">
-            <button
-              type="submit"
-              className="bg-[#2E47A4] text-white text-base py-3 px-13 rounded-lg hover:bg-[#2E47A4]/90 transition"
-            >
-              가입완료
-            </button>
-          </div>
         </form>
       </div>
     </div>

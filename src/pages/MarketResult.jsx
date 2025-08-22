@@ -4,12 +4,11 @@ import { PieChart } from "react-minimal-pie-chart";
 import {
   BarChart,
   Bar,
-  Line,
-  LineChart,
   ResponsiveContainer,
   XAxis,
   YAxis,
   LabelList,
+  Cell,
 } from "recharts";
 
 import marketResultApi from "../apis/marketResultApi";
@@ -18,7 +17,7 @@ import analysis from "../assets/Analysis.svg";
 import sales from "../assets/Sales.svg";
 import industry from "../assets/Industry.svg";
 import population from "../assets/Population.svg";
-import vector from "../assets/Vector.svg";
+import dongIcon from "../assets/dongIcon.svg";
 import check from "../assets/Check.svg";
 import icon from "../assets/Icon.svg";
 import sadIcon from "../assets/SadIcon.svg";
@@ -197,7 +196,7 @@ const MarketResult = () => {
     { name: "최고", value: Number(data?.maxAmt) || 0 },
   ];
 
-  const saleSiCnt = Number(data?.storeCnt[0].storeCnt) || 0;
+  const saleSiCnt = Number(data?.storeCnt?.[0]?.storeCnt ?? 0);
 
   const eachDay = [
     { name: "월", value: Number(pop?.mon) || 0 }, // pop에서 옵셔널 체이닝(?)이 빠지면 터짐
@@ -266,19 +265,27 @@ const MarketResult = () => {
            
           <div className="w-[237px] h-[76px] p-4 bg-[#F5F5F5] rounded-lg flex flex-col items-center justify-center text-center">
             <div className="text-[18px] text-black font-medium">
-              월 평균 매출    
+              월 평균 매출
             </div>
             <div className="text-[20px] text-[#03B4C8] font-semibold">
-              {data?.saleAmt ? `${data.saleAmt}만원` : "—"}   
+              {data?.saleAmt
+                ? Number(data.saleAmt) != 0
+                  ? `${data.saleAmt} 만 원`
+                  : `${data.guAmt} 만 원`
+                : "—"}
             </div>
           </div>
            
           <div className="w-[237px] h-[76px] p-4 bg-[#F5F5F5] rounded-lg flex flex-col items-center justify-center text-center">
             <div className="text-[18px] text-black font-medium">
-              선택 업종 수    
+              선택 업종 수
             </div>
             <div className="text-[20px] text-[#03B4C8] font-semibold">
-              {data?.saleCnt ?? "—"}개    
+              {data?.saleCnt
+                ? Number(data.saleCnt) != 0
+                  ? `${data.saleCnt} 개`
+                  : `${data.saleGuCnt} 개`
+                : "—"}
             </div>
           </div>
         </div>
@@ -286,10 +293,10 @@ const MarketResult = () => {
            
           <div className="w-[237px] h-[76px] p-4 bg-[#F5F5F5] rounded-lg flex flex-col items-center justify-center text-center">
             <div className="text-[18px] text-black font-medium">
-              일 평균 유동인구    
+              일 평균 유동인구
             </div>
             <div className="text-[20px] text-[#03B4C8] font-semibold">
-              {data?.population?.dayAvg ?? "—"}명    
+              {data?.population?.dayAvg ?? "—"} 명
             </div>
           </div>
            
@@ -321,27 +328,27 @@ const MarketResult = () => {
         <div className="mt-8 flex justify-center gap-7">
           {/* 1-1 월 평균/최고/최저 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center text-center">
-            <div className="text-[22px] text-[#121B2A] font-semibold mt-10">
-              월 평균/최고/최저    
+            <div className="text-[22px] text-[#121B2A] font-semibold mb-4">
+              월 평균/최고/최저
             </div>
             <div className="flex-1 w-full flex items-center justify-center">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
+              <ResponsiveContainer width="90%" height="80%">
+                <BarChart
                   data={minAvgMax}
-                  margin={{ top: 20, right: 35, left: 35, bottom: 50 }}
+                  margin={{ top: 10, right: 0, left: 0, bottom: 30 }}
                 >
-                  <Line
+                  <Bar
                     dataKey="value"
-                    stroke="#03B4C8"
-                    strokeWidth={2}
-                    type="monotone"
+                    fill="#03B4C8"
+                    radius={[10, 10, 0, 0]}
+                    barSize={35}
                   >
                     <LabelList
                       dataKey="value"
                       position="top"
                       offset={8}
                       fill="#121B2A"
-                      fontSize={16}
+                      fontSize={14}
                       formatter={(v) => `${v}만원`}
                     />
                     <LabelList
@@ -351,10 +358,10 @@ const MarketResult = () => {
                       fill="#121B2A"
                       fontSize={16}
                     />
-                  </Line>
+                  </Bar>
                   <XAxis hide />
                   <YAxis hide />
-                </LineChart>
+                </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
@@ -363,34 +370,31 @@ const MarketResult = () => {
             <div className="text-[22px] text-[#121B2A] font-semibold mt-10">
               지역 내 다른 동네와의 비교 결과
             </div>
-            <div className="text-sm text-gray-500 font-medium ml-61">
-              (단위: 만 원)
-            </div>
             <div className="flex flex-1 w-full items-center justify-center gap-1 h-full">
-              <div className="flex flex-col items-center justify-end h-full ml-15 mb-15">
-                <div className="text-[#121B2A] font-semibold text-[15px]">
-                  {data?.saleAmt ? `${data.saleAmt}` : "—"}
+              <div className="flex flex-col items-center justify-center h-full ml-6 mt-16">
+                <div className="text-[#121B2A] font-semibold mt-2 text-[14px]">
+                  {dongName}
+                  {data?.saleAmt
+                    ? data.saleAmt != 0
+                      ? `${data.saleAmt}만원`
+                      : ""
+                    : ""}
                 </div>
-
                 <img
-                  src={vector}
-                  alt="vector"
+                  src={dongIcon}
+                  alt="dongIcon"
                   className="w-[41px] h-[80px] object-contain"
                 />
-
-                <div className="text-[#121B2A] font-semibold text-[15px]">
-                  {dongName}
-                </div>
               </div>
 
-              <div className="flex-1 flex items-center justify-center font-semibold h-full">
+              <div className="flex-1 flex items-center justify-center font-medium h-full">
                 <ResponsiveContainer width="70%" height="80%">
                   <BarChart
                     data={[
                       { name: guName, value: Number(data?.guAmt) || 0 },
                       { name: siName, value: Number(data?.siAmt) || 0 },
                     ]}
-                    margin={{ top: 50, right: 0, left: 5, bottom: 30 }}
+                    margin={{ top: 50, right: 0, left: 8, bottom: 30 }}
                     barCategoryGap="15%"
                   >
                     <Bar dataKey="value" fill="#03B4C8" radius={[10, 10, 0, 0]}>
@@ -400,7 +404,7 @@ const MarketResult = () => {
                         offset={8}
                         fill="#121B2A"
                         fontSize={14}
-                        formatter={(v) => `${v}`}
+                        formatter={(v) => `${v}만원`}
                       />
 
                       <LabelList
@@ -433,17 +437,13 @@ const MarketResult = () => {
               }`}
             >
               {Math.abs(data?.prevYearRate)?.toFixed(1) ?? "—"}%
-              <img
-                src={
-                  (Number(data?.prevYearRate) || 0) > 0
-                    ? upIcon
-                    : (Number(data?.prevYearRate) || 0) < 0
-                    ? downIcon
-                    : ""
-                }
-                alt="trend"
-                className="ml-1 w-6 h-6"
-              />
+              <div alt="trend" className="ml-2">
+                {(Number(data?.prevYearRate) || 0) > 0
+                  ? "↑"
+                  : (Number(data?.prevYearRate) || 0) < 0
+                  ? "↓"
+                  : "-"}
+              </div>
             </div>
             <div className="text-[22px] text-[#121B2A] font-semibold mb-1">
               전월대비
@@ -465,6 +465,7 @@ const MarketResult = () => {
           </div>
         </div>
       </div>
+
       {/* 2. 업종 분석 */}
       <div className="text-white text-[36px] pt-36 font-bold flex flex-col items-center">
         <div className="flex items-center">
@@ -477,7 +478,7 @@ const MarketResult = () => {
             <div className="text-[22px] text-[#121B2A] font-semibold mb-10">
               선택업종 업종 수
             </div>
-            <img src={people} alt="people" />
+            <img src={shop} alt="shop" />
             <div className="text-[#30C0D0] font-bold">
               {data?.saleCnt
                 ? Number(data.saleCnt) != 0
@@ -489,34 +490,28 @@ const MarketResult = () => {
           {/* 2-2 지역 업종 수 비교 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mt-10">
-              지역 내 다른 동네와의 비교 결과    
-            </div>
-            <div className="text-sm text-gray-500 font-medium ml-66">
-              (단위: 개)
+              지역 내 다른 동네와의 비교 결과
             </div>
             <div className="flex flex-1 w-full items-center justify-center gap-1 h-full">
-              <div className="flex flex-col items-center justify-end h-full ml-15 mb-15">
-                <div className="text-[#121B2A] font-semibold text-[15px]">
-                  {data?.saleCnt ?? "—"}
-                </div>
-                <img
-                  src={vector}
-                  alt="vector"
-                  className="w-[41px] h-[80px] object-contain"
-                />
+              <div className="flex flex-col items-center justify-center h-full ml-6 mt-16">
                 <div className="text-[#121B2A] font-semibold text-[15px]">
                   {dongName}
                 </div>
+                <img
+                  src={dongIcon}
+                  alt="dongIcon"
+                  className="w-[41px] h-[80px] object-contain"
+                />
               </div>
 
-              <div className="flex-1 flex items-center justify-center font-semibold h-full">
+              <div className="flex-1 flex items-center justify-center font-medium h-full">
                 <ResponsiveContainer width="70%" height="80%">
                   <BarChart
                     data={[
                       { name: guName, value: Number(data?.saleGuCnt) || 0 },
                       { name: siName, value: saleSiCnt },
                     ]}
-                    margin={{ top: 50, right: 0, left: 5, bottom: 30 }}
+                    margin={{ top: 50, right: 0, left: 8, bottom: 30 }}
                     barCategoryGap="15%"
                   >
                     <Bar dataKey="value" fill="#03B4C8" radius={[10, 10, 0, 0]}>
@@ -526,7 +521,7 @@ const MarketResult = () => {
                         offset={8}
                         fill="#121B2A"
                         fontSize={14}
-                        formatter={(v) => `${v}`}
+                        formatter={(v) => `${v}개`}
                       />
 
                       <LabelList
@@ -587,19 +582,21 @@ const MarketResult = () => {
           </div>
         </div>
       </div>
+
       {/* 3. 유동인구 분석 */}
       <div className="text-white text-[36px] pt-36 font-bold flex flex-col items-center">
         <div className="flex items-center">
           <img src={population} alt="population" className="mr-4.5" />
           <span>유동인구 분석</span>
         </div>
+
         <div className="mt-8 flex justify-center gap-7">
           {/* 3-1 일 평균 유동인구 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mb-10">
               일 평균 유동인구
             </div>
-            <img src={shop} alt="shop" />
+            <img src={people} alt="people" />
             <div className="text-[#30C0D0] font-bold text-[32px]">
               {data?.population?.dayAvg ?? "—"}명
             </div>
@@ -607,51 +604,103 @@ const MarketResult = () => {
           {/* 3-2 요일별 유동인구 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mt-4">
-              요일별 유동인구 비교 결과    
+              요일별 유동인구 비교 결과
             </div>
             <div className="flex flex-1 w-full">
-              <div className="flex-1 flex items-center justify-center ml-7">
+              <div className="flex-1 flex items-center justify-center">
                 <ResponsiveContainer width="90%" height="75%">
                   <BarChart
                     data={[
                       { name: "주중", value: Number(pop?.day) || 0 },
                       { name: "주말", value: Number(pop?.weekend) || 0 },
                     ]}
-                    margin={{ top: 30, right: 0, left: 10, bottom: 30 }}
+                    margin={{ top: 40, right: 0, left: 8, bottom: 10 }}
                   >
-                    <Bar
-                      dataKey="value"
-                      fill="#03B4C8"
-                      radius={[10, 10, 0, 0]}
-                      barSize={30}
-                    >
+                    <Bar dataKey="value" radius={[10, 10, 0, 0]} barSize={30}>
+                      {/* 막대 색상 개별 지정 */}
+                      {[
+                        { name: "주중", value: Number(pop?.day) || 0 },
+                        { name: "주말", value: Number(pop?.weekend) || 0 },
+                      ].map((d, i, arr) => {
+                        const maxVal = Math.max(...arr.map((e) => e.value));
+                        const isMax = d.value === maxVal;
+                        return (
+                          <Cell key={i} fill={isMax ? "#D04797" : "#03B4C8"} />
+                        );
+                      })}
+
+                      {/* 막대 위 value 라벨 */}
                       <LabelList
                         dataKey="value"
-                        position="top"
-                        offset={8}
-                        fill="#121B2A"
-                        fontSize={16}
-                        formatter={(v) => `${v}명`}
+                        content={({ value, index, viewBox }) => {
+                          const arr = [
+                            { name: "주중", value: Number(pop?.day) || 0 },
+                            { name: "주말", value: Number(pop?.weekend) || 0 },
+                          ];
+                          const maxVal = Math.max(...arr.map((e) => e.value));
+                          const isMax = arr[index].value === maxVal;
+                          const color = isMax ? "#D04797" : "#121B2A";
+                          const { x, y, width } = viewBox;
+                          const cx = x + width / 2;
+                          return (
+                            <text
+                              x={cx}
+                              y={y - 8}
+                              textAnchor="middle"
+                              fontSize={16}
+                              fill={color}
+                            >
+                              {value}%
+                            </text>
+                          );
+                        }}
                       />
 
+                      {/* 막대 아래 name 라벨 */}
                       <LabelList
                         dataKey="name"
-                        position="bottom"
-                        offset={8}
-                        fill="#121B2A"
-                        fontSize={16}
+                        content={({ value, index, viewBox }) => {
+                          const arr = [
+                            { name: "주중", value: Number(pop?.day) || 0 },
+                            { name: "주말", value: Number(pop?.weekend) || 0 },
+                          ];
+                          const maxVal = Math.max(...arr.map((e) => e.value));
+                          const isMax = arr[index].value === maxVal;
+                          const color = isMax ? "#D04797" : "#121B2A";
+                          const { x, y, width, height } = viewBox;
+                          const cx = x + width / 2;
+                          return (
+                            <text
+                              x={cx}
+                              y={y + height + 16}
+                              textAnchor="middle"
+                              fontSize={16}
+                              fill={color}
+                            >
+                              {value}
+                            </text>
+                          );
+                        }}
                       />
                     </Bar>
+
                     <XAxis hide />
-                    <YAxis hide /> 
+                    <YAxis hide />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
 
-              <ul className="flex-1 flex flex-col justify-center items-start text-[16px] text-[#121B2A] font-semibold pl-10">
+              <ul className="flex-1 flex flex-col justify-center items-start text-[16px] text-[#121B2A] font-semibold pl-6">
                 {eachDay.map((day) => (
-                  <li key={day.name} className="mb-1">
-                    {day.name}: {day.value}명  
+                  <li
+                    key={day.name}
+                    className={`mb-1 ${
+                      day.name === maxDay.label
+                        ? "text-[#D04797]"
+                        : "text-[#121B2A]"
+                    } `}
+                  >
+                    {day.name}: {day.value}%
                   </li>
                 ))}
               </ul>
@@ -668,27 +717,92 @@ const MarketResult = () => {
                   data={eachHour}
                   margin={{ top: 40, right: 0, left: 0, bottom: 20 }}
                 >
-                  <Bar dataKey="value" fill="#03B4C8" radius={[10, 10, 0, 0]}>
+                  <Bar dataKey="value" radius={[10, 10, 0, 0]}>
+                    {eachHour.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={
+                          entry.name === maxHour.label ? "#D04797" : "#03B4C8"
+                        }
+                      />
+                    ))}
                     <LabelList
                       dataKey="value"
                       position="top"
                       offset={10}
-                      fill="#121B2A"
+                      content={({ x, y, value, index }) => {
+                        const isMax =
+                          eachHour?.[index]?.name === maxHour?.label;
+                        const color = isMax ? "#D04797" : "#121B2A";
+                        return (
+                          <text x={x} y={y - 10} fontSize={14} fill={color}>
+                            {value}%
+                          </text>
+                        );
+                      }}
                       fontSize={14}
-                      formatter={(v) => `${v}명`}
+                      formatter={(v) => `${v}%`}
                     />
+
                     <LabelList
                       dataKey="name"
-                      position="bottom"
-                      offset={10}
-                      fill="#121B2A"
-                      fontSize={14}
+                      content={({ value, index, viewBox }) => {
+                        const { x, y, width, height } = viewBox;
+                        const cx = x + width / 2;
+                        const isMax =
+                          eachHour?.[index]?.name === maxHour?.label;
+                        const color = isMax ? "#D04797" : "#121B2A";
+                        return (
+                          <text
+                            x={cx}
+                            y={y + height + 14} // 막대 아래쪽
+                            textAnchor="middle"
+                            fontSize={14}
+                            fill={color}
+                          >
+                            {value}
+                          </text>
+                        );
+                      }}
                     />
                   </Bar>
                   <XAxis hide />
                   <YAxis hide />
                 </BarChart>
               </ResponsiveContainer>
+              {/* <ResponsiveContainer width="90%" height="85%">
+                <BarChart
+                  data={eachHour}
+                  margin={{ top: 40, right: 0, left: 0, bottom: 20 }}
+                >
+                  <Bar
+                    dataKey="value"
+                    fill={(data) =>
+                      data.name === maxHour.label ? "#D04797" : "#121B2A"
+                    }
+                    radius={[10, 10, 0, 0]}
+                  >
+                    <LabelList
+                      dataKey="value"
+                      position="top"
+                      offset={10}
+                      fill={data.name == maxHour.label ? "#D04797" : "#121B2A"}
+                      fontSize={14}
+                      formatter={(v) => `${v}%`}
+
+                    />
+                    <LabelList
+                      dataKey="name"
+                      position="bottom"
+                      offset={10}
+                      fill={data.name == maxHour.label ? "#D04797" : "#121B2A"}
+                      fontSize={14}
+                    />
+                  </Bar>
+                  <XAxis hide />
+                  <YAxis hide />
+                </BarChart>
+              </ResponsiveContainer> */}
             </div>
           </div>
         </div>
@@ -696,6 +810,7 @@ const MarketResult = () => {
       <div className="text-white text-[24px] pt-36 font-semibold flex flex-col items-center">
         창업 가능성 및 상위 동네 추천은 상세분석에서 확인할 수 있습니다.
       </div>
+
       <div className="pt-36 pb-25 flex justify-center gap-4 text-[24px]">
         <div
           onClick={() => setOpen(true)}
@@ -703,6 +818,7 @@ const MarketResult = () => {
         >
           상세 분석
         </div>
+
         <div
           onClick={() => navigate("/mentoring")}
           className="w-[224px] h-[60px] p-8 bg-[#03B4C8] rounded-[6px] flex flex-col items-center justify-center text-center text-[18px] text-white font-semibold cursor-pointer hover:bg-[#0290a3] transition"
@@ -710,6 +826,7 @@ const MarketResult = () => {
           멘토 탐색 바로가기
         </div>
       </div>
+
       {open && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="absolute inset-0 bg-black opacity-80"></div> 
@@ -805,6 +922,7 @@ const MarketResult = () => {
                     창업 추천 동네
                   </span>
                 </div>
+
                 <div className="text-left ml-7.5">
                   <span className="block text-[15px] text-[#42437D] font-semibold">
                     업종별 매출, 점포 수, 상권·유동인구, 창업 가능성 등을 종합해
@@ -843,7 +961,6 @@ const MarketResult = () => {
           </div>
         </div>
       )}
-         
     </div>
   );
 };
