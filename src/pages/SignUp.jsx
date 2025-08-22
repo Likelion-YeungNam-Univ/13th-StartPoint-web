@@ -9,6 +9,8 @@ const SignUp = () => {
 
   const navigate = useNavigate();
 
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     name: "",
     id: "",
@@ -18,6 +20,7 @@ const SignUp = () => {
     email: "",
     role: "mentee",
   });
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
