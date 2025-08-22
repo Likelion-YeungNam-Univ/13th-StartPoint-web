@@ -457,11 +457,6 @@ function Section2() {
                   >
                     다음
                   </button>
-                  {hasScroll && (
-                    <span className="text-xs text-gray-500">
-                      스크롤해서 더 확인하세요
-                    </span>
-                  )}
                 </div>
               )}
 
@@ -480,17 +475,11 @@ function Section2() {
                   >
                     다음
                   </button>
-                  {hasScroll && (
-                    <span className="text-xs text-gray-500">
-                      스크롤해서 더 확인하세요
-                    </span>
-                  )}
                 </div>
               )}
 
               {panel === "middle" && (
                 <div className="flex items-center justify-between gap-3">
-                  <div className="w-35"></div>
                   <button
                     type="button"
                     disabled={!canNextFromMiddle}
@@ -504,11 +493,6 @@ function Section2() {
                   >
                     다음
                   </button>
-                  {hasScroll && (
-                    <div className="text-xs text-gray-500 text-top h-8">
-                      스크롤해서 더 확인하세요
-                    </div>
-                  )}
                 </div>
               )}
 
