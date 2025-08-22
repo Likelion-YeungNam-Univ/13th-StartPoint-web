@@ -1,4 +1,3 @@
-// src/pages/SignUp.jsx
 import React, { useMemo, useState } from "react";
 import { signup } from "../apis/auth";
 import { useNavigate } from "react-router-dom";
@@ -11,12 +10,12 @@ const SignUp = () => {
 
   const [form, setForm] = useState({
     name: "",
-    id: "",
+    userId: "",
     password: "",
     birth: "",
     phone: "",
     email: "",
-    role: "mentee",
+    role: "",
   });
 
   const [error, setError] = useState("");
@@ -33,13 +32,23 @@ const SignUp = () => {
     e.preventDefault();
     setError("");
 
+    const body = {
+      name: form.name.trim(),
+      birth: form.birth,
+      email: form.email.trim(),
+      userId: form.userId.trim(),
+      password: form.password,
+      role: form.role,
+      phone: form.phone.trim(),
+    };
+
     if (
       !form.name ||
-      !form.id ||
       !form.password ||
       !form.birth ||
       !form.phone ||
-      !form.email
+      !form.email ||
+      !form.role
     ) {
       setError("모든 필수 항목을 입력해 주세요.");
       return;
@@ -54,16 +63,7 @@ const SignUp = () => {
 
     setLoading(true);
     try {
-      await signup({
-        name: form.name.trim(),
-        birth: form.birth,
-        email: form.email.trim(),
-        id: form.id.trim(),
-        userId: form.id.trim(), // 백엔드 정리 전까진 둘 다
-        password: form.password,
-        role: form.role,
-        phone: form.phone.trim(),
-      });
+      await signup(body);
       alert("회원가입 성공!");
       navigate("/login");
     } catch (err) {
@@ -118,9 +118,8 @@ const SignUp = () => {
               아이디
             </label>
             <input
-              id="uid"
-              name="id"
-              value={form.id}
+              name="userId"
+              value={form.userId}
               onChange={onChange}
               className={inputClass}
               autoComplete="username"
