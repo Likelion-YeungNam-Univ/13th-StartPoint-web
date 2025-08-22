@@ -220,7 +220,7 @@ const Mentoring = () => {
           className={`relative z-0 mt-15 overflow-hidden grid grid-cols-3 gap-10 px-13 transition duration-100
             ${open ? "blur-xs pointer-events-none select-none" : ""}`}
         >
-          {mentors.map((mentor) => (
+          {filteredMentors.map((mentor) => (
             <article
               key={mentor.id}
               className="w-[350px] rounded-[10px] bg-white py-12 transition hover:bg-white/90 cursor-pointer"
