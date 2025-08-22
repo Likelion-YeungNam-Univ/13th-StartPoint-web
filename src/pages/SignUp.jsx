@@ -9,8 +9,6 @@ const SignUp = () => {
 
   const navigate = useNavigate();
 
-  const navigate = useNavigate();
-
   const [form, setForm] = useState({
     name: "",
     id: "",

@@ -99,33 +99,6 @@ const Mentoring = () => {
     setCurrentDate(new Date(year, month + 1, 1));
   };
 
-  const [selectedMentor, setSelectedMentor] = useState(null);
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTime, setSelectedTime] = useState(null);
-
-  const times = ["10:00", "14:00", "18:00", "22:00"];
-
-  // 현재 년, 월
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
-
-  // 달력 계산
-  const firstDay = new Date(year, month, 1).getDay(); // 이번 달 1일의 요일
-  const lastDate = new Date(year, month + 1, 0).getDate(); // 이번 달 마지막 날짜
-
-  // 달력용 배열 만들기
-  const days = [];
-  for (let i = 0; i < firstDay; i++) days.push(null); // 시작 전 빈칸
-  for (let d = 1; d <= lastDate; d++) days.push(d);
-
-  const handlePrevMonth = () => {
-    setCurrentDate(new Date(year, month - 1, 1));
-  };
-  const handleNextMonth = () => {
-    setCurrentDate(new Date(year, month + 1, 1));
-  };
-
   const chipCls = (active) =>
     `px-4 py-1 rounded-full text-sm border transition
       ${
@@ -140,7 +113,7 @@ const Mentoring = () => {
 
   return (
     <main className="min-h-screen bg-[#121B2A]">
-      <div className="mx-auto w-260 px-6 py-12">
+      <div className="mx-auto max-w-screen-xl px-6 py-12">
         <h1 className="text-center text-4xl font-extrabold text-white">
           멘토 탐색
         </h1>
@@ -276,25 +249,8 @@ const Mentoring = () => {
                   </span>
                 ))}
               </div>
-
-              <hr className="text-[#D7D7D7] mt-5" />
-              <h3 className="mt-5 text-[16px] text-[#464646] font-semibold">
-                대화 가능한 주제
-              </h3>
-              <ul className="mt-2 list-disc pl-5 text-gray-700">
-                {selectedMentor.topics?.map((topic) => (
-                  <li key={topic}>{topic}</li>
-                ))}
-              </ul>
-            </div>
-
-            <button
-              onClick={() => setOpen(false)}
-              className="absolute top-4 right-4 w-[27px] h-[27px] bg-[#4C5060] flex items-center justify-center text-white text-xl font-bold rounded-full cursor-pointer"
-            >
-              <img src={back} alt="back" className="w-[9] h-[9]" />
-            </button>
-          </div>
+            </article>
+          ))}
         </div>
       </div>
 
