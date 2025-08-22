@@ -44,11 +44,11 @@ function Section1() {
 function Section2() {
   // 왼쪽 버튼 스타일
   const leftBtnBase =
-    "w-100 h-17 rounded-lg text-[19px] font-[PretendardSemiB] font-semibold transition";
+    "w-122 h-17 rounded-lg text-[19px] font-[PretendardSemiB] font-semibold transition";
   const leftBtnActive = "bg-white text-[#121B2A]";
   const leftBtnInactive = "bg-[#B3B3B3] text-white";
 
-  const [panel, setPanel] = useState("none");
+  const [panel, setPanel] = useState("area");
 
   // 선택 상태
   const [selectedArea, setSelectedArea] = useState(null);
@@ -224,9 +224,9 @@ function Section2() {
       />
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#121B2A] from-10% via-transparent via-50% to-[#121B2A] to-90%" />
 
-      <div className="flex flex-col justify-center">
+      <div className="flex flex-col justify-center items-center">
         {/* 좌측 상단 텍스트 */}
-        <div className="flex flex-col text-white">
+        <div className="flex flex-col text-white text-center">
           <h3 className="mb-4 text-[28px] font-[PretendardB] font-bold">
             상권분석
           </h3>
@@ -236,7 +236,7 @@ function Section2() {
         </div>
 
         {/* 버튼 + 우측 패널 */}
-        <div className="grid grid-cols-11 gap-10 items-start">
+        <div className="grid grid-cols-10 gap-10 items-start">
           {/* 좌측 버튼 */}
           <div className="col-span-5 flex flex-col">
             <button
@@ -262,7 +262,7 @@ function Section2() {
           {/* 우측 패널 */}
           <div
             className={[
-              "col-span-6 bg-white rounded-xl",
+              "col-span-5 bg-white rounded-xl",
               "transition-all duration-300",
               "w-full h-80", // 패널 높이 고정
               "flex flex-col", // 위(그리드) - 아래(CTA)
@@ -272,7 +272,7 @@ function Section2() {
             ].join(" ")}
           >
             {/* 그리드 영역(스크롤) */}
-            <div className="px-6 py-7 flex-1 min-h-0">
+            <div className="px-6 pt-7 pb-3 flex-1 min-h-0">
               <div
                 ref={gridRef}
                 className="h-full overflow-y-auto overscroll-contain scrollbar-hide"
