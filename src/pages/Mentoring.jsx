@@ -44,6 +44,8 @@ const Mentoring = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const [mentors, setMentors] = useState([]);
+  const [showPayment, setShowPayment] = useState(false);
+  const [showPreparing, setShowPreparing] = useState(false);
 
   useEffect(() => {
     const fetchMentors = async () => {
@@ -54,10 +56,7 @@ const Mentoring = () => {
   }, []);
 
   const mentoringApply = async () => {
-    if (!selectedDate || !selectedTime) {
-      alert("멘토링 받을 날짜와 시간을 모두 선택해주세요.");
-      return;
-    }
+    setShowPayment(true);
 
     const year = selectedDate.getFullYear();
     const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
@@ -72,14 +71,13 @@ const Mentoring = () => {
         date: formattedDate,
         time: formattedTime,
       });
-
-      alert("신청이 완료되었습니다!");
-      setSelectedMentor(null);
-      setSelectedDate(null);
-      setSelectedTime(null);
     } catch (error) {
-      alert("신청 중 오류가 발생했습니다.");
+      console.error("신청 중 오류 발생:", error);
     }
+  };
+
+  const handlePaymentConfirm = () => {
+    setShowPreparing(true); // 결제 서비스 준비중 모달 표시
   };
 
   const times = ["10:00", "14:00", "18:00", "22:00"];
@@ -256,10 +254,9 @@ const Mentoring = () => {
         </div>
       </div>
 
-
       {/* 모달창 */}
       {selectedMentor && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-xs p-6">
           <div className="relative w-full max-w-3xl rounded-2xl bg-white shadow-xl flex overflow-hidden">
             {/* 왼쪽 */}
             <div className="w-1/2 p-5 flex flex-col items-center mt-5 ml-5">
@@ -271,7 +268,9 @@ const Mentoring = () => {
               <h3 className="mt-4 text-[24px] font-semibold text-[#464646]">
                 {selectedMentor.name}
               </h3>
-              <p className="mt-1 text-[14px] text-[#464646] font-medium">{selectedMentor.headline}</p>
+              <p className="mt-1 text-[14px] text-[#464646] font-medium">
+                {selectedMentor.headline}
+              </p>
 
               <p className="mt-7 text-[14px] text-[#464646] font-medium">
                 날짜와 시간을 선택해 주세요
@@ -342,10 +341,16 @@ const Mentoring = () => {
               <p className="mt-7 mb-7 text-[12px] text-[#464646]">
                 상세 일정은 멘토 확정 후 조율될 수 있습니다.
               </p>
-              
+
               <button
                 onClick={mentoringApply}
-                className="w-[104px] h-[34px] rounded-[6px] bg-[#2E47A4] mb-3 px-4 py-4 text-[12px] text-white font-[10px] flex items-center justify-center cursor-pointer"
+                disabled={!selectedDate || !selectedTime}
+                className={`w-[104px] h-[34px] rounded-[6px] mb-3 px-4 py-4 text-[12px] font-semibold text-white transition flex items-center justify-center
+                ${
+                  !selectedDate || !selectedTime
+                    ? "bg-[#CFCFCF] cursor-not-allowed"
+                    : "bg-[#2E47A4] hover:bg-[#1d3180] cursor-pointer"
+                }`}
               >
                 신청하기
               </button>
@@ -390,13 +395,111 @@ const Mentoring = () => {
                 ))}
               </ul>
             </div>
-            
+
             <button
               onClick={() => setSelectedMentor(null)}
               className="absolute top-5 right-5 w-[18px] h-[18px] bg-[#B5B5B5] flex items-center justify-center text-white text-xl font-bold rounded-full cursor-pointer"
             >
               <img src={back} alt="back" className="w-[8px] h-[8px]" />
+            </button>
+          </div>
+        </div>
+      )}
 
+      {showPayment && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center backdrop-blur-sm bg-black/60">
+          <div className="bg-white rounded-[6px] shadow-xl w-[700px] h-[250px]">
+            <div className="relative flex justify-between items-center px-6 py-3 border-b border-[#2E47A4]">
+              <h2 className="text-[17px] font-semibold text-black">
+                결제 수단 선택
+              </h2>
+              <button
+                onClick={() => setShowPayment(false)}
+                className="absolute right-5 w-[18px] h-[18px] bg-[#B5B5B5] flex items-center justify-center text-white text-xl font-bold rounded-full cursor-pointer"
+              >
+                <img src={back} alt="back" className="w-[8px] h-[8px]" />
+              </button>
+            </div>
+
+            <div className="px-5 py-1">
+              <table className="w-full border border-gray-200 rounded-lg overflow-hidden">
+                <tbody>
+                  <tr className="border-t border-[#D9D9D9]">
+                    <td className="py-2 px-4 font-medium text-[14px] border-r border-[#D9D9D9]">
+                      신용카드
+                    </td>
+                    <td className="py-2 px-2 flex justify-start gap-4 ml-3">
+                      <label className="flex items-center gap-2 font-medium text-[14px] text-[#5E5E5E]">
+                        <input type="radio" name="payment" value="realtime" />
+                        <span>신용카드</span>
+                      </label>
+                      <label className="flex items-center gap-2 ml-13.5 font-medium text-[14px] text-[#5E5E5E]">
+                        <input type="radio" name="payment" value="virtual" />
+                        <span>해외발급신용카드</span>
+                      </label>
+                    </td>
+                  </tr>
+
+                  <tr className="border-t border-[#D9D9D9]">
+                    <td className="py-2 px-4 font-medium text-[14px] border-r border-[#D9D9D9]">
+                      계좌이체
+                    </td>
+                    <td className="py-2 px-2 flex justify-start gap-4 ml-3">
+                      <label className="flex items-center gap-2 font-medium text-[14px] text-[#5E5E5E]">
+                        <input type="radio" name="payment" value="realtime" />
+                        <span>실시간 계좌이체</span>
+                      </label>
+                      <label className="flex items-center gap-2 ml-2 font-medium text-[14px] text-[#5E5E5E]">
+                        <input type="radio" name="payment" value="virtual" />
+                        <span>무통장입금</span>
+                      </label>
+                    </td>
+                  </tr>
+
+                  <tr className="border-t border-[#D9D9D9]">
+                    <td className="py-2 px-4 font-medium text-[14px] border-r border-[#D9D9D9]">
+                      기타
+                    </td>
+                    <td className="py-2 px-2 flex items-center justify-start ml-3 gap-2 font-medium text-[14px] text-[#5E5E5E]">
+                      <input type="radio" name="payment" value="card" />
+                      <span>휴대폰</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="px-6 py-5 border-t border-[#2E47A4] flex justify-center">
+              <button
+                onClick={handlePaymentConfirm}
+                className="w-[300px] h-[32px] rounded-[5px] bg-[#2E47A4] text-[14px] text-white font-semibold hover:bg-[#1d3180]"
+              >
+                결제하기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showPreparing && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/70">
+          <div className="bg-white rounded-xl shadow-xl w-[400px] p-8 text-center">
+            <h2 className="text-lg font-bold text-gray-800 mb-4">
+              서비스 준비중입니다
+            </h2>
+            <p className="text-sm text-gray-600 mb-6">
+              결제 서비스는 현재 준비중이에요.
+              <br />
+              빠른 시일 내에 오픈될 예정입니다.
+            </p>
+            <button
+              onClick={() => {
+                setShowPreparing(false);
+                setShowPayment(false); // 결제 모달도 같이 닫기
+              }}
+              className="px-4 py-2 rounded-md bg-[#2E47A4] text-white font-semibold hover:bg-[#1d3180]"
+            >
+              확인
             </button>
           </div>
         </div>
