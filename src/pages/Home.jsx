@@ -5,6 +5,7 @@ import imgSection1 from "../assets/Home_Section1.png";
 import imgSection2 from "../assets/Home_Section2.png";
 import imgSection3 from "../assets/Home_Section3.png";
 import upjongListApi from "../apis/upjongListApi";
+import ChatBot from "./ChatBot";
 
 const SCROLL_DURATION_MS = 500;
 
@@ -265,7 +266,6 @@ function Section2() {
                 : "opacity-100 translate-y-0",
             ].join(" ")}
           >
-
             {/* 그리드 영역(스크롤) */}
             <div className="px-6 py-7 flex-1 min-h-0">
               <div
@@ -649,6 +649,7 @@ export default function Home() {
       <Section1 />
       <Section2 />
       <Section3 />
+      <ChatBot />
     </div>
   );
 }
