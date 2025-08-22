@@ -48,7 +48,6 @@ function Section2() {
   const leftBtnActive = "bg-white text-[#121B2A]";
   const leftBtnInactive = "bg-[#B3B3B3] text-white";
 
-  // 패널: 'none' | 'area' | 'major' | 'middle' | 'sub'
   const [panel, setPanel] = useState("none");
 
   // 선택 상태
@@ -185,6 +184,10 @@ function Section2() {
     if (type === "area") {
       setPanel("area");
     } else {
+      if (!selectedArea) {
+        setPanel("need-area");
+        return;
+      }
       setSelectedMajor(null);
       setSelectedMiddle(null);
       setSelectedSub(null);
@@ -201,7 +204,10 @@ function Section2() {
 
   const areaActive = panel === "area";
   const UpjongActive =
-    panel === "major" || panel === "middle" || panel === "sub";
+    panel === "need-area" ||
+    panel === "major" ||
+    panel === "middle" ||
+    panel === "sub";
 
   // 렌더
   return (
@@ -265,7 +271,6 @@ function Section2() {
                 : "opacity-100 translate-y-0",
             ].join(" ")}
           >
-
             {/* 그리드 영역(스크롤) */}
             <div className="px-6 py-7 flex-1 min-h-0">
               <div
@@ -295,6 +300,15 @@ function Section2() {
                         </button>
                       );
                     })}
+                  </div>
+                )}
+
+                {/* NEED AREA (동네 미선택 시) */}
+                {panel === "need-area" && (
+                  <div className="h-full flex items-center justify-center">
+                    <div className="text-[20px] font-[PretendardSemiB] text-[#121B2A] mt-7">
+                      동네를 먼저 선택해주세요.
+                    </div>
                   </div>
                 )}
 
