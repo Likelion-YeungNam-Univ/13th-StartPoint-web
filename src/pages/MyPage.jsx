@@ -1,3 +1,4 @@
+// src/pages/MyPage.jsx
 import React from "react";
 
 export default function MyPage() {
