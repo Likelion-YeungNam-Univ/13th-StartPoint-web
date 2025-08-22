@@ -4,12 +4,12 @@ import SPOlogo from "./assets/SPO_Logo_Footer.svg";
 
 const Footer = () => {
   return (
-    <footer className="w-full h-[165px] bg-[#1D2C44] flex px-6">
+    <footer className="w-full h-[165px] bg-[#1D2C44] flex px-8 py-7">
       <div className="flex-1 flex items-center ml-58">
-        <img src={SPOlogo} alt="SPOlogo" className="w-45 h-auto" />
+        <img src={SPOlogo} alt="SPOlogo" className="w-45 h-45" />
       </div>
 
-      <div className="flex-1 flex flex-col items-end justify-end pb-10 mr-58">
+      <div className="flex-1 flex flex-col items-end justify-end mr-60">
         <a
           href="https://github.com/orgs/Likelion-YeungNam-Univ/teams/13th-devism"
           target="_blank"
