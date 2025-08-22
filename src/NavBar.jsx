@@ -4,6 +4,7 @@ import { Link } from "react-scroll";
 import Logo from "./assets/SPO_Logo.svg";
 import userIcon from "./assets/User_Icon.svg";
 import useScrollSpy from "./hooks/useScrollSpy";
+import { logout } from "./api/auth"; // ✅ 추가: 실제 로그아웃
 
 const NAV_H = 64;
 
@@ -64,14 +65,29 @@ const NavBar = () => {
   const userMenuRef = useRef(null);
 
   // ------- 여기 API -------
-  // 임시 로그인 상태 (localStorage로 판별)
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("isLoggedIn") ?? "false");
-    } catch {
-      return false;
-    }
-  });
+  // ✅ 실제 로그인 상태 (accessToken 존재 여부로 판별)
+  const [authed, setAuthed] = useState(() => {
+  const t = localStorage.getItem("accessToken");
+  const u = localStorage.getItem("user");
+  const f = localStorage.getItem("isLoggedIn");
+  return !!(t || u || f === "true");
+    });
+
+
+  useEffect(() => {
+   const onAuthChange = () => {
+      const t = localStorage.getItem("accessToken");
+      const u = localStorage.getItem("user");
+      const f = localStorage.getItem("isLoggedIn");
+      setAuthed(!!(t || u || f === "true"));
+    };
+    window.addEventListener("auth-changed", onAuthChange);
+    window.addEventListener("storage", onAuthChange); // 다른 탭 동기화
+    return () => {
+      window.removeEventListener("auth-changed", onAuthChange);
+      window.removeEventListener("storage", onAuthChange);
+    };
+  }, []);
 
   // 라우팅 변경 시 드롭다운 닫기
   useEffect(() => {
@@ -161,7 +177,7 @@ const NavBar = () => {
               role="menu"
               className="absolute left-1/2 top-full mt-2 w-56 -translate-x-1/2 bg-white z-50 border border-[#757575]"
             >
-              {!isLoggedIn ? (
+              {!authed ? (
                 // 로그인 X
                 <ul className="divide-y divide-[#757575]">
                   <li>
@@ -188,7 +204,6 @@ const NavBar = () => {
                   </li>
                 </ul>
               ) : (
-                // 콘솔에 localStorage.setItem("isLoggedIn", "true"); location.reload(); 입력하면 로그인 상태로 전환 가능
                 // 로그인 O
                 <ul className="divide-y divide-[#757575]">
                   <li>
@@ -206,10 +221,9 @@ const NavBar = () => {
                     <button
                       className="w-full text-center px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                       onClick={() => {
-                        localStorage.setItem("isLoggedIn", "false");
-                        setIsLoggedIn(false);
+                        logout(); // ✅ 실제 로그아웃(토큰 제거 + 이벤트 발생)
                         setUserOpen(false);
-                        navigate("/");
+                        navigate("/", { replace: true });
                       }}
                     >
                       로그아웃

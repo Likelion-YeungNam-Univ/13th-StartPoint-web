@@ -1,6 +1,6 @@
-// src/pages/Login.jsx
+// src/pages/Login.jsx 
 import React, { useState } from "react";
-import { login } from "../api/auth";            // ← auth.js에 login 함수 있어야 함
+import { login } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
@@ -19,13 +19,11 @@ export default function Login() {
     setError("");
     setLoading(true);
     try {
-      // 백엔드 요구 필드명에 맞춰 전송
       const res = await login({
         id: form.id.trim(),
         password: form.password.trim(),
       });
 
-      // 토큰/유저 저장 (여러 응답 케이스 커버)
       const token =
         res?.accessToken || res?.token || res?.Authorization || res?.authToken || res?.data?.accessToken;
       if (token) localStorage.setItem("accessToken", token);
@@ -33,8 +31,12 @@ export default function Login() {
       const user = res?.user || res?.data?.user || res?.member || res?.profile;
       if (user) localStorage.setItem("user", JSON.stringify(user));
 
+      localStorage.setItem("isLoggedIn", "true");
+
       alert("로그인 성공!");
-      navigate("/mypage");
+      window.dispatchEvent(new Event("auth-changed")); // ← 헤더/아이콘 메뉴 즉시 갱신
+      // ✅ 여기만 변경: 마이페이지 → 홈
+      navigate("/", { replace: true });
     } catch (err) {
       console.error(err?.response || err);
       const msg =
