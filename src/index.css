@@ -1,1 +1,18 @@
 @import "tailwindcss";
+@import "tailwind-scrollbar-hide/v4";
+
+@font-face {
+  font-family: "PretendardB";
+  src: url("./font/Pretendard-Bold.ttf");
+}
+
+@font-face {
+  font-family: "PretendardSemiB";
+  src: url("./font/Pretendard-SemiBold.ttf");
+}
+
+@font-face {
+  font-family: "PretendardR";
+  src: url("./font/Pretendard-Regular.ttf");
+}
+
