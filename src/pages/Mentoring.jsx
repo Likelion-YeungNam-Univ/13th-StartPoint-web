@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import back from "../assets/Back.svg";
+import error from "../assets/Error.svg";
 import mentorListApi from "../apis/mentorListApi";
 import updateMentorApi from "../apis/updateMentorApi";
 
@@ -407,7 +408,7 @@ const Mentoring = () => {
       )}
 
       {showPayment && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center backdrop-blur-sm bg-black/60">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center backdrop-blur-xs bg-black/50">
           <div className="bg-white rounded-[6px] shadow-xl w-[700px] h-[250px]">
             <div className="relative flex justify-between items-center px-6 py-3 border-b border-[#2E47A4]">
               <h2 className="text-[17px] font-semibold text-black">
@@ -482,25 +483,30 @@ const Mentoring = () => {
       )}
 
       {showPreparing && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/70">
-          <div className="bg-white rounded-xl shadow-xl w-[400px] p-8 text-center">
-            <h2 className="text-lg font-bold text-gray-800 mb-4">
-              서비스 준비중입니다
-            </h2>
-            <p className="text-sm text-gray-600 mb-6">
-              결제 서비스는 현재 준비중이에요.
-              <br />
-              빠른 시일 내에 오픈될 예정입니다.
-            </p>
+        <div className="fixed inset-0 z-[70] flex items-center justify-center backdrop-blur-xs bg-black/50">
+          <div className="relative bg-white rounded-xl shadow-xl w-full max-w-3xl p-15 text-center">
             <button
-              onClick={() => {
-                setShowPreparing(false);
-                setShowPayment(false); // 결제 모달도 같이 닫기
-              }}
-              className="px-4 py-2 rounded-md bg-[#2E47A4] text-white font-semibold hover:bg-[#1d3180]"
+              onClick={() => setShowPreparing(false)}
+              className="absolute top-5 right-5 w-[18px] h-[18px] bg-[#B5B5B5] flex items-center justify-center text-white text-xl font-bold rounded-full cursor-pointer"
             >
-              확인
+              <img src={back} alt="back" className="w-[8px] h-[8px]" />
             </button>
+            <img
+              src={error}
+              alt="error"
+              className="w-[90px] h-[90px] mx-auto mb-15 mt-22"
+            />
+            <h2 className="text-[36px] mb-13">
+              <span className="font-bold text-[#2E47A4]">서비스 준비중</span>
+              <span className="font-light text-black">입니다.</span>
+            </h2>
+            <p className="text-[20px] text-black font-medium leading-relaxed mb-22">
+              이용에 불편을 드려 죄송합니다.
+              <br />
+              보다 나은 서비스 제공을 위하여 페이지 준비중에 있습니다.
+              <br />
+              빠른 시일내에 준비하여 찾아뵙겠습니다.
+            </p>
           </div>
         </div>
       )}
