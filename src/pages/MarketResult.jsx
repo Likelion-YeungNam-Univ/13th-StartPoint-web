@@ -196,7 +196,7 @@ const MarketResult = () => {
     { name: "최고", value: Number(data?.maxAmt) || 0 },
   ];
 
-  const saleSiCnt = Number(data?.storeCnt[0].storeCnt) || 0;
+  const saleSiCnt = Number(data?.storeCnt?.[0]?.storeCnt ?? 0);
 
   const eachDay = [
     { name: "월", value: Number(pop?.mon) || 0 }, // pop에서 옵셔널 체이닝(?)이 빠지면 터짐
@@ -422,7 +422,6 @@ const MarketResult = () => {
               </div>
             </div>
           </div>
-
           {/* 1-3 전년동월, 전월 대비 매출 증감률 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mb-1">
@@ -540,7 +539,6 @@ const MarketResult = () => {
               </div>
             </div>
           </div>
-
           {/* 2-3 전년동월, 전월 대비 업종 수 증감률 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center justify-center text-center">
             <div className="text-[22px] text-[#121B2A] font-semibold mb-1">
