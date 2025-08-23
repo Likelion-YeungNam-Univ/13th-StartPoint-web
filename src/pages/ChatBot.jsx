@@ -357,7 +357,7 @@ export default function ChatBot() {
                     className={
                       m.role === "user"
                         ? "self-end max-w-[70%] rounded-full px-3 py-1 text-[12px] bg-[#607594] text-white shadow"
-                        : "self-start max-w-[90%] rounded-lg px-3 py-2 text-[12px] bg-white text-[#4D6487] border border-[#E4EBF3] whitespace-pre-line"
+                        : "self-start max-w-[90%] rounded-lg px-3 py-2 text-[12px] bg-white text-[#4D6487] border border-[#E4EBF3] whitespace-pre-line mb-4"
                     }
                   >
                     {m.text}
