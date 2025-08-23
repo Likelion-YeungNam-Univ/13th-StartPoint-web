@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import back from "../assets/Back.svg";
+import error from "../assets/Error.svg";
 import mentorListApi from "../apis/mentorListApi";
 import updateMentorApi from "../apis/updateMentorApi";
+import { MoonLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
@@ -56,6 +58,25 @@ const Mentoring = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const [mentors, setMentors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showPayment, setShowPayment] = useState(false);
+  const [loadingPayment, setLoadingPayment] = useState(false);
+  const [showPreparing, setShowPreparing] = useState(false);
+
+  useEffect(() => {
+    const fetchMentors = async () => {
+      setLoading(true);
+      try {
+        const data = await mentorListApi();
+        setMentors(data);
+      } catch (err) {
+        console.error("멘토 불러오기 오류:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMentors();
+  }, []);
 
   useEffect(() => {
     if (name || role) {
@@ -67,33 +88,35 @@ const Mentoring = () => {
     }
   }, [name, role]);
 
-  const mentoringApply = async () => {
-    if (!selectedDate || !selectedTime) {
-      alert("멘토링 받을 날짜와 시간을 모두 선택해주세요.");
-      return;
-    }
+  const mentoringApply = () => {
+    setLoadingPayment(true); // 1초 동안 로딩 표시
 
-    const year = selectedDate.getFullYear();
-    const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
-    const day = String(selectedDate.getDate()).padStart(2, "0");
+    setTimeout(async () => {
+      setLoadingPayment(false);
+      setShowPayment(true);
 
-    const formattedDate = `${year}-${month}-${day}`;
-    const formattedTime = `${selectedTime}:00`;
+      if (selectedDate && selectedTime && selectedMentor) {
+        const year = selectedDate.getFullYear();
+        const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+        const day = String(selectedDate.getDate()).padStart(2, "0");
+        const formattedDate = `${year}-${month}-${day}`;
+        const formattedTime = `${selectedTime}:00`;
 
-    try {
-      await updateMentorApi({
-        mentorId: selectedMentor.id,
-        date: formattedDate,
-        time: formattedTime,
-      });
+        try {
+          await updateMentorApi({
+            mentorId: selectedMentor.id,
+            date: formattedDate,
+            time: formattedTime,
+          });
+        } catch (error) {
+          console.error("신청 중 오류 발생:", error);
+        }
+      }
+    }, 1000);
+  };
 
-      alert("신청이 완료되었습니다!");
-      setSelectedMentor(null);
-      setSelectedDate(null);
-      setSelectedTime(null);
-    } catch (error) {
-      alert("신청 중 오류가 발생했습니다.");
-    }
+  const handlePaymentConfirm = () => {
+    setShowPreparing(true); // 결제 서비스 준비중 모달 표시
   };
 
   const times = ["10:00", "14:00", "18:00", "22:00"];
@@ -161,7 +184,7 @@ const Mentoring = () => {
             <button
               type="button"
               onClick={() => setOpen((v) => !v)}
-              className="flex h-8 w-8 items-center justify-center rounded-full"
+              className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer"
               aria-label="카테고리 열기"
               title="카테고리 열기"
             >
@@ -221,7 +244,7 @@ const Mentoring = () => {
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="text-sm font-medium text-[#8DCAFF] hover:underline"
+                  className="text-[20px] font-semibold text-[#B2D5F2] cursor-pointer"
                 >
                   선택 완료
                 </button>
@@ -243,45 +266,67 @@ const Mentoring = () => {
           className={`relative z-0 mt-15 overflow-hidden grid grid-cols-3 gap-10 px-13 transition duration-100
             ${open ? "blur-xs pointer-events-none select-none" : ""}`}
         >
-          {filteredMentors.map((mentor) => (
-            <article
-              key={mentor.id}
-              className="w-[350px] rounded-[10px] bg-white py-12 transition hover:bg-white/90 cursor-pointer"
-              onClick={() => setSelectedMentor(mentor)}
-            >
-              <div className="mx-auto h-[105px] w-[105px] overflow-hidden rounded-full">
-                <img
-                  src={`https://i.pravatar.cc/120?u=${mentor.id}`}
-                  alt={`${mentor.name} 프로필 이미지`}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <h3 className="mt-4 text-center text-[24px] font-semibold text-[#464646]">
-                {mentor.name}
-              </h3>
-
-              <p className="mt-2 text-center text-[18px] text-[#464646] font-medium">
-                {mentor.headline}
+          {loading ? (
+            <div className="col-span-3 flex flex-col items-center justify-center py-20 text-white mt-13">
+              <MoonLoader color="#D3D3D3" size={40} />
+              <p className="mt-10 text-[#D3D3D3] text-[20px]">
+                탐색 및 정렬 중입니다. 잠시만 기다려 주세요.
               </p>
-              <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-                {mentor.keywords.map((k) => (
-                  <span
-                    key={k}
-                    className="rounded-full border-[0.5px] border-[#4D4D4D] px-4 py-1 text-[14px] text-[#616161]"
-                  >
-                    {k}
-                  </span>
-                ))}
-              </div>
-            </article>
-          ))}
+            </div>
+          ) : filteredMentors.length > 0 ? (
+            filteredMentors.map((mentor) => (
+              <article
+                key={mentor.id}
+                className="w-[350px] rounded-[10px] bg-white py-12 transition hover:bg-white/90 cursor-pointer"
+                onClick={() => setSelectedMentor(mentor)}
+              >
+                <div className="mx-auto h-[105px] w-[105px] overflow-hidden rounded-full">
+                  <img
+                    src={`https://i.pravatar.cc/120?u=${mentor.id}`}
+                    alt={`${mentor.name} 프로필 이미지`}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <h3 className="mt-4 text-center text-[24px] font-semibold text-[#464646]">
+                  {mentor.name}
+                </h3>
+
+                <p className="mt-2 text-center text-[18px] text-[#464646] font-medium">
+                  {mentor.headline}
+                </p>
+                <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+                  {mentor.keywords.map((k) => (
+                    <span
+                      key={k}
+                      className="rounded-full border-[0.5px] border-[#4D4D4D] px-4 py-1 text-[14px] text-[#616161]"
+                    >
+                      {k}
+                    </span>
+                  ))}
+                </div>
+              </article>
+            ))
+          ) : (
+            <div className="col-span-3 flex items-center justify-center py-20 text-[#B4B4B4]">
+              <p className="text-[18px] text-center">
+                아직 해당 카테고리에는 멘토가 준비되지 않았습니다.
+                <br />
+                다른 카테고리를 탐색해 보세요.
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
+      {loadingPayment && (
+        <div className="fixed inset-0 z-[65] flex items-center justify-center backdrop-blur-xs">
+          <MoonLoader color="#2E47A4" size={40} />
+        </div>
+      )}
 
       {/* 모달창 */}
       {selectedMentor && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-xs p-6">
           <div className="relative w-full max-w-3xl rounded-2xl bg-white shadow-xl flex overflow-hidden">
             {/* 왼쪽 */}
             <div className="w-1/2 p-5 flex flex-col items-center mt-5 ml-5">
@@ -293,7 +338,9 @@ const Mentoring = () => {
               <h3 className="mt-4 text-[24px] font-semibold text-[#464646]">
                 {selectedMentor.name}
               </h3>
-              <p className="mt-1 text-[14px] text-[#464646] font-medium">{selectedMentor.headline}</p>
+              <p className="mt-1 text-[14px] text-[#464646] font-medium">
+                {selectedMentor.headline}
+              </p>
 
               <p className="mt-7 text-[14px] text-[#464646] font-medium">
                 날짜와 시간을 선택해 주세요
@@ -364,10 +411,16 @@ const Mentoring = () => {
               <p className="mt-7 mb-7 text-[12px] text-[#464646]">
                 상세 일정은 멘토 확정 후 조율될 수 있습니다.
               </p>
-              
+
               <button
                 onClick={mentoringApply}
-                className="w-[104px] h-[34px] rounded-[6px] bg-[#2E47A4] mb-3 px-4 py-4 text-[12px] text-white font-[10px] flex items-center justify-center cursor-pointer"
+                disabled={!selectedDate || !selectedTime}
+                className={`w-[104px] h-[34px] rounded-[6px] mb-3 px-4 py-4 text-[12px] font-semibold text-white transition flex items-center justify-center
+                ${
+                  !selectedDate || !selectedTime
+                    ? "bg-[#CFCFCF] cursor-not-allowed"
+                    : "bg-[#2E47A4] hover:bg-[#1d3180] cursor-pointer"
+                }`}
               >
                 신청하기
               </button>
@@ -412,14 +465,142 @@ const Mentoring = () => {
                 ))}
               </ul>
             </div>
-            
+
             <button
               onClick={() => setSelectedMentor(null)}
               className="absolute top-5 right-5 w-[18px] h-[18px] bg-[#B5B5B5] flex items-center justify-center text-white text-xl font-bold rounded-full cursor-pointer"
             >
               <img src={back} alt="back" className="w-[8px] h-[8px]" />
-
             </button>
+          </div>
+        </div>
+      )}
+
+      {showPayment && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center backdrop-blur-xs bg-black/50">
+          <div className="bg-white rounded-[6px] shadow-xl w-[700px] h-[250px]">
+            <div className="relative flex justify-between items-center px-6 py-3 border-b border-[#2E47A4]">
+              <h2 className="text-[17px] font-semibold text-black">
+                결제 수단 선택
+              </h2>
+              <button
+                onClick={() => setShowPayment(false)}
+                className="absolute right-5 w-[18px] h-[18px] bg-[#B5B5B5] flex items-center justify-center text-white text-xl font-bold rounded-full cursor-pointer"
+              >
+                <img src={back} alt="back" className="w-[8px] h-[8px]" />
+              </button>
+            </div>
+
+            <div className="px-5 py-1">
+              <table className="w-full border border-gray-200 rounded-lg overflow-hidden">
+                <tbody>
+                  <tr className="border-t border-[#D9D9D9]">
+                    <td className="py-2 px-4 font-medium text-[14px] border-r border-[#D9D9D9]">
+                      신용카드
+                    </td>
+                    <td className="py-2 px-2 flex justify-start gap-4 ml-3">
+                      <label className="flex items-center gap-2 font-medium text-[14px] text-[#5E5E5E]">
+                        <input
+                          type="radio"
+                          name="payment"
+                          value="realtime"
+                          className="cursor-pointer"
+                        />
+                        <span>신용카드</span>
+                      </label>
+                      <label className="flex items-center gap-2 ml-13.5 font-medium text-[14px] text-[#5E5E5E]">
+                        <input
+                          type="radio"
+                          name="payment"
+                          value="virtual"
+                          className="cursor-pointer"
+                        />
+                        <span>해외발급신용카드</span>
+                      </label>
+                    </td>
+                  </tr>
+
+                  <tr className="border-t border-[#D9D9D9]">
+                    <td className="py-2 px-4 font-medium text-[14px] border-r border-[#D9D9D9]">
+                      계좌이체
+                    </td>
+                    <td className="py-2 px-2 flex justify-start gap-4 ml-3">
+                      <label className="flex items-center gap-2 font-medium text-[14px] text-[#5E5E5E]">
+                        <input
+                          type="radio"
+                          name="payment"
+                          value="realtime"
+                          className="cursor-pointer"
+                        />
+                        <span>실시간 계좌이체</span>
+                      </label>
+                      <label className="flex items-center gap-2 ml-2 font-medium text-[14px] text-[#5E5E5E]">
+                        <input
+                          type="radio"
+                          name="payment"
+                          value="virtual"
+                          className="cursor-pointer"
+                        />
+                        <span>무통장입금</span>
+                      </label>
+                    </td>
+                  </tr>
+
+                  <tr className="border-t border-[#D9D9D9]">
+                    <td className="py-2 px-4 font-medium text-[14px] border-r border-[#D9D9D9]">
+                      기타
+                    </td>
+                    <td className="py-2 px-2 flex items-center justify-start ml-3 gap-2 font-medium text-[14px] text-[#5E5E5E]">
+                      <input
+                        type="radio"
+                        name="payment"
+                        value="card"
+                        className="cursor-pointer"
+                      />
+                      <span>휴대폰</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="px-6 py-5 border-t border-[#2E47A4] flex justify-center">
+              <button
+                onClick={handlePaymentConfirm}
+                className="w-[300px] h-[32px] rounded-[5px] bg-[#2E47A4] text-[14px] text-white font-semibold hover:bg-[#1d3180] cursor-pointer"
+              >
+                결제하기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showPreparing && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center backdrop-blur-xs bg-black/50">
+          <div className="relative bg-white rounded-xl shadow-xl w-full max-w-3xl p-15 text-center">
+            <button
+              onClick={() => setShowPreparing(false)}
+              className="absolute top-5 right-5 w-[18px] h-[18px] bg-[#B5B5B5] flex items-center justify-center text-white text-xl font-bold rounded-full cursor-pointer"
+            >
+              <img src={back} alt="back" className="w-[8px] h-[8px]" />
+            </button>
+            <img
+              src={error}
+              alt="error"
+              className="w-[90px] h-[90px] mx-auto mb-15 mt-22"
+            />
+            <h2 className="text-[36px] mb-13">
+              <span className="font-bold text-[#2E47A4]">서비스 준비중</span>
+              <span className="font-light text-black">입니다.</span>
+            </h2>
+            <p className="text-[20px] text-black font-medium leading-relaxed mb-22">
+              이용에 불편을 드려 죄송합니다.
+              <br />
+              보다 나은 서비스 제공을 위하여 페이지 준비중에 있습니다.
+              <br />
+              빠른 시일내에 준비하여 찾아뵙겠습니다.
+            </p>
           </div>
         </div>
       )}
