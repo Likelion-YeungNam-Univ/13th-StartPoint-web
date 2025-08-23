@@ -1,4 +1,4 @@
 import api from "./api";
 
-export const getMyPage = () => api.get("/users/me"); // GET
-export const updateMyPage = (body) => api.put("/users/me", body); // PUT
+export const getMyPage = () => api.get("/users/me");
+export const updateMyPage = (body) => api.patch("/users/me", body);

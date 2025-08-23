@@ -11,13 +11,16 @@ import AuthContext from "./AuthContext";
 const AuthProvider = ({ children }) => {
   const [name, setName] = useState(null);
   const [role, setRole] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const storedName = loadNameFromStorage();
     const storedRole = loadRoleFromStorage();
 
     if (storedName) setName(storedName);
-    if (storedRole) setName(storedName);
+    if (storedRole) setRole(storedRole);
+
+    setIsLoading(false); // 로딩 완료
   }, []);
 
   const login = useCallback(({ name, role }) => {
@@ -36,8 +39,8 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   const value = useMemo(
-    () => ({ name, role, login, logout }),
-    [name, role, login, logout]
+    () => ({ name, role, login, logout, isLoading }),
+    [name, role, login, logout, isLoading]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

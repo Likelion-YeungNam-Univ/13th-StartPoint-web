@@ -10,14 +10,14 @@ export default function MyPage() {
   const [newPhone, setNewPhone] = useState("");
   const [newEmail, setNewEmail] = useState("");
 
-  const { name, role } = useAuth();
+  const { name, role, isLoading } = useAuth();
 
   useEffect(() => {
-    if (!name && !role) {
+    if (!isLoading && !name && !role) {
       navigate("/login");
       return;
     }
-  }, [name, role, navigate]);
+  }, [name, role, navigate, isLoading]);
 
   const fetchMyPage = async () => {
     try {
@@ -37,27 +37,34 @@ export default function MyPage() {
 
   useEffect(() => {
     if (myInfo) {
-      setNewPassword(myInfo.password);
-      setNewPhone(myInfo.phone);
-      setNewEmail(myInfo.email);
+      setNewPassword(myInfo.password || "");
+      setNewPhone(myInfo.phone || "");
+      setNewEmail(myInfo.email || "");
     }
   }, [myInfo]);
 
-  const handleSaveClick = async () => {
+  const handleSaveClick = async (e) => {
+    e.preventDefault();
+
     try {
-      await updateMyPage(accessToken, {
+      await updateMyPage({
         password: newPassword,
         phone: newPhone,
         email: newEmail,
       });
-      updateMyPage({
+
+      setMyInfo({
         ...myInfo,
         password: newPassword,
         phone: newPhone,
         email: newEmail,
       });
+
+      alert("정보가 성공적으로 수정되었습니다!");
+      navigate("/");
     } catch (err) {
       console.error("변경 에러:", err);
+      alert("정보 수정에 실패했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -66,7 +73,11 @@ export default function MyPage() {
   const disabledInputClass =
     "w-full border rounded-md px-4 py-2 bg-gray-100 text-gray-500 cursor-not-allowed";
 
-  if (!name && !role) {
+  if (isLoading) {
+    return <div>로딩중...</div>; // 로딩 화면
+  }
+
+  if (!name || !role) {
     return null;
   }
 
@@ -93,7 +104,7 @@ export default function MyPage() {
             </label>
             <input
               type="text"
-              value={`${myInfo.name}`}
+              value={myInfo.name || ""}
               disabled
               className={disabledInputClass}
             />
@@ -103,7 +114,7 @@ export default function MyPage() {
             </label>
             <input
               type="text"
-              value={`${myInfo.userId}`}
+              value={myInfo.userId || ""}
               disabled
               className={disabledInputClass}
             />
@@ -123,7 +134,7 @@ export default function MyPage() {
             </label>
             <input
               type="text"
-              value={`${myInfo.birth}`}
+              value={myInfo.birth || ""}
               disabled
               className={disabledInputClass}
             />
@@ -157,8 +168,9 @@ export default function MyPage() {
                   type="radio"
                   name="role"
                   value="mentee"
+                  disabled
                   className="accent-[#2E47A4]"
-                  checked={role === "mentee"}
+                  checked={myInfo.role == "MENTEE"}
                 />
                 <span className="text-[17px] text-[#2E47A4]">멘티</span>
               </label>
@@ -167,8 +179,9 @@ export default function MyPage() {
                   type="radio"
                   name="role"
                   value="mentor"
+                  disabled
                   className="accent-[#2E47A4]"
-                  checked={role === "mentor"}
+                  checked={myInfo.role == "MENTOR"}
                 />
                 <span className="text-[17px] text-[#2E47A4]">멘토</span>
               </label>

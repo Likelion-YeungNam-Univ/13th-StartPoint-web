@@ -39,16 +39,3 @@ export const authLogin = async (body) => {
 };
 
 export const authLogout = () => api.post("/users/logout");
-
-export const myPage = async (accessToken) => {
-  const result = await api(accessToken).get("users/me");
-  console.log(result.data);
-
-  return result.data;
-};
-
-export const updateMyPage = async (token, body) => {
-  try {
-    const result = await api.put();
-  } catch (err) {}
-};

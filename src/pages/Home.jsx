@@ -12,19 +12,6 @@ import { getMyPage } from "../apis/mypage";
 const SCROLL_DURATION_MS = 500;
 
 function Section1() {
-  const fetchMyPage = async () => {
-    try {
-      const result = await getMyPage();
-      console.log(result.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  useEffect(() => {
-    fetchMyPage();
-  }, []);
-
   return (
     <Element
       name="home"

@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { signup } from "../apis/auth";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const SignUp = () => {
   const inputClass =
@@ -26,7 +27,6 @@ const SignUp = () => {
 
   useEffect(() => {
     if (name || role) {
-      // 이미 로그인된 상태라면 메인 페이지로 리다이렉트
       navigate("/");
       return;
     }

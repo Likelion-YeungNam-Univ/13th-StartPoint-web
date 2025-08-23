@@ -190,10 +190,7 @@ const NavBar = () => {
                       className="w-full text-center px-4 py-2 text-sm cursor-pointer text-red-600 hover:bg-red-50"
                       onClick={() => {
                         logout();
-                        // localStorage.setItem("isLoggedIn", "false");
-                        // setIsLoggedIn(false);
-                        // setUserOpen(false);
-                        // navigate("/");
+                        navigate("/");
                       }}
                     >
                       로그아웃
