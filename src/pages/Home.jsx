@@ -213,6 +213,8 @@ function Section2() {
     panel === "middle" ||
     panel === "sub";
 
+  const upjong3nm = selectedSub?.name ?? null;
+
   // 렌더
   return (
     <Element
@@ -514,7 +516,7 @@ function Section2() {
                     if (!areaCode || !areaName || !upjong3cd) return;
 
                     navigate("/market-result", {
-                      state: { areaCode, upjong3cd, areaName },
+                      state: { areaCode, upjong3cd, areaName, upjong3nm },
                     });
                   }}
                   className={[
