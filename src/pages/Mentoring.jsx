@@ -35,15 +35,14 @@ const categoryList = [
 
 const Mentoring = () => {
   const navigate = useNavigate();
-  const { name, role } = useAuth;
+  const { name, role, isLoading } = useAuth();
 
   useEffect(() => {
-    if (!name && !role) {
-      alert("로그인이 필요한 서비스 입니다.");
+    if (!isLoading && !name && !role) {
       navigate("/login");
       return;
     }
-  }, [name, role, navigate]);
+  }, [name, role, navigate, isLoading]);
 
   const [open, setOpen] = useState(false);
 
@@ -126,7 +125,11 @@ const Mentoring = () => {
     (mentor) => mentor.area === area && mentor.category === category
   );
 
-  if (!name && !role) {
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!name || !role) {
     return null;
   }
 

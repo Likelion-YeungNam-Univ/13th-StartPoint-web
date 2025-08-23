@@ -614,10 +614,12 @@ function Section3() {
           <button
             type="button"
             onClick={() => {
-              name || role
-                ? navigate("/mentoring")
-                : alert("로그인이 필요한 서비스입니다.");
-              navigate("/login");
+              if (name || role) {
+                navigate("/mentoring");
+              } else {
+                alert("로그인이 필요한 서비스입니다.");
+                navigate("/login");
+              }
             }}
             className="rounded-sm bg-[#547DA0] px-8 py-3 text-[15px] font-[PretendardB] text-white"
           >

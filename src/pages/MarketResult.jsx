@@ -781,25 +781,35 @@ const MarketResult = () => {
         창업 가능성 및 상위 동네 추천은 상세분석에서 확인할 수 있습니다.
       </div>
 
-      {name || role ? (
-        <div className="pt-36 pb-25 flex justify-center gap-4 text-[24px]">
-          <div
-            onClick={() => setOpen(true)}
-            className="w-[224px] h-[60px] p-8 bg-[#32C376] rounded-[6px] flex flex-col items-center justify-center text-center text-[18px] text-white font-semibold cursor-pointer hover:bg-[#28a866] transition"
-          >
-            상세 분석
-          </div>
-
-          <div
-            onClick={() => navigate("/mentoring")}
-            className="w-[224px] h-[60px] p-8 bg-[#03B4C8] rounded-[6px] flex flex-col items-center justify-center text-center text-[18px] text-white font-semibold cursor-pointer hover:bg-[#0290a3] transition"
-          >
-            멘토 탐색 바로가기
-          </div>
+      <div className="pt-36 pb-25 flex justify-center gap-4 text-[24px]">
+        <div
+          onClick={() => {
+            if (name || role) {
+              setOpen(true);
+            } else {
+              alert("로그인이 필요한 서비스입니다.");
+              navigate("/login");
+            }
+          }}
+          className="w-[224px] h-[60px] p-8 bg-[#32C376] rounded-[6px] flex flex-col items-center justify-center text-center text-[18px] text-white font-semibold cursor-pointer hover:bg-[#28a866] transition"
+        >
+          상세 분석
         </div>
-      ) : (
-        <div>로그인 하세요</div>
-      )}
+
+        <div
+          onClick={() => {
+            if (name || role) {
+              navigate("/mentoring");
+            } else {
+              alert("로그인이 필요한 서비스입니다.");
+              navigate("/login");
+            }
+          }}
+          className="w-[224px] h-[60px] p-8 bg-[#03B4C8] rounded-[6px] flex flex-col items-center justify-center text-center text-[18px] text-white font-semibold cursor-pointer hover:bg-[#0290a3] transition"
+        >
+          멘토 탐색 바로가기
+        </div>
+      </div>
 
       {open && (
         <div className="fixed inset-0 flex items-center justify-center z-50">

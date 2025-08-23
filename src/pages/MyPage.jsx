@@ -74,7 +74,7 @@ export default function MyPage() {
     "w-full border rounded-md px-4 py-2 bg-gray-100 text-gray-500 cursor-not-allowed";
 
   if (isLoading) {
-    return <div>로딩중...</div>; // 로딩 화면
+    return <div>Loading...</div>;
   }
 
   if (!name || !role) {
