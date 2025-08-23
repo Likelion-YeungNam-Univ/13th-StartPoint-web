@@ -180,12 +180,10 @@ export default function ChatBot() {
         "서버와 통신에 실패했습니다. 잠시 후 다시 시도해주세요.";
 
       if (error.response) {
-        // 서버가 응답했지만 에러 상태코드
         errorMessage = `서버 오류 (${error.response.status}): ${
           error.response.data?.message || "알 수 없는 오류"
         }`;
       } else if (error.request) {
-        // 요청이 전송되었지만 응답을 받지 못함
         errorMessage = "네트워크 연결을 확인해주세요.";
       }
 
