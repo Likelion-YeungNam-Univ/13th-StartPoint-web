@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import back from "../assets/Back.svg";
 import mentorListApi from "../apis/mentorListApi";
 import updateMentorApi from "../apis/updateMentorApi";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 // 선택용 목록 (지금처럼 쓰기 or 멘토 정보에 있는 걸로 나열하기)
 const areaList = [
@@ -32,6 +34,16 @@ const categoryList = [
 ];
 
 const Mentoring = () => {
+  const navigate = useNavigate();
+  const { name, role, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!isLoading && !name && !role) {
+      navigate("/login");
+      return;
+    }
+  }, [name, role, navigate, isLoading]);
+
   const [open, setOpen] = useState(false);
 
   const [area, setArea] = useState("서부1동");
@@ -46,12 +58,14 @@ const Mentoring = () => {
   const [mentors, setMentors] = useState([]);
 
   useEffect(() => {
-    const fetchMentors = async () => {
-      const data = await mentorListApi();
-      setMentors(data);
-    };
-    fetchMentors();
-  }, []);
+    if (name || role) {
+      const fetchMentors = async () => {
+        const data = await mentorListApi();
+        setMentors(data);
+      };
+      fetchMentors();
+    }
+  }, [name, role]);
 
   const mentoringApply = async () => {
     if (!selectedDate || !selectedTime) {
@@ -110,6 +124,14 @@ const Mentoring = () => {
   const filteredMentors = mentors.filter(
     (mentor) => mentor.area === area && mentor.category === category
   );
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!name || !role) {
+    return null;
+  }
 
   return (
     <main className="min-h-screen bg-[#121B2A]">
@@ -221,7 +243,7 @@ const Mentoring = () => {
           className={`relative z-0 mt-15 overflow-hidden grid grid-cols-3 gap-10 px-13 transition duration-100
             ${open ? "blur-xs pointer-events-none select-none" : ""}`}
         >
-          {mentors.map((mentor) => (
+          {filteredMentors.map((mentor) => (
             <article
               key={mentor.id}
               className="w-[350px] rounded-[10px] bg-white py-12 transition hover:bg-white/90 cursor-pointer"

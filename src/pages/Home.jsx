@@ -6,6 +6,8 @@ import imgSection2 from "../assets/Home_Section2.png";
 import imgSection3 from "../assets/Home_Section3.png";
 import upjongListApi from "../apis/upjongListApi";
 import ChatBot from "./ChatBot";
+import useAuth from "../hooks/useAuth";
+import { getMyPage } from "../apis/mypage";
 
 const SCROLL_DURATION_MS = 500;
 
@@ -28,6 +30,7 @@ function Section1() {
           <h1 className="text-white text-[62px] font-[PretendardB] font-bold">
             Start Pointer &gt;&gt; <span>SPO</span>
           </h1>
+
           <div>
             <p className="text-white text-[25.5px] font-[PretendardR]">
               경산시에서 어떻게 창업해야 할지 모르겠을 땐 스포하세요!
@@ -535,6 +538,8 @@ function Section2() {
 function Section3() {
   const navigate = useNavigate();
 
+  const { name, role } = useAuth();
+
   const CARDS = [
     {
       t: "탐색(Discover)",
@@ -607,7 +612,14 @@ function Section3() {
         <div className="mt-2 flex justify-center">
           <button
             type="button"
-            onClick={() => navigate("/mentoring")}
+            onClick={() => {
+              if (name || role) {
+                navigate("/mentoring");
+              } else {
+                alert("로그인이 필요한 서비스입니다.");
+                navigate("/login");
+              }
+            }}
             className="rounded-sm bg-[#547DA0] px-8 py-3 text-[15px] font-[PretendardB] text-white"
           >
             멘토 탐색 바로가기

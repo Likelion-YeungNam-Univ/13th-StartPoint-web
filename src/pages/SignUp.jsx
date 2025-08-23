@@ -1,28 +1,36 @@
-// src/pages/SignUp.jsx
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { signup } from "../apis/auth";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const SignUp = () => {
   const inputClass =
     "h-11 w-full border rounded-md px-4 bg-white focus:shadow-inner focus:outline-[#2E47A4] caret-[#2E47A4]";
 
   const navigate = useNavigate();
+  const { name, role } = useAuth();
 
   const [form, setForm] = useState({
     name: "",
-    id: "",
+    userId: "",
     password: "",
     birth: "",
     phone: "",
     email: "",
-    role: "mentee",
+    role: "",
   });
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
+
+  useEffect(() => {
+    if (name || role) {
+      navigate("/");
+      return;
+    }
+  }, [name, role, navigate]);
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -33,37 +41,31 @@ const SignUp = () => {
     e.preventDefault();
     setError("");
 
+    const body = {
+      name: form.name.trim(),
+      birth: form.birth,
+      email: form.email.trim(),
+      userId: form.userId.trim(),
+      password: form.password,
+      role: form.role,
+      phone: form.phone.trim(),
+    };
+
     if (
       !form.name ||
-      !form.id ||
       !form.password ||
       !form.birth ||
       !form.phone ||
-      !form.email
+      !form.email ||
+      !form.role
     ) {
       setError("모든 필수 항목을 입력해 주세요.");
-      return;
-    }
-    const phoneOk = /^(01[016789])[-]?\d{3,4}[-]?\d{4}$/.test(
-      form.phone.trim()
-    );
-    if (!phoneOk) {
-      setError("전화번호 형식이 올바르지 않습니다. 예) 010-1234-5678");
       return;
     }
 
     setLoading(true);
     try {
-      await signup({
-        name: form.name.trim(),
-        birth: form.birth,
-        email: form.email.trim(),
-        id: form.id.trim(),
-        userId: form.id.trim(), // 백엔드 정리 전까진 둘 다
-        password: form.password,
-        role: form.role,
-        phone: form.phone.trim(),
-      });
+      await signup(body);
       alert("회원가입 성공!");
       navigate("/login");
     } catch (err) {
@@ -76,6 +78,10 @@ const SignUp = () => {
       setLoading(false);
     }
   };
+
+  if (name || role) {
+    return null;
+  }
 
   return (
     // 상단 NavBar 64px 가정: 화면 중앙 배치
@@ -118,9 +124,8 @@ const SignUp = () => {
               아이디
             </label>
             <input
-              id="uid"
-              name="id"
-              value={form.id}
+              name="userId"
+              value={form.userId}
               onChange={onChange}
               className={inputClass}
               autoComplete="username"
