@@ -42,7 +42,6 @@ const Login = () => {
       // console.log("res:", res, res.name, res.role);
       login({ name: res.name, role: res.role });
 
-      alert("로그인 성공!");
       navigate("/");
     } catch (err) {
       console.error(err?.response || err);
