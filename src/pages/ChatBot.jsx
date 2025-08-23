@@ -21,10 +21,6 @@ export default function ChatBot() {
   const thinkTimer = useRef(null);
 
   useEffect(() => {
-    console.log("[ENV] VITE_API_BASE =", import.meta.env?.VITE_API_BASE);
-  }, []);
-
-  useEffect(() => {
     const footer =
       document.querySelector("footer") ||
       document.querySelector("#footer") ||
@@ -162,7 +158,7 @@ export default function ChatBot() {
 
     try {
       const res = await postAsk(text);
-      console.log("[/ask response]", res);
+      console.log("[CHATBOT] /ask response:", res);
 
       if (res?.contextId && res.contextId !== contextId)
         setContextId(res.contextId);
@@ -177,13 +173,28 @@ export default function ChatBot() {
             )}`;
 
       setMessages((prev) => [...prev, { role: "bot", text: answer }]);
-    } catch (e) {
-      console.error("[/ask error catch]", e);
+    } catch (error) {
+      console.error("[CHATBOT] /ask error:", error);
+
+      // axios 에러 구조 활용
+      let errorMessage =
+        "서버와 통신에 실패했습니다. 잠시 후 다시 시도해주세요.";
+
+      if (error.response) {
+        // 서버가 응답했지만 에러 상태코드
+        errorMessage = `서버 오류 (${error.response.status}): ${
+          error.response.data?.message || "알 수 없는 오류"
+        }`;
+      } else if (error.request) {
+        // 요청이 전송되었지만 응답을 받지 못함
+        errorMessage = "네트워크 연결을 확인해주세요.";
+      }
+
       setMessages((prev) => [
         ...prev,
         {
           role: "bot",
-          text: "서버와 통신에 실패했습니다. 잠시 후 다시 시도해주세요.",
+          text: errorMessage,
         },
       ]);
     } finally {
@@ -377,7 +388,9 @@ export default function ChatBot() {
                 {!isInputFocused && input.length === 0 && (
                   <div className="pointer-events-none absolute inset-0 flex items-center px-4">
                     <p className="text-[12px] leading-[18px] text-[#688BC0] whitespace-pre-line">
-                      {"창업 관련 고민이 있나요?\n스포티에게 무엇이든 물어보세요."}
+                      {
+                        "창업 관련 고민이 있나요?\n스포티에게 무엇이든 물어보세요."
+                      }
                     </p>
                   </div>
                 )}
