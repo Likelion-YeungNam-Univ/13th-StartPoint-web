@@ -3,6 +3,7 @@ import back from "../assets/Back.svg";
 import error from "../assets/Error.svg";
 import mentorListApi from "../apis/mentorListApi";
 import updateMentorApi from "../apis/updateMentorApi";
+import { MoonLoader } from "react-spinners";
 
 // 선택용 목록 (지금처럼 쓰기 or 멘토 정보에 있는 걸로 나열하기)
 const areaList = [
@@ -45,13 +46,21 @@ const Mentoring = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const [mentors, setMentors] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showPayment, setShowPayment] = useState(false);
   const [showPreparing, setShowPreparing] = useState(false);
 
   useEffect(() => {
     const fetchMentors = async () => {
-      const data = await mentorListApi();
-      setMentors(data);
+      setLoading(true);
+      try {
+        const data = await mentorListApi();
+        setMentors(data);
+      } catch (err) {
+        console.error("멘토 불러오기 오류:", err);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchMentors();
   }, []);
@@ -220,38 +229,51 @@ const Mentoring = () => {
           className={`relative z-0 mt-15 overflow-hidden grid grid-cols-3 gap-10 px-13 transition duration-100
             ${open ? "blur-xs pointer-events-none select-none" : ""}`}
         >
-          {filteredMentors.map((mentor) => (
-            <article
-              key={mentor.id}
-              className="w-[350px] rounded-[10px] bg-white py-12 transition hover:bg-white/90 cursor-pointer"
-              onClick={() => setSelectedMentor(mentor)}
-            >
-              <div className="mx-auto h-[105px] w-[105px] overflow-hidden rounded-full">
-                <img
-                  src={`https://i.pravatar.cc/120?u=${mentor.id}`}
-                  alt={`${mentor.name} 프로필 이미지`}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <h3 className="mt-4 text-center text-[24px] font-semibold text-[#464646]">
-                {mentor.name}
-              </h3>
-
-              <p className="mt-2 text-center text-[18px] text-[#464646] font-medium">
-                {mentor.headline}
+          {loading ? (
+            <div className="col-span-3 flex flex-col items-center justify-center py-20 text-white">
+              <MoonLoader color="#D3D3D3" />
+              <p className="text-[#D3D3D3] text-[20px] font-semibold">
+                탐색 및 정렬 중입니다. 잠시만 기다려 주세요.
               </p>
-              <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-                {mentor.keywords.map((k) => (
-                  <span
-                    key={k}
-                    className="rounded-full border-[0.5px] border-[#4D4D4D] px-4 py-1 text-[14px] text-[#616161]"
-                  >
-                    {k}
-                  </span>
-                ))}
-              </div>
-            </article>
-          ))}
+            </div>
+          ) : filteredMentors.length > 0 ? (
+            filteredMentors.map((mentor) => (
+              <article
+                key={mentor.id}
+                className="w-[350px] rounded-[10px] bg-white py-12 transition hover:bg-white/90 cursor-pointer"
+                onClick={() => setSelectedMentor(mentor)}
+              >
+                <div className="mx-auto h-[105px] w-[105px] overflow-hidden rounded-full">
+                  <img
+                    src={`https://i.pravatar.cc/120?u=${mentor.id}`}
+                    alt={`${mentor.name} 프로필 이미지`}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <h3 className="mt-4 text-center text-[24px] font-semibold text-[#464646]">
+                  {mentor.name}
+                </h3>
+
+                <p className="mt-2 text-center text-[18px] text-[#464646] font-medium">
+                  {mentor.headline}
+                </p>
+                <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+                  {mentor.keywords.map((k) => (
+                    <span
+                      key={k}
+                      className="rounded-full border-[0.5px] border-[#4D4D4D] px-4 py-1 text-[14px] text-[#616161]"
+                    >
+                      {k}
+                    </span>
+                  ))}
+                </div>
+              </article>
+            ))
+          ) : (
+            <div className="col-span-3 flex justify-center py-20 text-white">
+              <p className="text-lg">조건에 맞는 멘토가 없습니다.</p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -431,11 +453,21 @@ const Mentoring = () => {
                     </td>
                     <td className="py-2 px-2 flex justify-start gap-4 ml-3">
                       <label className="flex items-center gap-2 font-medium text-[14px] text-[#5E5E5E]">
-                        <input type="radio" name="payment" value="realtime" />
+                        <input
+                          type="radio"
+                          name="payment"
+                          value="realtime"
+                          className="cursor-pointer"
+                        />
                         <span>신용카드</span>
                       </label>
                       <label className="flex items-center gap-2 ml-13.5 font-medium text-[14px] text-[#5E5E5E]">
-                        <input type="radio" name="payment" value="virtual" />
+                        <input
+                          type="radio"
+                          name="payment"
+                          value="virtual"
+                          className="cursor-pointer"
+                        />
                         <span>해외발급신용카드</span>
                       </label>
                     </td>
@@ -447,11 +479,21 @@ const Mentoring = () => {
                     </td>
                     <td className="py-2 px-2 flex justify-start gap-4 ml-3">
                       <label className="flex items-center gap-2 font-medium text-[14px] text-[#5E5E5E]">
-                        <input type="radio" name="payment" value="realtime" />
+                        <input
+                          type="radio"
+                          name="payment"
+                          value="realtime"
+                          className="cursor-pointer"
+                        />
                         <span>실시간 계좌이체</span>
                       </label>
                       <label className="flex items-center gap-2 ml-2 font-medium text-[14px] text-[#5E5E5E]">
-                        <input type="radio" name="payment" value="virtual" />
+                        <input
+                          type="radio"
+                          name="payment"
+                          value="virtual"
+                          className="cursor-pointer"
+                        />
                         <span>무통장입금</span>
                       </label>
                     </td>
@@ -462,7 +504,12 @@ const Mentoring = () => {
                       기타
                     </td>
                     <td className="py-2 px-2 flex items-center justify-start ml-3 gap-2 font-medium text-[14px] text-[#5E5E5E]">
-                      <input type="radio" name="payment" value="card" />
+                      <input
+                        type="radio"
+                        name="payment"
+                        value="card"
+                        className="cursor-pointer"
+                      />
                       <span>휴대폰</span>
                     </td>
                   </tr>
@@ -473,7 +520,7 @@ const Mentoring = () => {
             <div className="px-6 py-5 border-t border-[#2E47A4] flex justify-center">
               <button
                 onClick={handlePaymentConfirm}
-                className="w-[300px] h-[32px] rounded-[5px] bg-[#2E47A4] text-[14px] text-white font-semibold hover:bg-[#1d3180]"
+                className="w-[300px] h-[32px] rounded-[5px] bg-[#2E47A4] text-[14px] text-white font-semibold hover:bg-[#1d3180] cursor-pointer"
               >
                 결제하기
               </button>
