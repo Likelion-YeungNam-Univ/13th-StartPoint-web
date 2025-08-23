@@ -48,6 +48,7 @@ const Mentoring = () => {
   const [mentors, setMentors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showPayment, setShowPayment] = useState(false);
+  const [loadingPayment, setLoadingPayment] = useState(false);
   const [showPreparing, setShowPreparing] = useState(false);
 
   useEffect(() => {
@@ -65,25 +66,31 @@ const Mentoring = () => {
     fetchMentors();
   }, []);
 
-  const mentoringApply = async () => {
-    setShowPayment(true);
+  const mentoringApply = () => {
+    setLoadingPayment(true); // 1초 동안 로딩 표시
 
-    const year = selectedDate.getFullYear();
-    const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
-    const day = String(selectedDate.getDate()).padStart(2, "0");
+    setTimeout(async () => {
+      setLoadingPayment(false);
+      setShowPayment(true);
 
-    const formattedDate = `${year}-${month}-${day}`;
-    const formattedTime = `${selectedTime}:00`;
+      if (selectedDate && selectedTime && selectedMentor) {
+        const year = selectedDate.getFullYear();
+        const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+        const day = String(selectedDate.getDate()).padStart(2, "0");
+        const formattedDate = `${year}-${month}-${day}`;
+        const formattedTime = `${selectedTime}:00`;
 
-    try {
-      await updateMentorApi({
-        mentorId: selectedMentor.id,
-        date: formattedDate,
-        time: formattedTime,
-      });
-    } catch (error) {
-      console.error("신청 중 오류 발생:", error);
-    }
+        try {
+          await updateMentorApi({
+            mentorId: selectedMentor.id,
+            date: formattedDate,
+            time: formattedTime,
+          });
+        } catch (error) {
+          console.error("신청 중 오류 발생:", error);
+        }
+      }
+    }, 1000);
   };
 
   const handlePaymentConfirm = () => {
@@ -147,7 +154,7 @@ const Mentoring = () => {
             <button
               type="button"
               onClick={() => setOpen((v) => !v)}
-              className="flex h-8 w-8 items-center justify-center rounded-full"
+              className="flex h-8 w-8 items-center justify-center rounded-full cursor-pointer"
               aria-label="카테고리 열기"
               title="카테고리 열기"
             >
@@ -207,7 +214,7 @@ const Mentoring = () => {
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="text-sm font-medium text-[#8DCAFF] hover:underline"
+                  className="text-[20px] font-semibold text-[#B2D5F2] cursor-pointer"
                 >
                   선택 완료
                 </button>
@@ -230,9 +237,9 @@ const Mentoring = () => {
             ${open ? "blur-xs pointer-events-none select-none" : ""}`}
         >
           {loading ? (
-            <div className="col-span-3 flex flex-col items-center justify-center py-20 text-white">
-              <MoonLoader color="#D3D3D3" />
-              <p className="text-[#D3D3D3] text-[20px] font-semibold">
+            <div className="col-span-3 flex flex-col items-center justify-center py-20 text-white mt-13">
+              <MoonLoader color="#D3D3D3" size={40} />
+              <p className="mt-10 text-[#D3D3D3] text-[20px]">
                 탐색 및 정렬 중입니다. 잠시만 기다려 주세요.
               </p>
             </div>
@@ -270,12 +277,22 @@ const Mentoring = () => {
               </article>
             ))
           ) : (
-            <div className="col-span-3 flex justify-center py-20 text-white">
-              <p className="text-lg">조건에 맞는 멘토가 없습니다.</p>
+            <div className="col-span-3 flex items-center justify-center py-20 text-[#B4B4B4]">
+              <p className="text-[18px] text-center">
+                아직 해당 카테고리에는 멘토가 준비되지 않았습니다.
+                <br />
+                다른 카테고리를 탐색해 보세요.
+              </p>
             </div>
           )}
         </div>
       </div>
+
+      {loadingPayment && (
+        <div className="fixed inset-0 z-[65] flex items-center justify-center backdrop-blur-xs">
+          <MoonLoader color="#2E47A4" size={40} />
+        </div>
+      )}
 
       {/* 모달창 */}
       {selectedMentor && (
