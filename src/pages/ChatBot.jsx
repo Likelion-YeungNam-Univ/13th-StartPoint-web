@@ -244,7 +244,7 @@ export default function ChatBot() {
           onFocus={() => setBadgeHover(true)}
           onBlur={() => setBadgeHover(false)}
           className="w-12 h-12 rounded-full shadow-xl grid place-items-center overflow-hidden bg-transparent
-                     transition duration-200 hover:brightness-110 hover:saturate-125 hover:scale-105"
+                     transition duration-200 hover:brightness-110 hover:saturate-125 hover:scale-105 cursor-pointer"
           aria-label="챗봇 열기"
         >
           <img
@@ -268,7 +268,7 @@ export default function ChatBot() {
           {(isChatting || stage === "faq") && (
             <button
               onClick={goHome}
-              className="absolute left-3 top-3 w-8 h-8 grid place-items-center rounded-md hover:bg-white/60"
+              className="absolute left-3 top-3 w-8 h-8 grid place-items-center rounded-md hover:bg-white/60 cursor-pointer"
               aria-label="home"
             >
               <svg
@@ -284,7 +284,7 @@ export default function ChatBot() {
           )}
           <button
             onClick={() => setOpen(false)}
-            className="absolute right-3 top-4 w-6 h-6 grid place-items-center rounded-full border border-[#FFFFFF] bg-[#FFFFFF] hover:bg-white/60"
+            className="absolute right-3 top-4 w-6 h-6 grid place-items-center rounded-full border border-[#FFFFFF] bg-[#FFFFFF] hover:bg-white/60 cursor-pointer"
             aria-label="close"
           >
             <svg
@@ -348,7 +348,7 @@ export default function ChatBot() {
                       <button
                         key={it.id}
                         onClick={() => handleCategoryClick(it.id)}
-                        className="w-full h-[36px] rounded-lg bg-white/30 text-[#4D6487] text-[12px] px-4 text-left border border-[#E3EAF3] hover:bg-[#FFFFFF] transition-colors"
+                        className="w-full h-[36px] rounded-lg bg-white/30 text-[#4D6487] text-[12px] px-4 text-left border border-[#E3EAF3] hover:bg-[#FFFFFF] transition-colors cursor-pointer"
                       >
                         {it.label}
                       </button>
@@ -416,7 +416,7 @@ export default function ChatBot() {
                   {!thinking ? (
                     <button
                       onClick={sendMessage}
-                      className="w-7 h-7 rounded-full grid place-items-center overflow-hidden"
+                      className="w-7 h-7 rounded-full grid place-items-center overflow-hidden cursor-pointer"
                       title="보내기"
                     >
                       <img
@@ -455,7 +455,7 @@ export default function ChatBot() {
                     <li key={idx}>
                       <button
                         onClick={() => toggleFaq(idx)}
-                        className="w-full px-4 py-3 flex items-center gap-2 text-left hover:bg-[#F9FBFD]"
+                        className="w-full px-4 py-3 flex items-center gap-2 text-left hover:bg-[#F9FBFD] cursor-pointer"
                       >
                         <span className="w-4 text-[18px] leading-none text-[#4D6487]">
                           {item.open ? "−" : "+"}
@@ -484,7 +484,7 @@ export default function ChatBot() {
 
       <button
         onClick={() => setOpen(false)}
-        className="fixed right-5 w-12 h-12 rounded-full shadow-xl grid place-items-center overflow-hidden bg-transparent"
+        className="fixed right-5 w-12 h-12 rounded-full shadow-xl grid place-items-center overflow-hidden bg-transparent cursor-pointer"
         style={{ bottom: `${20 + footerBump}px` }}
         aria-label="챗봇 닫기"
       >
