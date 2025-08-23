@@ -109,6 +109,7 @@ const MarketResult = () => {
       admiCd: state.areaCode || "",
       upjongCd: state.upjong3cd || "",
       simpleLoc: state.areaName || "",
+      upjongNm: state.upjong3nm || "",
     };
   }, [locationObj.state]);
 
@@ -187,7 +188,7 @@ const MarketResult = () => {
   const guName = "경산시";
   const dongName = params.simpleLoc || "동";
 
-  const upjongName = data?.upjongTypeMap?.upjong3nm || "—";
+  const upjongName = params.upjongNm || "—";
 
   const pop = data?.population;
   const maxDay = getMaxDay(pop);
@@ -822,13 +823,13 @@ const MarketResult = () => {
               <img src={back} alt="back" className="w-[9] h-[9]" />
             </button>
             {pracLoading ? (
-                <div className="py-16 flex flex-col items-center justify-center">
+              <div className="py-16 flex flex-col items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-gray-600 mb-6" />
                 <p className="text-gray-600">
                   분석 중입니다. 잠시만 기다려 주세요.
                 </p>
               </div>
-            )  : pracErrMsg ? (
+            ) : pracErrMsg ? (
               <div>
                 <div className="py-20 text-red-500">{pracErrMsg}</div>
                 <button
