@@ -306,7 +306,7 @@ function Section2() {
                 {/* NEED AREA (동네 미선택 시) */}
                 {panel === "need-area" && (
                   <div className="h-full flex items-center justify-center">
-                    <div className="text-[20px] font-[PretendardSemiB] text-[#121B2A] mt-7">
+                    <div className="text-[20px] font-[PretendardSemiB] text-[#121B2A] mt-5">
                       동네를 먼저 선택해주세요.
                     </div>
                   </div>
