@@ -14,8 +14,6 @@ dist-ssr
 
 # dotenv (do not commit env files)
 .env
-.env.*
-!.env.example
 
 # Editor directories and files
 .vscode/*

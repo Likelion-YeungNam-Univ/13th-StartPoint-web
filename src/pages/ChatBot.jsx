@@ -3,6 +3,7 @@ import SIcon from "../assets/S.png";
 import SBadge from "../assets/SBadge.png";
 import SWhite from "../assets/swhite.png";
 import { postAsk } from "../apis/chatbot";
+import sendButton from "../assets/sendbutton.png";
 
 export default function ChatBot() {
   const [open, setOpen] = useState(false);
@@ -13,21 +14,12 @@ export default function ChatBot() {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [contextId, setContextId] = useState(undefined);
   const [badgeHover, setBadgeHover] = useState(false);
-
-  // ✅ FAQ 아코디언 상태
   const [faqList, setFaqList] = useState(null);
-
-  // 🔹 푸터 오버랩 방지
   const [footerBump, setFooterBump] = useState(0);
 
   const inputRef = useRef(null);
   const thinkTimer = useRef(null);
 
-  useEffect(() => {
-    console.log("[ENV] VITE_API_BASE =", import.meta.env?.VITE_API_BASE);
-  }, []);
-
-  // 🔹 푸터 감지
   useEffect(() => {
     const footer =
       document.querySelector("footer") ||
@@ -72,7 +64,6 @@ export default function ChatBot() {
     { id: "support", label: "사업 행정 정책 안내" },
   ];
 
-  // ✅ 카테고리별 FAQ 데이터 (모두 닫힘으로 시작)
   const FAQ_DATA = {
     regulation: [
       {
@@ -142,7 +133,6 @@ export default function ChatBot() {
     ],
   };
 
-  // ✅ 카테고리 버튼 클릭 → FAQ 화면으로 전환 (메시지 추가 안 함)
   const handleCategoryClick = (categoryId) => {
     const list = FAQ_DATA[categoryId]
       ? FAQ_DATA[categoryId].map((it) => ({ ...it, open: false }))
@@ -151,7 +141,6 @@ export default function ChatBot() {
     setStage("faq");
   };
 
-  // ✅ 아코디언 토글
   const toggleFaq = (idx) => {
     setFaqList((prev) =>
       prev?.map((it, i) => (i === idx ? { ...it, open: !it.open } : it))
@@ -160,16 +149,17 @@ export default function ChatBot() {
 
   const sendMessage = async () => {
     const text = input.trim();
-    if (!text) return;
 
-    setMessages((prev) => [...prev, { role: "user", text }]);
-    setInput("");
+    if (!text || thinking) return;
+
     setThinking(true);
     clearTimeout(thinkTimer.current);
+    setMessages((prev) => [...prev, { role: "user", text }]);
+    setInput("");
 
     try {
       const res = await postAsk(text);
-      console.log("[/ask response]", res);
+      console.log("[CHATBOT] /ask response:", res);
 
       if (res?.contextId && res.contextId !== contextId)
         setContextId(res.contextId);
@@ -184,17 +174,31 @@ export default function ChatBot() {
             )}`;
 
       setMessages((prev) => [...prev, { role: "bot", text: answer }]);
-    } catch (e) {
-      console.error("[/ask error catch]", e);
+    } catch (error) {
+      console.error("[CHATBOT] /ask error:", error);
+
+      let errorMessage =
+        "서버와 통신에 실패했습니다. 잠시 후 다시 시도해주세요.";
+
+      if (error.response) {
+        errorMessage = `서버 오류 (${error.response.status}): ${
+          error.response.data?.message || "알 수 없는 오류"
+        }`;
+      } else if (error.request) {
+        errorMessage = "네트워크 연결을 확인해주세요.";
+      }
+
       setMessages((prev) => [
         ...prev,
         {
           role: "bot",
-          text: "서버와 통신에 실패했습니다. 잠시 후 다시 시도해주세요.",
+          text: errorMessage,
         },
       ]);
     } finally {
-      thinkTimer.current = setTimeout(() => setThinking(false), 200);
+      thinkTimer.current = setTimeout(() => {
+        setThinking(false);
+      }, 200);
     }
   };
 
@@ -240,7 +244,7 @@ export default function ChatBot() {
           onFocus={() => setBadgeHover(true)}
           onBlur={() => setBadgeHover(false)}
           className="w-12 h-12 rounded-full shadow-xl grid place-items-center overflow-hidden bg-transparent
-                     transition duration-200 hover:brightness-110 hover:saturate-125 hover:scale-105"
+                     transition duration-200 hover:brightness-110 hover:saturate-125 hover:scale-105 cursor-pointer"
           aria-label="챗봇 열기"
         >
           <img
@@ -258,18 +262,18 @@ export default function ChatBot() {
     <>
       <div
         className="fixed right-5 w=[378px] w-[378px] h-[465px] rounded-[12px] shadow-2xl overflow-hidden"
-        style={{ background: "#ffffff", bottom: `${80 + footerBump}px` }}
+        style={{ background: "#f5f5f5", bottom: `${80 + footerBump}px` }}
       >
         <div className="relative h-8 flex items-center">
           {(isChatting || stage === "faq") && (
             <button
               onClick={goHome}
-              className="absolute left-3 top-1 w-6 h-6 grid place-items-center rounded-md hover:bg-white/60"
+              className="absolute left-3 top-3 w-8 h-8 grid place-items-center rounded-md hover:bg-white/60 cursor-pointer"
               aria-label="home"
             >
               <svg
-                width="16"
-                height="16"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 className="text-[#4D6487]"
@@ -280,7 +284,7 @@ export default function ChatBot() {
           )}
           <button
             onClick={() => setOpen(false)}
-            className="absolute right-3 top-1 w-6 h-6 grid place-items-center rounded-md hover:bg-white/60"
+            className="absolute right-3 top-4 w-6 h-6 grid place-items-center rounded-full border border-[#FFFFFF] bg-[#FFFFFF] hover:bg-white/60 cursor-pointer"
             aria-label="close"
           >
             <svg
@@ -305,24 +309,24 @@ export default function ChatBot() {
               <div
                 className="rounded-full bg-white shadow-sm grid place-items-center overflow-hidden"
                 style={{
-                  width: "36px",
-                  height: "36px",
-                  transform: "translate(20px, 5px)",
+                  width: "56px",
+                  height: "56px",
+                  transform: "translate(20px, 34px)",
                 }}
               >
                 <img
                   src={SIcon}
                   alt="S"
                   style={{
-                    width: "28px",
-                    height: "28px",
+                    width: "48px",
+                    height: "48px",
                     objectFit: "contain",
                   }}
                   draggable="false"
                 />
               </div>
             </div>
-            <div className="w-full text-left ml-[30px]">
+            <div className="w-full text-left ml-[30px] mt-10">
               <p className="text-[11px] leading-[16px] text-[#4D6487]">
                 안녕하세요, 당신의 창업 비서 스포티입니다
               </p>
@@ -332,12 +336,11 @@ export default function ChatBot() {
             </div>
           </div>
 
-          {/* 메인: 카테고리 & 채팅 */}
           {stage === "main" && (
             <>
               {!thinking && messages.length === 0 && (
-                <div className="mt-9">
-                  <p className="text-[12px] text-[#4D6487] mb-2">
+                <div className="mt-12">
+                  <p className="text-[12px] text-[#4D6487] mb-2 mt-[-4px] ml-2">
                     아래 목록에서 필요한 행정 안내를 선택해 주세요
                   </p>
                   <div className="flex flex-col gap-2">
@@ -345,7 +348,7 @@ export default function ChatBot() {
                       <button
                         key={it.id}
                         onClick={() => handleCategoryClick(it.id)}
-                        className="w-full h-[36px] rounded-lg bg-[#EEF3F7] text-[#4D6487] text-[12px] px-4 text-left border border-[#E3EAF3] hover:bg-[#F9FBFD] transition-colors"
+                        className="w-full h-[36px] rounded-lg bg-white/30 text-[#4D6487] text-[12px] px-4 text-left border border-[#E3EAF3] hover:bg-[#FFFFFF] transition-colors cursor-pointer"
                       >
                         {it.label}
                       </button>
@@ -364,8 +367,8 @@ export default function ChatBot() {
                     key={idx}
                     className={
                       m.role === "user"
-                        ? "self-end max-w-[70%] rounded-full px-3 py-1 text-[12px] bg-[#5f7fbf] text-white shadow"
-                        : "self-start max-w-[90%] rounded-lg px-3 py-2 text-[12px] bg-white text-[#4D6487] border border-[#E4EBF3] whitespace-pre-line"
+                        ? "self-end max-w-[70%] rounded-full px-3 py-1 text-[12px] bg-[#607594] text-white shadow"
+                        : "self-start max-w-[90%] rounded-lg px-3 py-2 text-[12px] bg-white text-[#4D6487] border border-[#E4EBF3] whitespace-pre-line mb-4"
                     }
                   >
                     {m.text}
@@ -379,18 +382,24 @@ export default function ChatBot() {
               </div>
 
               <div
-                className="mt-auto mb-2 rounded-[14px] border border-[#C9D3E0] bg-white px-4 py-1 shadow-sm"
+                className="relative mt-auto mb-2 rounded-[14px] border border-[#788AA6] bg-white shadow-sm h-[72px]"
                 onClick={() => setTimeout(() => inputRef.current?.focus(), 0)}
               >
+                {!isInputFocused && input.length === 0 && (
+                  <div className="pointer-events-none absolute inset-0 flex items-center px-4">
+                    <p className="text-[12px] leading-[18px] text-[#688BC0] whitespace-pre-line">
+                      {
+                        "창업 관련 고민이 있나요?\n스포티에게 무엇이든 물어보세요."
+                      }
+                    </p>
+                  </div>
+                )}
+
                 <textarea
                   ref={inputRef}
-                  className="w-full outline-none resize-none text-[12px] leading-[18px] text-[#4D6487] placeholder:text-[#4D6487] bg-transparent"
-                  rows={2}
-                  placeholder={
-                    !isInputFocused && input.length === 0
-                      ? "창업 관련 고민이 있나요?\n스포티에게 무엇이든 물어보세요."
-                      : ""
-                  }
+                  className="w-full h-full outline-none resize-none text-[12px] leading-[18px] text-[#4D6487] bg-transparent px-4 py-3 pr-10"
+                  rows={1}
+                  placeholder=""
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onFocus={() => setIsInputFocused(true)}
@@ -402,21 +411,20 @@ export default function ChatBot() {
                     }
                   }}
                 />
-                <div className="mt-2 flex justify-end">
+
+                <div className="absolute right-2 bottom-2">
                   {!thinking ? (
                     <button
                       onClick={sendMessage}
-                      className="w-7 h-7 rounded-full bg-[#5f7fbf] text-white grid place-items-center"
+                      className="w-7 h-7 rounded-full grid place-items-center overflow-hidden cursor-pointer"
                       title="보내기"
                     >
-                      <svg
-                        width="12"
-                        height="12"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                      >
-                        <path d="m3 11 17-8-8 17-2-6-7-3Z" />
-                      </svg>
+                      <img
+                        src={sendButton}
+                        alt="보내기"
+                        className="w-6 h-6 object-contain"
+                        draggable="false"
+                      />
                     </button>
                   ) : (
                     <button
@@ -439,36 +447,36 @@ export default function ChatBot() {
             </>
           )}
 
-          {/* ✅ FAQ 아코디언 화면 (하단 카테고리 버튼 제거됨) */}
           {stage === "faq" && (
-            <div className="mt-2">
-              <div className="rounded-xl border border-[#E4EBF3] overflow-hidden">
+            <div className="mt-12">
+              <div className="bg-[#f5f5f5]">
                 <ul className="divide-y divide-[#E4EBF3]">
                   {faqList?.map((item, idx) => (
-                    <li key={idx} className="bg-white">
+                    <li key={idx}>
                       <button
                         onClick={() => toggleFaq(idx)}
-                        className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-[#F9FBFD]"
+                        className="w-full px-4 py-3 flex items-center gap-2 text-left hover:bg-[#F9FBFD] cursor-pointer"
                       >
+                        <span className="w-4 text-[18px] leading-none text-[#4D6487]">
+                          {item.open ? "−" : "+"}
+                        </span>
                         <span className="text-[12px] leading-[18px] text-[#4D6487]">
                           {item.q}
                         </span>
-                        <span className="text-[18px] leading-none text-[#4D6487]">
-                          {item.open ? "−" : "+"}
-                        </span>
                       </button>
                       {item.open && (
-                        <div className="px-4 pb-3 pt-0">
-                          <p className="text-[12px] leading-[18px] text-[#4D6487] whitespace-pre-line">
-                            {item.a}
-                          </p>
+                        <div className="px-4 pb-3">
+                          <div className="ml-6 pl-3 border-l border-[#E4EBF3]">
+                            <p className="text-[12px] leading-[18px] text-[#4D6487] whitespace-pre-line">
+                              {item.a}
+                            </p>
+                          </div>
                         </div>
                       )}
                     </li>
                   ))}
                 </ul>
               </div>
-              {/* ← 요청대로: 여기 있던 카테고리 버튼들은 제거 */}
             </div>
           )}
         </div>
@@ -476,7 +484,7 @@ export default function ChatBot() {
 
       <button
         onClick={() => setOpen(false)}
-        className="fixed right-5 w-12 h-12 rounded-full shadow-xl grid place-items-center overflow-hidden bg-transparent"
+        className="fixed right-5 w-12 h-12 rounded-full shadow-xl grid place-items-center overflow-hidden bg-transparent cursor-pointer"
         style={{ bottom: `${20 + footerBump}px` }}
         aria-label="챗봇 닫기"
       >
