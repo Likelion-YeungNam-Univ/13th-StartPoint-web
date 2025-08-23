@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import back from "../assets/Back.svg";
 import mentorListApi from "../apis/mentorListApi";
 import updateMentorApi from "../apis/updateMentorApi";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 // 선택용 목록 (지금처럼 쓰기 or 멘토 정보에 있는 걸로 나열하기)
 const areaList = [
@@ -32,6 +34,17 @@ const categoryList = [
 ];
 
 const Mentoring = () => {
+  const navigate = useNavigate();
+  const { name, role } = useAuth;
+
+  useEffect(() => {
+    if (!name && !role) {
+      alert("로그인이 필요한 서비스 입니다.");
+      navigate("/login");
+      return;
+    }
+  }, [name, role, navigate]);
+
   const [open, setOpen] = useState(false);
 
   const [area, setArea] = useState("서부1동");
@@ -46,12 +59,14 @@ const Mentoring = () => {
   const [mentors, setMentors] = useState([]);
 
   useEffect(() => {
-    const fetchMentors = async () => {
-      const data = await mentorListApi();
-      setMentors(data);
-    };
-    fetchMentors();
-  }, []);
+    if (name || role) {
+      const fetchMentors = async () => {
+        const data = await mentorListApi();
+        setMentors(data);
+      };
+      fetchMentors();
+    }
+  }, [name, role]);
 
   const mentoringApply = async () => {
     if (!selectedDate || !selectedTime) {
@@ -110,6 +125,10 @@ const Mentoring = () => {
   const filteredMentors = mentors.filter(
     (mentor) => mentor.area === area && mentor.category === category
   );
+
+  if (!name && !role) {
+    return null;
+  }
 
   return (
     <main className="min-h-screen bg-[#121B2A]">

@@ -29,6 +29,7 @@ import back from "../assets/Back.svg";
 import notandum from "../assets/Notandum.svg";
 
 import practicalApi from "../apis/practicalApi";
+import useAuth from "../hooks/useAuth";
 
 // ----- 동네 코드 -> 이름 -----
 const codeToName = {
@@ -99,6 +100,8 @@ const MarketResult = () => {
   const [pracData, setPracData] = useState(null);
   const [pracLoading, setPracLoading] = useState(true);
   const [pracErrMsg, setPracErrMsg] = useState("");
+
+  const { name, role } = useAuth();
 
   const params = useMemo(() => {
     const state = locationObj.state || {}; // 소포 안에 있던 데이터(areaCode, areaName 등)를 꺼내 쓸 수 있는 것이라고 하는데 ..
@@ -770,39 +773,6 @@ const MarketResult = () => {
                   <YAxis hide />
                 </BarChart>
               </ResponsiveContainer>
-              {/* <ResponsiveContainer width="90%" height="85%">
-                <BarChart
-                  data={eachHour}
-                  margin={{ top: 40, right: 0, left: 0, bottom: 20 }}
-                >
-                  <Bar
-                    dataKey="value"
-                    fill={(data) =>
-                      data.name === maxHour.label ? "#D04797" : "#121B2A"
-                    }
-                    radius={[10, 10, 0, 0]}
-                  >
-                    <LabelList
-                      dataKey="value"
-                      position="top"
-                      offset={10}
-                      fill={data.name == maxHour.label ? "#D04797" : "#121B2A"}
-                      fontSize={14}
-                      formatter={(v) => `${v}%`}
-
-                    />
-                    <LabelList
-                      dataKey="name"
-                      position="bottom"
-                      offset={10}
-                      fill={data.name == maxHour.label ? "#D04797" : "#121B2A"}
-                      fontSize={14}
-                    />
-                  </Bar>
-                  <XAxis hide />
-                  <YAxis hide />
-                </BarChart>
-              </ResponsiveContainer> */}
             </div>
           </div>
         </div>
@@ -811,21 +781,25 @@ const MarketResult = () => {
         창업 가능성 및 상위 동네 추천은 상세분석에서 확인할 수 있습니다.
       </div>
 
-      <div className="pt-36 pb-25 flex justify-center gap-4 text-[24px]">
-        <div
-          onClick={() => setOpen(true)}
-          className="w-[224px] h-[60px] p-8 bg-[#32C376] rounded-[6px] flex flex-col items-center justify-center text-center text-[18px] text-white font-semibold cursor-pointer hover:bg-[#28a866] transition"
-        >
-          상세 분석
-        </div>
+      {name || role ? (
+        <div className="pt-36 pb-25 flex justify-center gap-4 text-[24px]">
+          <div
+            onClick={() => setOpen(true)}
+            className="w-[224px] h-[60px] p-8 bg-[#32C376] rounded-[6px] flex flex-col items-center justify-center text-center text-[18px] text-white font-semibold cursor-pointer hover:bg-[#28a866] transition"
+          >
+            상세 분석
+          </div>
 
-        <div
-          onClick={() => navigate("/mentoring")}
-          className="w-[224px] h-[60px] p-8 bg-[#03B4C8] rounded-[6px] flex flex-col items-center justify-center text-center text-[18px] text-white font-semibold cursor-pointer hover:bg-[#0290a3] transition"
-        >
-          멘토 탐색 바로가기
+          <div
+            onClick={() => navigate("/mentoring")}
+            className="w-[224px] h-[60px] p-8 bg-[#03B4C8] rounded-[6px] flex flex-col items-center justify-center text-center text-[18px] text-white font-semibold cursor-pointer hover:bg-[#0290a3] transition"
+          >
+            멘토 탐색 바로가기
+          </div>
         </div>
-      </div>
+      ) : (
+        <div>로그인 하세요</div>
+      )}
 
       {open && (
         <div className="fixed inset-0 flex items-center justify-center z-50">

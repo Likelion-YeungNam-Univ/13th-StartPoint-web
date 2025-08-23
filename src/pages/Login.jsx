@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { login } from "../apis/auth";
+import { authLogin } from "../apis/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
@@ -7,6 +7,7 @@ import {
   faCircleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const Login = () => {
   const [userName, setUserName] = useState("");
@@ -16,6 +17,14 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const { login, name, role } = useAuth();
+
+  useEffect(() => {
+    if (name || role) {
+      navigate("/");
+      return;
+    }
+  }, [name, role, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -28,20 +37,10 @@ const Login = () => {
     };
 
     try {
-      // 백엔드 요구 필드명에 맞춰 전송
-      const res = await login(body);
+      const res = await authLogin(body);
 
-      // 토큰/유저 저장 (여러 응답 케이스 커버)
-      const token =
-        res?.accessToken ||
-        res?.token ||
-        res?.Authorization ||
-        res?.authToken ||
-        res?.data?.accessToken;
-      if (token) localStorage.setItem("accessToken", token);
-
-      const user = res?.user || res?.data?.user || res?.member || res?.profile;
-      if (user) localStorage.setItem("user", JSON.stringify(user));
+      // console.log("res:", res, res.name, res.role);
+      login({ name: res.name, role: res.role });
 
       alert("로그인 성공!");
       navigate("/");
@@ -65,9 +64,13 @@ const Login = () => {
     if (error) setError("");
   };
 
+  if (name || role) {
+    return null;
+  }
+
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <div className="p-5 rounded-2xl w-1/2">
+      <form className="p-5 rounded-2xl w-1/2" onSubmit={handleLogin}>
         <h2 className="text-[48px] font-bold text-center text-[#2E47A4]">
           Login
         </h2>
@@ -115,13 +118,12 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            onClick={handleLogin}
             className="flex items-center justify-center bg-[#3D489E] gap-2 w-[500px] h-[50px] text-white py-2 rounded-[10px] transition cursor-pointer duration-200 hover:brightness-90"
           >
             {loading ? "로그인 중..." : "로그인"}
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

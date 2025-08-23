@@ -1,24 +1,7 @@
 import axios from "axios";
 import api from "./api";
 
-// const api = axios.create({
-//   baseURL: import.meta.env.VITE_API_BASE_URL,
-//   withCredentials: true,
-//   headers: { "Content-Type": "application/json" },
-// });
-
-// api.interceptors.request.use((c) => {
-//   console.log("[REQ]", c.method?.toUpperCase(), (c.baseURL || "") + (c.url || ""));
-//   console.log("[REQ BODY]", c.data);
-//   return c;
-// });
-// api.interceptors.response.use(
-//   (res) => { console.log("[RES]", res.status, res.config.url, res.data); return res; },
-//   (err) => { console.log("[ERR]", err?.response?.status, err?.config?.url, err?.response?.data); return Promise.reject(err); }
-// );
-
-// 회원가입 그대로
-export const signup = (body) =>
+export const signup = async (body) =>
   api.post("/users/signup", {
     name: String(body.name ?? ""),
     birth: String(body.birth ?? ""),
@@ -30,15 +13,17 @@ export const signup = (body) =>
     phone: String(body.phone ?? ""),
   });
 
-// ✅ 로그인: id와 userId를 함께 전송
-
-export const login = async (body) => {
+export const authLogin = async (body) => {
   try {
     const response = await api.post("/users/login", {
       id: body.userId ?? "",
       userId: body.userId ?? "",
       password: body.password ?? "",
     });
+    // console.log(response);
+    // console.log(response.status);
+    // console.log(response.data);
+    // console.log(response.headers);
     return response.data;
   } catch (err) {
     if (err.response?.data?.message) {
@@ -53,11 +38,17 @@ export const login = async (body) => {
   }
 };
 
-// export const login = (body) =>
-//   api.post("/users/login", {
-//     id: String(body.id ?? "").trim(),
-//     userId: String(body.id ?? body.userId ?? "").trim(), // ← 추가
-//     password: String(body.password ?? "").trim(),
-//   });
+export const authLogout = () => api.post("/users/logout");
 
-export const logout = () => api.post("/users/logout");
+export const myPage = async (accessToken) => {
+  const result = await api(accessToken).get("users/me");
+  console.log(result.data);
+
+  return result.data;
+};
+
+export const updateMyPage = async (token, body) => {
+  try {
+    const result = await api.put();
+  } catch (err) {}
+};

@@ -4,6 +4,7 @@ import { Link } from "react-scroll";
 import Logo from "./assets/SPO_Logo.svg";
 import userIcon from "./assets/User_Icon.svg";
 import useScrollSpy from "./hooks/useScrollSpy";
+import useAuth from "./hooks/useAuth";
 
 const NAV_H = 56;
 
@@ -15,6 +16,9 @@ const TOP_LOCK_PX = 450; // 이 값 이하에서는 Home 강조 고정
 const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { name, role } = useAuth();
+  const { logout } = useAuth();
 
   const spyId = useScrollSpy(SECTION_IDS, NAV_H);
   const isHome = location.pathname === "/";
@@ -165,9 +169,38 @@ const NavBar = () => {
           {userOpen && (
             <div
               role="menu"
-              className="absolute left-1/2 top-full w-56 -translate-x-1/2 bg-white z-50 border-t border-[#757575] drop-shadow"
+              className="absolute left-1/2 ml-3 top-full w-56 -translate-x-1/2 bg-white z-50 border-t border-[#757575] drop-shadow"
             >
-              {!isLoggedIn ? (
+              {name || role ? (
+                // 로그인 O
+                <ul className="divide-y divide-[#757575]">
+                  <li>
+                    <button
+                      className="w-full text-center px-4 py-2 text-sm cursor-pointer hover:bg-gray-50"
+                      onClick={() => {
+                        setUserOpen(false);
+                        navigate("/mypage");
+                      }}
+                    >
+                      마이페이지
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="w-full text-center px-4 py-2 text-sm cursor-pointer text-red-600 hover:bg-red-50"
+                      onClick={() => {
+                        logout();
+                        // localStorage.setItem("isLoggedIn", "false");
+                        // setIsLoggedIn(false);
+                        // setUserOpen(false);
+                        // navigate("/");
+                      }}
+                    >
+                      로그아웃
+                    </button>
+                  </li>
+                </ul>
+              ) : (
                 // 로그인 X
                 <ul className="divide-y divide-[#757575]">
                   <li>
@@ -190,35 +223,6 @@ const NavBar = () => {
                       }}
                     >
                       로그인
-                    </button>
-                  </li>
-                </ul>
-              ) : (
-                // 콘솔에 localStorage.setItem("isLoggedIn", "true"); location.reload(); 입력하면 로그인 상태로 전환 가능
-                // 로그인 O
-                <ul className="divide-y divide-[#757575]">
-                  <li>
-                    <button
-                      className="w-full text-center px-4 py-2 text-sm cursor-pointer hover:bg-gray-50"
-                      onClick={() => {
-                        setUserOpen(false);
-                        navigate("/mypage");
-                      }}
-                    >
-                      마이페이지
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      className="w-full text-center px-4 py-2 text-sm cursor-pointer text-red-600 hover:bg-red-50"
-                      onClick={() => {
-                        localStorage.setItem("isLoggedIn", "false");
-                        setIsLoggedIn(false);
-                        setUserOpen(false);
-                        navigate("/");
-                      }}
-                    >
-                      로그아웃
                     </button>
                   </li>
                 </ul>
