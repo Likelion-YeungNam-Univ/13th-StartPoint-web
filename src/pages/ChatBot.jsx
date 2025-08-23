@@ -176,7 +176,6 @@ export default function ChatBot() {
     } catch (error) {
       console.error("[CHATBOT] /ask error:", error);
 
-      // axios 에러 구조 활용
       let errorMessage =
         "서버와 통신에 실패했습니다. 잠시 후 다시 시도해주세요.";
 
