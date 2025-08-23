@@ -4,6 +4,8 @@ import error from "../assets/Error.svg";
 import mentorListApi from "../apis/mentorListApi";
 import updateMentorApi from "../apis/updateMentorApi";
 import { MoonLoader } from "react-spinners";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 // 선택용 목록 (지금처럼 쓰기 or 멘토 정보에 있는 걸로 나열하기)
 const areaList = [
@@ -34,6 +36,16 @@ const categoryList = [
 ];
 
 const Mentoring = () => {
+  const navigate = useNavigate();
+  const { name, role, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!isLoading && !name && !role) {
+      navigate("/login");
+      return;
+    }
+  }, [name, role, navigate, isLoading]);
+
   const [open, setOpen] = useState(false);
 
   const [area, setArea] = useState("서부1동");
@@ -65,6 +77,16 @@ const Mentoring = () => {
     };
     fetchMentors();
   }, []);
+
+  useEffect(() => {
+    if (name || role) {
+      const fetchMentors = async () => {
+        const data = await mentorListApi();
+        setMentors(data);
+      };
+      fetchMentors();
+    }
+  }, [name, role]);
 
   const mentoringApply = () => {
     setLoadingPayment(true); // 1초 동안 로딩 표시
@@ -125,6 +147,14 @@ const Mentoring = () => {
   const filteredMentors = mentors.filter(
     (mentor) => mentor.area === area && mentor.category === category
   );
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!name || !role) {
+    return null;
+  }
 
   return (
     <main className="min-h-screen bg-[#121B2A]">

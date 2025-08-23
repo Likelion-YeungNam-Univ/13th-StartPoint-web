@@ -6,6 +6,8 @@ import imgSection2 from "../assets/Home_Section2.png";
 import imgSection3 from "../assets/Home_Section3.png";
 import upjongListApi from "../apis/upjongListApi";
 import ChatBot from "./ChatBot";
+import useAuth from "../hooks/useAuth";
+import { getMyPage } from "../apis/mypage";
 
 const SCROLL_DURATION_MS = 500;
 
@@ -28,6 +30,7 @@ function Section1() {
           <h1 className="text-white text-[62px] font-[PretendardB] font-bold">
             Start Pointer &gt;&gt; <span>SPO</span>
           </h1>
+
           <div>
             <p className="text-white text-[25.5px] font-[PretendardR]">
               경산시에서 어떻게 창업해야 할지 모르겠을 땐 스포하세요!
@@ -45,12 +48,11 @@ function Section1() {
 function Section2() {
   // 왼쪽 버튼 스타일
   const leftBtnBase =
-    "w-100 h-17 rounded-lg text-[19px] font-[PretendardSemiB] font-semibold transition";
+    "w-122 h-17 rounded-lg text-[19px] font-[PretendardSemiB] font-semibold transition";
   const leftBtnActive = "bg-white text-[#121B2A]";
   const leftBtnInactive = "bg-[#B3B3B3] text-white";
 
-  // 패널: 'none' | 'area' | 'major' | 'middle' | 'sub'
-  const [panel, setPanel] = useState("none");
+  const [panel, setPanel] = useState("area");
 
   // 선택 상태
   const [selectedArea, setSelectedArea] = useState(null);
@@ -186,6 +188,10 @@ function Section2() {
     if (type === "area") {
       setPanel("area");
     } else {
+      if (!selectedArea) {
+        setPanel("need-area");
+        return;
+      }
       setSelectedMajor(null);
       setSelectedMiddle(null);
       setSelectedSub(null);
@@ -202,7 +208,10 @@ function Section2() {
 
   const areaActive = panel === "area";
   const UpjongActive =
-    panel === "major" || panel === "middle" || panel === "sub";
+    panel === "need-area" ||
+    panel === "major" ||
+    panel === "middle" ||
+    panel === "sub";
 
   // 렌더
   return (
@@ -219,9 +228,9 @@ function Section2() {
       />
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#121B2A] from-10% via-transparent via-50% to-[#121B2A] to-90%" />
 
-      <div className="flex flex-col justify-center">
+      <div className="flex flex-col justify-center items-center">
         {/* 좌측 상단 텍스트 */}
-        <div className="flex flex-col text-white">
+        <div className="flex flex-col text-white text-center">
           <h3 className="mb-4 text-[28px] font-[PretendardB] font-bold">
             상권분석
           </h3>
@@ -231,7 +240,7 @@ function Section2() {
         </div>
 
         {/* 버튼 + 우측 패널 */}
-        <div className="grid grid-cols-11 gap-10 items-start">
+        <div className="grid grid-cols-10 gap-10 items-start">
           {/* 좌측 버튼 */}
           <div className="col-span-5 flex flex-col">
             <button
@@ -257,7 +266,7 @@ function Section2() {
           {/* 우측 패널 */}
           <div
             className={[
-              "col-span-6 bg-white rounded-xl",
+              "col-span-5 bg-white rounded-xl",
               "transition-all duration-300",
               "w-full h-80", // 패널 높이 고정
               "flex flex-col", // 위(그리드) - 아래(CTA)
@@ -267,7 +276,7 @@ function Section2() {
             ].join(" ")}
           >
             {/* 그리드 영역(스크롤) */}
-            <div className="px-6 py-7 flex-1 min-h-0">
+            <div className="px-6 pt-7 pb-3 flex-1 min-h-0">
               <div
                 ref={gridRef}
                 className="h-full overflow-y-auto overscroll-contain scrollbar-hide"
@@ -295,6 +304,15 @@ function Section2() {
                         </button>
                       );
                     })}
+                  </div>
+                )}
+
+                {/* NEED AREA (동네 미선택 시) */}
+                {panel === "need-area" && (
+                  <div className="h-full flex items-center justify-center">
+                    <div className="text-[20px] font-[PretendardSemiB] text-[#121B2A] mt-5">
+                      동네를 먼저 선택해주세요.
+                    </div>
                   </div>
                 )}
 
@@ -443,11 +461,6 @@ function Section2() {
                   >
                     다음
                   </button>
-                  {hasScroll && (
-                    <span className="text-xs text-gray-500">
-                      스크롤해서 더 확인하세요
-                    </span>
-                  )}
                 </div>
               )}
 
@@ -466,17 +479,11 @@ function Section2() {
                   >
                     다음
                   </button>
-                  {hasScroll && (
-                    <span className="text-xs text-gray-500">
-                      스크롤해서 더 확인하세요
-                    </span>
-                  )}
                 </div>
               )}
 
               {panel === "middle" && (
                 <div className="flex items-center justify-between gap-3">
-                  <div className="w-35"></div>
                   <button
                     type="button"
                     disabled={!canNextFromMiddle}
@@ -490,11 +497,6 @@ function Section2() {
                   >
                     다음
                   </button>
-                  {hasScroll && (
-                    <div className="text-xs text-gray-500 text-top h-8">
-                      스크롤해서 더 확인하세요
-                    </div>
-                  )}
                 </div>
               )}
 
@@ -535,6 +537,8 @@ function Section2() {
 
 function Section3() {
   const navigate = useNavigate();
+
+  const { name, role } = useAuth();
 
   const CARDS = [
     {
@@ -608,7 +612,14 @@ function Section3() {
         <div className="mt-2 flex justify-center">
           <button
             type="button"
-            onClick={() => navigate("/mentoring")}
+            onClick={() => {
+              if (name || role) {
+                navigate("/mentoring");
+              } else {
+                alert("로그인이 필요한 서비스입니다.");
+                navigate("/login");
+              }
+            }}
             className="rounded-sm bg-[#547DA0] px-8 py-3 text-[15px] font-[PretendardB] text-white"
           >
             멘토 탐색 바로가기

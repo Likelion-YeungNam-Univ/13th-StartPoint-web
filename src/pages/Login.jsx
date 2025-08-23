@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { authLogin } from "../apis/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
@@ -6,36 +7,70 @@ import {
   faCircleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const Login = () => {
-  const [userId, setUserId] = useState("");
+  const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const navigate = useNavigate();
 
-  // 입력값 아무거나 넣어놔서 변경해야함
-  const handleLogin = () => {
-    if (userId !== "testuser" || password !== "1234") {
-      setErrorMessage("회원정보가 존재하지 않습니다. 다시 입력해주세요.");
-    } else {
-      setErrorMessage("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+  const { login, name, role } = useAuth();
+
+  useEffect(() => {
+    if (name || role) {
       navigate("/");
+      return;
+    }
+  }, [name, role, navigate]);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    const body = {
+      userId: userName,
+      password: password,
+    };
+
+    try {
+      const res = await authLogin(body);
+
+      // console.log("res:", res, res.name, res.role);
+      login({ name: res.name, role: res.role });
+
+      alert("로그인 성공!");
+      navigate("/");
+    } catch (err) {
+      console.error(err?.response || err);
+      const msg =
+        err?.response?.data?.message || "아이디 또는 비밀번호를 확인해주세요.";
+      setError(msg);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleUserIdChange = (e) => {
-    setUserId(e.target.value);
-    if (errorMessage) setErrorMessage("");
+    setUserName(e.target.value);
+    if (error) setError("");
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
-    if (errorMessage) setErrorMessage("");
+    if (error) setError("");
   };
+
+  if (name || role) {
+    return null;
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <div className="p-5 rounded-2xl w-1/2">
+      <form className="p-5 rounded-2xl w-1/2" onSubmit={handleLogin}>
         <h2 className="text-[48px] font-bold text-center text-[#2E47A4]">
           Login
         </h2>
@@ -52,7 +87,7 @@ const Login = () => {
             />
             <input
               type="text"
-              value={userId}
+              value={userName}
               onChange={handleUserIdChange}
               placeholder="아이디를 입력하세요"
               className="w-full h-[67px] text-[16px] pl-14 border border-[#7E7E7E] rounded-[10px] focus:outline-none"
@@ -73,22 +108,22 @@ const Login = () => {
             />
           </div>
 
-          {errorMessage && (
+          {error && (
             <div className="flex items-center gap-2 text-[#FF0000] text-[16px] font-medium">
               <FontAwesomeIcon icon={faCircleExclamation} />
-              <span>{errorMessage}</span>
+              <span>{error}</span>
             </div>
           )}
 
           <button
-            onClick={handleLogin}
-            className="flex items-center justify-center gap-2 w-[500px] h-[50px] text-white py-2 rounded-[10px] transition duration-200"
-            style={{ backgroundColor: "#3D489E" }}
+            type="submit"
+            disabled={loading}
+            className="flex items-center justify-center bg-[#3D489E] gap-2 w-[500px] h-[50px] text-white py-2 rounded-[10px] transition cursor-pointer duration-200 hover:brightness-90"
           >
-            로그인
+            {loading ? "로그인 중..." : "로그인"}
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

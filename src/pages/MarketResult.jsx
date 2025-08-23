@@ -29,6 +29,7 @@ import back from "../assets/Back.svg";
 import notandum from "../assets/Notandum.svg";
 
 import practicalApi from "../apis/practicalApi";
+import useAuth from "../hooks/useAuth";
 
 // ----- 동네 코드 -> 이름 -----
 const codeToName = {
@@ -99,6 +100,8 @@ const MarketResult = () => {
   const [pracData, setPracData] = useState(null);
   const [pracLoading, setPracLoading] = useState(true);
   const [pracErrMsg, setPracErrMsg] = useState("");
+
+  const { name, role } = useAuth();
 
   const params = useMemo(() => {
     const state = locationObj.state || {}; // 소포 안에 있던 데이터(areaCode, areaName 등)를 꺼내 쓸 수 있는 것이라고 하는데 ..
@@ -770,39 +773,6 @@ const MarketResult = () => {
                   <YAxis hide />
                 </BarChart>
               </ResponsiveContainer>
-              {/* <ResponsiveContainer width="90%" height="85%">
-                <BarChart
-                  data={eachHour}
-                  margin={{ top: 40, right: 0, left: 0, bottom: 20 }}
-                >
-                  <Bar
-                    dataKey="value"
-                    fill={(data) =>
-                      data.name === maxHour.label ? "#D04797" : "#121B2A"
-                    }
-                    radius={[10, 10, 0, 0]}
-                  >
-                    <LabelList
-                      dataKey="value"
-                      position="top"
-                      offset={10}
-                      fill={data.name == maxHour.label ? "#D04797" : "#121B2A"}
-                      fontSize={14}
-                      formatter={(v) => `${v}%`}
-
-                    />
-                    <LabelList
-                      dataKey="name"
-                      position="bottom"
-                      offset={10}
-                      fill={data.name == maxHour.label ? "#D04797" : "#121B2A"}
-                      fontSize={14}
-                    />
-                  </Bar>
-                  <XAxis hide />
-                  <YAxis hide />
-                </BarChart>
-              </ResponsiveContainer> */}
             </div>
           </div>
         </div>
@@ -813,14 +783,28 @@ const MarketResult = () => {
 
       <div className="pt-36 pb-25 flex justify-center gap-4 text-[24px]">
         <div
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            if (name || role) {
+              setOpen(true);
+            } else {
+              alert("로그인이 필요한 서비스입니다.");
+              navigate("/login");
+            }
+          }}
           className="w-[224px] h-[60px] p-8 bg-[#32C376] rounded-[6px] flex flex-col items-center justify-center text-center text-[18px] text-white font-semibold cursor-pointer hover:bg-[#28a866] transition"
         >
           상세 분석
         </div>
 
         <div
-          onClick={() => navigate("/mentoring")}
+          onClick={() => {
+            if (name || role) {
+              navigate("/mentoring");
+            } else {
+              alert("로그인이 필요한 서비스입니다.");
+              navigate("/login");
+            }
+          }}
           className="w-[224px] h-[60px] p-8 bg-[#03B4C8] rounded-[6px] flex flex-col items-center justify-center text-center text-[18px] text-white font-semibold cursor-pointer hover:bg-[#0290a3] transition"
         >
           멘토 탐색 바로가기
@@ -838,10 +822,13 @@ const MarketResult = () => {
               <img src={back} alt="back" className="w-[9] h-[9]" />
             </button>
             {pracLoading ? (
-              <div className="py-20 text-gray-500">
-                상세 분석 결과를 불러오는 중...
+                <div className="py-16 flex flex-col items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-gray-600 mb-6" />
+                <p className="text-gray-600">
+                  분석 중입니다. 잠시만 기다려 주세요.
+                </p>
               </div>
-            ) : pracErrMsg ? (
+            )  : pracErrMsg ? (
               <div>
                 <div className="py-20 text-red-500">{pracErrMsg}</div>
                 <button
