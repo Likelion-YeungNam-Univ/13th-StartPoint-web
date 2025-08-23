@@ -11,6 +11,7 @@ export default function ChatBot() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [thinking, setThinking] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [contextId, setContextId] = useState(undefined);
   const [badgeHover, setBadgeHover] = useState(false);
@@ -149,8 +150,10 @@ export default function ChatBot() {
 
   const sendMessage = async () => {
     const text = input.trim();
-    if (!text) return;
 
+    if (!text || isSending || thinking) return;
+
+    setIsSending(true);
     setMessages((prev) => [...prev, { role: "user", text }]);
     setInput("");
     setThinking(true);
@@ -195,13 +198,17 @@ export default function ChatBot() {
         },
       ]);
     } finally {
-      thinkTimer.current = setTimeout(() => setThinking(false), 200);
+      thinkTimer.current = setTimeout(() => {
+        setThinking(false);
+        setIsSending(false);
+      }, 200);
     }
   };
 
   const stopThinking = () => {
     clearTimeout(thinkTimer.current);
     setThinking(false);
+    setIsSending(false);
   };
 
   const isChatting = thinking || messages.length > 0;
@@ -211,6 +218,7 @@ export default function ChatBot() {
     setInput("");
     setMessages([]);
     setThinking(false);
+    setIsSending(false);
     setFaqList(null);
     clearTimeout(thinkTimer.current);
   };
