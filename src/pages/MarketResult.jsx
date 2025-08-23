@@ -4,6 +4,8 @@ import { PieChart } from "react-minimal-pie-chart";
 import {
   BarChart,
   Bar,
+  Line,
+  LineChart,
   ResponsiveContainer,
   XAxis,
   YAxis,
@@ -332,27 +334,27 @@ const MarketResult = () => {
         <div className="mt-8 flex justify-center gap-7">
           {/* 1-1 월 평균/최고/최저 */} 
           <div className="w-[380px] h-[380px] p-4 bg-[#F5F5F5] rounded-[10px] flex flex-col items-center text-center">
-            <div className="text-[22px] text-[#121B2A] font-semibold mb-4">
+            <div className="text-[22px] text-[#121B2A] font-semibold mt-10">
               월 평균/최고/최저
             </div>
             <div className="flex-1 w-full flex items-center justify-center">
-              <ResponsiveContainer width="90%" height="80%">
-                <BarChart
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart
                   data={minAvgMax}
-                  margin={{ top: 10, right: 0, left: 0, bottom: 30 }}
+                  margin={{ top: 20, right: 35, left: 35, bottom: 50 }}
                 >
-                  <Bar
+                  <Line
                     dataKey="value"
-                    fill="#03B4C8"
-                    radius={[10, 10, 0, 0]}
-                    barSize={35}
+                    stroke="#03B4C8"
+                    strokeWidth={2}
+                    type="monotone"
                   >
                     <LabelList
                       dataKey="value"
                       position="top"
                       offset={8}
                       fill="#121B2A"
-                      fontSize={14}
+                      fontSize={16}
                       formatter={(v) => `${v}만원`}
                     />
                     <LabelList
@@ -362,10 +364,10 @@ const MarketResult = () => {
                       fill="#121B2A"
                       fontSize={16}
                     />
-                  </Bar>
+                  </Line>
                   <XAxis hide />
                   <YAxis hide />
-                </BarChart>
+                </LineChart>
               </ResponsiveContainer>
             </div>
           </div>
