@@ -61,7 +61,6 @@ export default function MyPage() {
       });
 
       alert("정보가 성공적으로 수정되었습니다!");
-      navigate("/");
     } catch (err) {
       console.error("변경 에러:", err);
       alert("정보 수정에 실패했습니다. 다시 시도해주세요.");
