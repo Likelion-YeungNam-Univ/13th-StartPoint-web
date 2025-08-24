@@ -48,6 +48,11 @@ export default function MyPage() {
   const handleSaveClick = async (e) => {
     e.preventDefault();
 
+    if (newRole === "MENTOR") {
+      alert("현재 접근할 수 없는 페이지 입니다.");
+      return;
+    }
+
     try {
       await updateMyPage({
         password: newPassword,
@@ -65,6 +70,7 @@ export default function MyPage() {
       });
 
       alert("정보가 성공적으로 수정되었습니다!");
+      navigate("/mypage");
     } catch (err) {
       console.error("변경 에러:", err);
       alert("정보 수정에 실패했습니다. 다시 시도해주세요.");
