@@ -67,7 +67,6 @@ export default function MyPage() {
     }
   };
 
-  // ✅ SignUp과 동일한 입력 스타일
   const inputClass =
     "h-11 w-full border rounded-md px-4 bg-white focus:shadow-inner focus:outline-[#2E47A4] caret-[#2E47A4]";
   const disabledInputClass =
@@ -84,7 +83,6 @@ export default function MyPage() {
   }
 
   return (
-    // ✅ SignUp 레이아웃과 동일한 상단/폭/중앙 배치
     <div className="w-full max-w-7xl mx-auto px-4 min-h-[calc(100vh-64px)]">
       <h1 className="w-full max-w-5xl mx-auto mt-4 text-[30px] text-[#2E47A4] font-bold px-3 py-2 border-b-2 border-[#2E47A4]">
         마이페이지
@@ -92,7 +90,6 @@ export default function MyPage() {
 
       <div className="w-full max-w-4xl place-self-center">
         <form onSubmit={handleSaveClick} noValidate>
-          {/* ✅ SignUp과 동일한 3열 그리드 구성 */}
           <div className="grid grid-cols-[110px_minmax(0,1fr)_110px] gap-x-8 gap-y-6 items-center py-10 px-12">
             <h2 className="col-span-3 text-[26px] text-[#2E47A4] font-semibold px-3 pb-3 mb-4 border-b-2 border-[#2E47A4]">
               회원 정보
@@ -122,7 +119,7 @@ export default function MyPage() {
             />
             <div className="block" aria-hidden />
 
-            {/* 비밀번호 (수정 가능) */}
+            {/* 비밀번호 */}
             <label className="pl-3 text-lg font-semibold text-[#2E47A4]">
               비밀번호
             </label>
@@ -147,7 +144,7 @@ export default function MyPage() {
             />
             <div className="block" aria-hidden />
 
-            {/* 전화번호 (수정 가능) */}
+            {/* 전화번호 */}
             <label className="pl-3 text-lg font-semibold text-[#2E47A4]">
               전화번호
             </label>
@@ -162,7 +159,7 @@ export default function MyPage() {
             />
             <div className="block" aria-hidden />
 
-            {/* 이메일 (수정 가능) */}
+            {/* 이메일 */}
             <label className="pl-3 text-lg font-semibold text-[#2E47A4]">
               이메일
             </label>
@@ -175,7 +172,7 @@ export default function MyPage() {
             />
             <div className="block" aria-hidden />
 
-            {/* 멘토/멘티 (표시만, 비활성) */}
+            {/* 멘토/멘티 */}
             <label className="pl-3 text-lg font-semibold text-[#2E47A4]">
               멘토/멘티
             </label>
@@ -185,7 +182,6 @@ export default function MyPage() {
                   type="radio"
                   name="role"
                   value="mentee"
-                  disabled
                   className="accent-[#2E47A4]"
                   checked={myInfo.role === "MENTEE"}
                   readOnly
@@ -197,7 +193,6 @@ export default function MyPage() {
                   type="radio"
                   name="role"
                   value="mentor"
-                  disabled
                   className="accent-[#2E47A4]"
                   checked={myInfo.role === "MENTOR"}
                   readOnly
@@ -207,14 +202,13 @@ export default function MyPage() {
             </div>
             <div className="block" aria-hidden />
 
-            {/* 구분선 */}
             <div className="col-span-3 my-4 border-b-2 border-[#2E47A4]" />
 
-            {/* 버튼 (SignUp과 동일한 폭/스타일) */}
+            {/* 버튼 */}
             <div className="col-start-2 flex justify-center">
               <button
                 type="submit"
-                className="h-12 px-11 bg-[#2E47A4] text-white text-base rounded-lg hover:bg-[#2E47A4]/90 transition"
+                className="w-full h-12 bg-[#2E47A4] text-white text-base rounded-lg hover:bg-[#2E47A4]/90 transition disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 수정 완료
               </button>
