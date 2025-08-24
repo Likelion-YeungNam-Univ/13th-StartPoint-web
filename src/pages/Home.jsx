@@ -582,7 +582,7 @@ function Section3() {
       />
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#121B2A] from-10% via-transparent via-50% to-[#121B2A] to-90%" />
 
-      <div className="flex flex-col justify-center items-center mx-auto max-w-screen-xl px-6 py-12">
+      <div className="flex flex-col justify-center items-center mx-auto max-w-screen-xl p-6">
         {/* 큰 제목 */}
         <h2 className="text-white text-[47px] font-[PretendardB] font-bold text-center leading-tight [text-wrap:balance]">
           SPO에서 당신의 멘토를 만나보세요!
