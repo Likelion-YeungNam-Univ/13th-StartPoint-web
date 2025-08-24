@@ -6,6 +6,8 @@ import updateMentorApi from "../apis/updateMentorApi";
 import { MoonLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import heart from "../assets/Heart.svg";
+import heartPush from "../assets/Heart_Push.svg";
 
 // 선택용 목록 (지금처럼 쓰기 or 멘토 정보에 있는 걸로 나열하기)
 const areaList = [
@@ -137,16 +139,35 @@ const Mentoring = () => {
   };
 
   const chipCls = (active) =>
-    `px-4 py-1 rounded-full text-sm border transition
+    `px-4 py-1 rounded-[20px] text-sm border transition cursor-pointer
       ${
         active
-          ? "bg-white text-[#121B2A] font-semibold ring-2 ring-sky-400 border-white"
-          : "bg-white/10 text-white border-white/20 hover:bg-white/20"
+          ? "bg-white text-[#2E47A4] border-white"
+          : "bg-[#B3B3B3] text-white border-white/20 hover:bg-white/20"
       }`;
 
   const filteredMentors = mentors.filter(
     (mentor) => mentor.area === area && mentor.category === category
   );
+
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+
+  useEffect(() => {
+    if (selectedMentor) {
+      setLikeCount(selectedMentor.likeCount || 0);
+      setLiked(false); // 모달 열 때 기본값 초기화
+    }
+  }, [selectedMentor]);
+
+  const toggleLike = () => {
+    if (liked) {
+      setLikeCount(likeCount - 1);
+    } else {
+      setLikeCount(likeCount + 1);
+    }
+    setLiked(!liked);
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -159,16 +180,16 @@ const Mentoring = () => {
   return (
     <main className="min-h-screen bg-[#121B2A]">
       <div className="mx-auto max-w-screen-xl px-6 py-12">
-        <h1 className="pt-4 text-center text-4xl font-extrabold text-white">
+        <h1 className="text-white text-[33px] pt-5 font-bold flex items-center justify-center">
           멘토 탐색
         </h1>
-        <p className="mt-4 text-center text-white">
+        <p className="mt-4 text-center text-[22px] text-white">
           관심 동네와 업종에 맞는 멘토를 쉽고 빠르게 찾아드립니다.
         </p>
 
         {/* 카테고리 선택 바 */}
-        <div className="relative mt-10 mx-auto max-w-3xl isolate z-20">
-          <div className="relative z-20 flex items-center justify-between rounded-xl bg-[#424242] px-8 py-3 text-sm text-white">
+        <div className="relative mt-10 mx-auto max-w-4xl isolate z-20 w-full">
+          <div className="relative z-20 flex items-center justify-between rounded-[20px] bg-[#424242] pl-10 px-6 py-4 text-[17px] text-white w-full">
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
               <span>동네</span>
               <span>&gt;</span>
@@ -206,11 +227,13 @@ const Mentoring = () => {
           </div>
 
           {open && (
-            <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 rounded-xl bg-[#595959] text-white shadow-2xl">
+            <div className="absolute mt-4 z-50 rounded-[20px] bg-[#424242] text-white shadow-2xl h-[320px] w-full">
               <div className="grid grid-cols-2 divide-x divide-white/10">
                 <div className="p-6">
-                  <p className="mb-3 text-sm text-white/90">동네 선택</p>
-                  <div className="flex flex-wrap gap-3">
+                  <p className="flex justify-center mb-3 text-[18px] text-white">
+                    동네 선택
+                  </p>
+                  <div className="flex flex-wrap gap-3 mt-10 px-5">
                     {areaList.map((a) => (
                       <button
                         key={a}
@@ -224,8 +247,10 @@ const Mentoring = () => {
                   </div>
                 </div>
                 <div className="p-6">
-                  <p className="mb-3 text-sm text-white/90">업종 선택</p>
-                  <div className="flex flex-wrap gap-3">
+                  <p className="flex justify-center mb-3 text-[18px] text-white">
+                    업종 선택
+                  </p>
+                  <div className="flex flex-wrap gap-3 mt-10 px-5">
                     {categoryList.map((c) => (
                       <button
                         key={c}
@@ -240,11 +265,11 @@ const Mentoring = () => {
                 </div>
               </div>
 
-              <div className="flex justify-end p-4">
+              <div className="flex justify-end p-5">
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="text-[20px] font-semibold text-[#B2D5F2] cursor-pointer"
+                  className="absolute bottom-5 right-7 text-[18px] text-[#B2D5F2] cursor-pointer"
                 >
                   선택 완료
                 </button>
@@ -277,7 +302,7 @@ const Mentoring = () => {
             filteredMentors.map((mentor) => (
               <article
                 key={mentor.id}
-                className="w-[350px] rounded-[10px] bg-white py-12 transition hover:bg-white/90 cursor-pointer"
+                className="w-[330px] h-[420px] rounded-[10px] bg-white py-12 transition hover:bg-white/90 cursor-pointer"
                 onClick={() => setSelectedMentor(mentor)}
               >
                 <div className="mx-auto h-[105px] w-[105px] overflow-hidden rounded-full">
@@ -287,12 +312,15 @@ const Mentoring = () => {
                     className="h-full w-full object-cover"
                   />
                 </div>
-                <h3 className="mt-4 text-center text-[24px] font-semibold text-[#464646]">
+                <h3 className="text-center text-[24px] font-semibold text-[#464646]">
                   {mentor.name}
                 </h3>
 
-                <p className="mt-2 text-center text-[18px] text-[#464646] font-medium">
+                <p className="mt-2 text-center text-[17px] text-[#464646] font-medium px-5 break-words">
                   {mentor.headline}
+                </p>
+                <p className="mt-2 text-center text-[14px] text-[#464646] font-medium px-5 break-words">
+                  {mentor.bio}
                 </p>
                 <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
                   {mentor.keywords.map((k) => (
@@ -348,11 +376,15 @@ const Mentoring = () => {
 
               <div className="mt-4 w-[240px]">
                 <div className="flex items-center justify-center gap-4 mb-2">
-                  <button onClick={handlePrevMonth}>◀</button>
+                  <button onClick={handlePrevMonth} className="cursor-pointer">
+                    ◀
+                  </button>
                   <span className="font-bold text-[14px]">
                     {year}년 {month + 1}월
                   </span>
-                  <button onClick={handleNextMonth}>▶</button>
+                  <button onClick={handleNextMonth} className="cursor-pointer">
+                    ▶
+                  </button>
                 </div>
 
                 <div className="grid grid-cols-7 text-center text-sm gap-y-2">
@@ -428,15 +460,30 @@ const Mentoring = () => {
 
             {/* 오른쪽 */}
             <div className="w-1/2 p-5 mt-10 mr-10">
-              <h2 className="text-[20px] font-semibold text-[#464646]">
-                프로필
-              </h2>
+              <div className="flex items-center justify-between">
+                <h2 className="text-[20px] font-semibold text-[#464646]">
+                  프로필
+                </h2>
+                <div
+                  className="flex items-center gap-2 cursor-pointer mr-3"
+                  onClick={toggleLike}
+                >
+                  <img
+                    src={liked ? heartPush : heart}
+                    alt="좋아요"
+                    className="w-6 h-6"
+                  />
+                  <span className="text-[#2E47A4] font-medium">
+                    {likeCount}
+                  </span>
+                </div>
+              </div>
               <hr className="text-[#464646] mt-3" />
               <h3 className="mt-5 text-[16px] font-semibold text-[#464646]">
                 소개글
               </h3>
               <p className="mt-3 text-[#464646] text-[14px] font-medium leading-relaxed">
-                {selectedMentor.bio}
+                {selectedMentor.intro}
               </p>
 
               <hr className="text-[#D7D7D7] mt-5" />
