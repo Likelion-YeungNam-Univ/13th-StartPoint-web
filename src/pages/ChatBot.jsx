@@ -19,6 +19,14 @@ export default function ChatBot() {
 
   const inputRef = useRef(null);
   const thinkTimer = useRef(null);
+  const listRef = useRef(null);
+
+
+  const SCALE = 1.5;
+  const scaleStyle = {
+    transform: `scale(${SCALE})`,
+    transformOrigin: "bottom right",
+  };
 
   useEffect(() => {
     const footer =
@@ -57,6 +65,12 @@ export default function ChatBot() {
       ro.disconnect();
     };
   }, []);
+
+  useEffect(() => {
+    const el = listRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  }, [messages, thinking, stage]);
 
   const items = [
     { id: "regulation", label: "창업 절차 안내" },
@@ -222,7 +236,7 @@ export default function ChatBot() {
     return (
       <div
         className="fixed right-5 flex flex-col items-end gap-2"
-        style={{ bottom: `${20 + footerBump}px` }}
+        style={{ bottom: `${20 + footerBump}px`, ...scaleStyle }}  // ✅ 전체 확대 적용
       >
         {badgeHover && (
           <div
@@ -243,14 +257,14 @@ export default function ChatBot() {
           onMouseLeave={() => setBadgeHover(false)}
           onFocus={() => setBadgeHover(true)}
           onBlur={() => setBadgeHover(false)}
-          className="w-12 h-12 rounded-full shadow-xl grid place-items-center overflow-hidden bg-transparent
+          className="w-16 h-16 rounded-full shadow-xl grid place-items-center overflow-hidden bg-transparent
                      transition duration-200 hover:brightness-110 hover:saturate-125 hover:scale-105 cursor-pointer"
           aria-label="챗봇 열기"
         >
           <img
             src={SBadge}
             alt="스포티 아이콘"
-            className="w-12 h-12 object-contain select-none"
+            className="w-16 h-16 object-contain select-none"
             draggable="false"
           />
         </button>
@@ -262,18 +276,18 @@ export default function ChatBot() {
     <>
       <div
         className="fixed right-5 w=[378px] w-[378px] h-[465px] rounded-[12px] shadow-2xl overflow-hidden"
-        style={{ background: "#f5f5f5", bottom: `${80 + footerBump}px` }}
+        style={{ background: "#f5f5f5", bottom: `${130 + footerBump}px`, ...scaleStyle }}  // ✅ 전체 확대 적용
       >
         <div className="relative h-8 flex items-center">
           {(isChatting || stage === "faq") && (
             <button
               onClick={goHome}
-              className="absolute left-3 top-3 w-8 h-8 grid place-items-center rounded-md hover:bg-white/60 cursor-pointer"
+              className="absolute left-3 top-3 w-6 h-6 grid place-items-center rounded-md hover:bg-white/60 cursor-pointer"
               aria-label="home"
             >
               <svg
-                width="20"
-                height="20"
+                width="16"
+                height="16"
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 className="text-[#4D6487]"
@@ -284,7 +298,7 @@ export default function ChatBot() {
           )}
           <button
             onClick={() => setOpen(false)}
-            className="absolute right-3 top-4 w-6 h-6 grid place-items-center rounded-full border border-[#FFFFFF] bg-[#FFFFFF] hover:bg-white/60 cursor-pointer"
+            className="absolute right-3 top-4 [w-4.6] [h-4.6] grid place-items-center rounded-full border border-[#FFFFFF] bg-[#FFFFFF] hover:bg-white/60 cursor-pointer"
             aria-label="close"
           >
             <svg
@@ -303,7 +317,12 @@ export default function ChatBot() {
           </button>
         </div>
 
-        <div className="flex flex-col h-[calc(100%-2rem)] px-5 pt-2 pb-2 overflow-y-auto">
+        {/* 바깥 래퍼: FAQ일 때만 스크롤 활성화 */}
+        <div
+          className={`flex flex-col h-[calc(100%-2rem)] px-5 pt-2 pb-2 ${
+            stage === "faq" ? "overflow-y-auto" : ""
+          }`}
+        >
           <div className="flex items-start gap-3 mt-5 mb-3">
             <div className="relative shrink-0">
               <div
@@ -357,28 +376,33 @@ export default function ChatBot() {
                 </div>
               )}
 
+              {/* 메시지 리스트: 여기만 스크롤 */}
               <div
-                className={`flex-1 flex flex-col justify-end gap-2 ${
+                ref={listRef}
+                className={`flex-1 overflow-y-auto ${
                   thinking || messages.length > 0 ? "mt-4" : "mt-3"
                 }`}
               >
-                {messages.map((m, idx) => (
-                  <div
-                    key={idx}
-                    className={
-                      m.role === "user"
-                        ? "self-end max-w-[70%] rounded-full px-3 py-1 text-[12px] bg-[#607594] text-white shadow"
-                        : "self-start max-w-[90%] rounded-lg px-3 py-2 text-[12px] bg-white text-[#4D6487] border border-[#E4EBF3] whitespace-pre-line mb-4"
-                    }
-                  >
-                    {m.text}
-                  </div>
-                ))}
-                {thinking && (
-                  <div className="text-[12px] text-[#4D6487] mt-1 mb-3">
-                    생각 중입니다...
-                  </div>
-                )}
+                <div className="flex flex-col justify-end gap-2 min-h-full pr-1">
+                  {messages.map((m, idx) => (
+                    <div
+                      key={idx}
+                      className={
+                        m.role === "user"
+                          ? "self-end max-w-[70%] rounded-full px-3 py-1 text-[12px] bg-[#607594] text-white shadow"
+                          : "self-start max-w-[90%] rounded-lg px-3 py-2 text-[12px] bg-white text-[#4D6487] border border-[#E4EBF3] whitespace-pre-line mb-4"
+                      }
+                    >
+                      {m.text}
+                    </div>
+                  ))}
+
+                  {thinking && (
+                    <div className="text-[12px] text-[#4D6487] mt-1 mb-3">
+                      생각 중입니다...
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div
@@ -387,7 +411,7 @@ export default function ChatBot() {
               >
                 {!isInputFocused && input.length === 0 && (
                   <div className="pointer-events-none absolute inset-0 flex items-center px-4">
-                    <p className="text-[12px] leading-[18px] text-[#688BC0] whitespace-pre-line">
+                    <p className="text-[12px] leading-[18px] text-[#4D6487] whitespace-pre-line">
                       {
                         "창업 관련 고민이 있나요?\n스포티에게 무엇이든 물어보세요."
                       }
@@ -466,7 +490,7 @@ export default function ChatBot() {
                       </button>
                       {item.open && (
                         <div className="px-4 pb-3">
-                          <div className="ml-6 pl-3 border-l border-[#E4EBF3]">
+                          <div className="ml-6 pl-3">
                             <p className="text-[12px] leading-[18px] text-[#4D6487] whitespace-pre-line">
                               {item.a}
                             </p>
@@ -484,14 +508,14 @@ export default function ChatBot() {
 
       <button
         onClick={() => setOpen(false)}
-        className="fixed right-5 w-12 h-12 rounded-full shadow-xl grid place-items-center overflow-hidden bg-transparent cursor-pointer"
-        style={{ bottom: `${20 + footerBump}px` }}
+        className="fixed right-5 w-16 h-16 rounded-full shadow-xl grid place-items-center overflow-hidden bg-transparent cursor-pointer"
+        style={{ bottom: `${20 + footerBump}px`, ...scaleStyle }}  // ✅ 전체 확대 적용
         aria-label="챗봇 닫기"
       >
         <img
           src={SWhite}
           alt="스포티 아이콘 (열림)"
-          className="w-12 h-12 object-contain select-none"
+          className="w-16 h-16 object-contain select-none"
           draggable="false"
         />
       </button>
