@@ -92,7 +92,7 @@ const SignUp = () => {
 
       {/* 폼 덩어리 자체를 화면 중앙으로 */}
       <div className="w-full max-w-4xl place-self-center ">
-        <form onSubmit={onSubmit} noValidate>
+        <form onSubmit={onSubmit}>
           {/* 3열: [라벨 120px] [입력칸] [유령 칼럼 120px]  */}
           <div className="grid grid-cols-[110px_minmax(0,1fr)_110px] gap-x-8 gap-y-6 items-center py-10 px-12">
             <h2 className="col-span-3 text-[26px] text-[#2E47A4] font-semibold px-3 pb-3 mb-4 border-b-2 border-[#2E47A4]">
@@ -206,6 +206,7 @@ const SignUp = () => {
               id="email"
               type="email"
               name="email"
+              pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
               value={form.email}
               onChange={onChange}
               className={inputClass}
