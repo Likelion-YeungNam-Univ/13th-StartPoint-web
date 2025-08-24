@@ -10,6 +10,7 @@ export default function MyPage() {
   const [newPhone, setNewPhone] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [newRole, setNewRole] = useState("");
+  const [error, setError] = useState("");
 
   const { name, role, isLoading } = useAuth();
 
@@ -47,26 +48,44 @@ export default function MyPage() {
 
   const handleSaveClick = async (e) => {
     e.preventDefault();
+    setError("");
 
     if (newRole === "MENTOR") {
       alert("멘토 전환은 추후 지원 예정입니다.");
       return;
     }
 
+    const trimmedData = {
+      password: newPassword.trim(),
+      phone: newPhone.trim(),
+      email: newEmail.trim(),
+      role: newRole.trim(),
+    };
+
+    if (
+      !trimmedData.password ||
+      !trimmedData.phone ||
+      !trimmedData.email ||
+      !trimmedData.role
+    ) {
+      setError("모든 필수 항목을 입력해 주세요.");
+      return;
+    }
+
     try {
       await updateMyPage({
-        password: newPassword,
-        phone: newPhone,
-        email: newEmail,
-        role: newRole,
+        password: trimmedData.password,
+        phone: trimmedData.phone,
+        email: trimmedData.email,
+        role: trimmedData.role,
       });
 
       setMyInfo({
         ...myInfo,
-        password: newPassword,
-        phone: newPhone,
-        email: newEmail,
-        role: newRole,
+        password: trimmedData.password,
+        phone: trimmedData.phone,
+        email: trimmedData.email,
+        role: trimmedData.role,
       });
 
       alert("정보가 성공적으로 수정되었습니다!");
@@ -99,7 +118,7 @@ export default function MyPage() {
 
       <div className="w-full max-w-3xl place-self-center">
         <form onSubmit={handleSaveClick}>
-          <div className="grid grid-cols-[100px_minmax(0,1fr)_80px] gap-x-8 gap-y-5 items-center py-3 px-12">
+          <div className="grid grid-cols-[100px_minmax(0,1fr)_80px] gap-x-8 gap-y-4.5 items-center py-3 px-12">
             <h2 className="col-span-3 text-[26px] text-[#2E47A4] font-semibold px-3 py-2 mb-2 border-b-2 border-[#2E47A4]">
               회원 정보
             </h2>
@@ -137,6 +156,7 @@ export default function MyPage() {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               className={inputClass}
+              minLength={8}
               required
             />
             <div className="block" aria-hidden />
@@ -200,6 +220,7 @@ export default function MyPage() {
                   className="accent-[#2E47A4]"
                   checked={newRole === "MENTEE"}
                   onChange={(e) => setNewRole(e.target.value)}
+                  required
                 />
                 <span className="text-[17px] text-[#2E47A4]">멘티</span>
               </label>
@@ -211,6 +232,7 @@ export default function MyPage() {
                   className="accent-[#2E47A4]"
                   checked={newRole === "MENTOR"}
                   onChange={(e) => setNewRole(e.target.value)}
+                  required
                 />
                 <span className="text-[17px] text-[#2E47A4]">멘토</span>
               </label>
@@ -220,7 +242,7 @@ export default function MyPage() {
             <div className="col-span-3 my-2 border-b-2 border-[#2E47A4]" />
 
             {/* 버튼 */}
-            <div className="col-start-2 flex justify-center">
+            <div className="col-start-2">
               <button
                 type="submit"
                 className="w-full h-12 bg-[#2E47A4] text-white text-base rounded-lg hover:bg-[#2E47A4]/90 transition disabled:opacity-60 disabled:cursor-not-allowed"
@@ -230,6 +252,12 @@ export default function MyPage() {
             </div>
             <div className="block" aria-hidden />
           </div>
+
+          {error && (
+            <div className="text-red-600 text-center" role="alert">
+              {error}
+            </div>
+          )}
         </form>
       </div>
     </div>
