@@ -70,7 +70,6 @@ export default function MyPage() {
       });
 
       alert("정보가 성공적으로 수정되었습니다!");
-      navigate("/mypage");
     } catch (err) {
       console.error("변경 에러:", err);
       alert("정보 수정에 실패했습니다. 다시 시도해주세요.");
@@ -138,6 +137,7 @@ export default function MyPage() {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               className={inputClass}
+              required
             />
             <div className="block" aria-hidden />
 
@@ -164,9 +164,10 @@ export default function MyPage() {
               onChange={(e) => setNewPhone(e.target.value)}
               className={inputClass}
               inputMode="numeric"
-              placeholder="010-0000-0000"
+              placeholder="010-XXXX-XXXX"
               pattern="^010-\d{4}-\d{4}$"
               title="올바른 전화번호 형식을 입력해주세요 (010-4자리-4자리)"
+              required
             />
             <div className="block" aria-hidden />
 
@@ -182,6 +183,7 @@ export default function MyPage() {
               autoComplete="email"
               pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
               title="올바른 이메일 형식을 입력해주세요 (예: example@domain.com)"
+              required
             />
             <div className="block" aria-hidden />
 
