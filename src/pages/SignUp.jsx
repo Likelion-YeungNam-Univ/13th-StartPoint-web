@@ -107,7 +107,7 @@ const SignUp = () => {
 
       <div className="w-full max-w-3xl place-self-center ">
         <form onSubmit={onSubmit}>
-          <div className="grid grid-cols-[100px_minmax(0,1fr)_80px] gap-x-8 gap-y-5 items-center py-3 px-12">
+          <div className="grid grid-cols-[100px_minmax(0,1fr)_80px] gap-x-8 gap-y-4.5 items-center py-3 px-12">
             <h2 className="col-span-3 text-[26px] text-[#2E47A4] font-semibold px-3 py-2 mb-2 border-b-2 border-[#2E47A4]">
               회원 정보 입력
             </h2>
@@ -280,7 +280,7 @@ const SignUp = () => {
           </div>
 
           {error && (
-            <div className="text-red-600 text-center -mt-6 mb-6" role="alert">
+            <div className="text-red-600 text-center" role="alert">
               {error}
             </div>
           )}
