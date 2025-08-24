@@ -5,7 +5,7 @@ import useAuth from "../hooks/useAuth";
 
 const SignUp = () => {
   const inputClass =
-    "h-11 w-full border rounded-md px-4 bg-white focus:shadow-inner focus:outline-[#2E47A4] caret-[#2E47A4]";
+    "h-11 w-full border rounded-md px-4 bg-white focus:shadow-inner focus:outline-[#2E47A4] caret-[#2E47A4] invalid:focus:outline-red-500";
 
   const navigate = useNavigate();
   const { name, role } = useAuth();
@@ -40,6 +40,11 @@ const SignUp = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (form.role === "mentor") {
+      alert("현재는 멘티만 가입 가능합니다.");
+      return;
+    }
 
     const body = {
       name: form.name.trim(),
@@ -84,16 +89,13 @@ const SignUp = () => {
   }
 
   return (
-    // 상단 NavBar 64px 가정: 화면 중앙 배치
     <div className="w-full max-w-7xl mx-auto px-4 min-h-[calc(100vh-64px)]">
       <h1 className="w-full max-w-5xl mx-auto mt-4 text-[30px] text-[#2E47A4] font-bold px-3 py-2 border-b-2 border-[#2E47A4]">
         회원가입
       </h1>
 
-      {/* 폼 덩어리 자체를 화면 중앙으로 */}
       <div className="w-full max-w-4xl place-self-center ">
         <form onSubmit={onSubmit}>
-          {/* 3열: [라벨 120px] [입력칸] [유령 칼럼 120px]  */}
           <div className="grid grid-cols-[110px_minmax(0,1fr)_110px] gap-x-8 gap-y-6 items-center py-10 px-12">
             <h2 className="col-span-3 text-[26px] text-[#2E47A4] font-semibold px-3 pb-3 mb-4 border-b-2 border-[#2E47A4]">
               회원 정보 입력
@@ -184,13 +186,14 @@ const SignUp = () => {
               id="phone"
               type="tel"
               name="phone"
-              placeholder="010-0000-0000"
+              placeholder="010-XXXX-XXXX"
               value={form.phone}
               onChange={onChange}
               className={inputClass}
               autoComplete="tel"
               inputMode="numeric"
-              pattern="^(01[016789])[-]?\d{3,4}[-]?\d{4}$"
+              pattern="^010-\d{4}-\d{4}$"
+              title="올바른 전화번호 형식을 입력해주세요 (010-4자리-4자리)"
               required
             />
             <div className="block" aria-hidden />
@@ -206,11 +209,12 @@ const SignUp = () => {
               id="email"
               type="email"
               name="email"
-              pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
               value={form.email}
               onChange={onChange}
               className={inputClass}
               autoComplete="email"
+              pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
+              title="올바른 이메일 형식을 입력해주세요 (예: example@domain.com)"
               required
             />
             <div className="block" aria-hidden />
@@ -249,10 +253,9 @@ const SignUp = () => {
             </div>
             <div className="block" aria-hidden />
 
-            {/* 구분선: 전체 열 가로지름 */}
             <div className="col-span-3 my-4 border-b-2 border-[#2E47A4]" />
 
-            {/* 버튼: 같은 그리드의 2열(입력칸 폭 그대로) */}
+            {/* 버튼 */}
             <div className="col-start-2">
               <button
                 type="submit"
