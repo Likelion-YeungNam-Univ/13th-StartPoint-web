@@ -46,7 +46,7 @@ const Login = () => {
     } catch (err) {
       console.error(err?.response || err);
       const msg =
-        err?.response?.data?.message || "아이디 또는 비밀번호를 확인해주세요.";
+        err?.response?.data?.message || "회원정보가 존재하지 않습니다. 다시 입력해주세요.";
       setError(msg);
     } finally {
       setLoading(false);
@@ -68,8 +68,11 @@ const Login = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <form className="p-5 rounded-2xl w-1/2" onSubmit={handleLogin}>
+    <div className="grid place-items-center min-h-[93vh]">
+      <form
+        className="flex flex-col items-center justify-center p-2 rounded-2xl w-1/2 -mt-15"
+        onSubmit={handleLogin}
+      >
         <h2 className="text-[48px] font-bold text-center text-[#2E47A4]">
           Login
         </h2>
@@ -79,36 +82,36 @@ const Login = () => {
         </div>
 
         <div className="flex flex-col items-center justify-center gap-4">
-          <div className="relative w-[500px]">
+          <div className="relative w-[500px] group">
             <FontAwesomeIcon
               icon={faUser}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 p-2.5"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 p-2.5 group-focus-within:text-[#2E47A4] transition-colors"
             />
             <input
               type="text"
               value={userName}
               onChange={handleUserIdChange}
               placeholder="아이디를 입력하세요"
-              className="w-full h-[67px] text-[16px] pl-14 border border-[#7E7E7E] rounded-[10px] focus:outline-none"
+              className="w-full h-[67px] text-[16px] pl-14 border border-[#7E7E7E] rounded-[10px] focus:outline-none focus:border-[#2E47A4] transition-colors"
             />
           </div>
 
-          <div className="relative w-[500px]">
+          <div className="relative w-[500px] group">
             <FontAwesomeIcon
               icon={faKey}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 p-2.5"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 p-2.5 group-focus-within:text-[#2E47A4] transition-colors"
             />
             <input
               type="password"
               value={password}
               onChange={handlePasswordChange}
               placeholder="비밀번호를 입력하세요"
-              className="w-full h-[67px] text-[16px] pl-14 border border-[#7E7E7E] rounded-[10px] focus:outline-none"
+              className="w-full h-[67px] text-[16px] pl-14 border border-[#7E7E7E] rounded-[10px] focus:outline-none focus:border-[#2E47A4] transition-colors"
             />
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 text-[#FF0000] text-[16px] font-medium">
+            <div className="flex items-center gap-2 text-[#FF0000] text-[16px] font-medium self-start">
               <FontAwesomeIcon icon={faCircleExclamation} />
               <span>{error}</span>
             </div>
