@@ -22,7 +22,7 @@ const SignUp = () => {
   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
   const inputClass =
-    "h-10 w-full border rounded-md px-4 bg-white focus:shadow-inner caret-[#2E47A4] focus:outline-[#2E47A4]";
+    "h-10 w-full border rounded-md px-4 bg-white focus:shadow-inner caret-[#2E47A4]";
 
   useEffect(() => {
     if (name || role) {
