@@ -67,6 +67,19 @@ export default function ChatBot() {
     // el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [messages, thinking, stage]);
 
+  useEffect(() => {
+  if (!open) {
+    // 창이 닫히면 다음에 열 때 메인으로 시작하도록 상태 리셋
+    setStage("main");
+    setInput("");
+    setMessages([]);
+    setThinking(false);
+    setFaqList(null);
+    clearTimeout(thinkTimer.current);
+  }
+}, [open]);
+
+
   const items = [
     { id: "regulation", label: "창업 절차 안내" },
     { id: "report", label: "사업 법규 정책 안내" },
