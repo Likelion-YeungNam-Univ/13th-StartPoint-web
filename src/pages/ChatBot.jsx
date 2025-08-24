@@ -315,7 +315,7 @@ export default function ChatBot() {
         {/* ✅ 바깥 래퍼: FAQ일 때만 스크롤 활성화 */}
         <div
           className={`flex flex-col h-[calc(100%-2rem)] px-5 pt-2 pb-2 ${
-            stage === "faq" ? "overflow-y-auto" : ""
+            stage === "faq" ? "overflow-y-auto no-scrollbar" : ""
           }`}
         >
           <div className="flex items-start gap-3 mt-5 mb-3">
@@ -374,7 +374,7 @@ export default function ChatBot() {
               {/* ✅ 메시지 리스트: 여기만 스크롤 */}
               <div
                 ref={listRef}
-                className={`flex-1 overflow-y-auto ${
+                className={`flex-1 overflow-y-auto no-scrollbar ${
                   thinking || messages.length > 0 ? "mt-4" : "mt-3"
                 }`}
               >
