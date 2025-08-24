@@ -5,7 +5,7 @@ import useAuth from "../hooks/useAuth";
 
 const SignUp = () => {
   const inputClass =
-    "h-11 w-full border rounded-md px-4 bg-white focus:shadow-inner focus:outline-[#2E47A4] caret-[#2E47A4] invalid:focus:outline-red-500";
+    "h-10 w-full border rounded-md px-4 bg-white focus:shadow-inner focus:outline-[#2E47A4] caret-[#2E47A4] invalid:focus:outline-red-500";
 
   const navigate = useNavigate();
   const { name, role } = useAuth();
@@ -101,14 +101,14 @@ const SignUp = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 min-h-[calc(100vh-64px)]">
-      <h1 className="w-full max-w-5xl mx-auto mt-4 text-[30px] text-[#2E47A4] font-bold px-3 py-2 border-b-2 border-[#2E47A4]">
+      <h1 className="w-full max-w-5xl mx-auto text-[30px] text-[#2E47A4] font-bold px-3 pt-2 pb-1 border-b-2 border-[#2E47A4]">
         회원가입
       </h1>
 
-      <div className="w-full max-w-4xl place-self-center ">
+      <div className="w-full max-w-3xl place-self-center ">
         <form onSubmit={onSubmit}>
-          <div className="grid grid-cols-[110px_minmax(0,1fr)_110px] gap-x-8 gap-y-6 items-center py-10 px-12">
-            <h2 className="col-span-3 text-[26px] text-[#2E47A4] font-semibold px-3 pb-3 mb-4 border-b-2 border-[#2E47A4]">
+          <div className="grid grid-cols-[100px_minmax(0,1fr)_80px] gap-x-8 gap-y-5 items-center py-6 px-12">
+            <h2 className="col-span-3 text-[26px] text-[#2E47A4] font-semibold px-3 py-1 mb-2 border-b-2 border-[#2E47A4]">
               회원 정보 입력
             </h2>
             {/* 이름 */}
@@ -264,7 +264,7 @@ const SignUp = () => {
             </div>
             <div className="block" aria-hidden />
 
-            <div className="col-span-3 my-4 border-b-2 border-[#2E47A4]" />
+            <div className="col-span-3 my-2 border-b-2 border-[#2E47A4]" />
 
             {/* 버튼 */}
             <div className="col-start-2">
