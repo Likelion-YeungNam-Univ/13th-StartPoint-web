@@ -621,7 +621,7 @@ function Section3() {
                 navigate("/login");
               }
             }}
-            className="rounded-sm bg-[#547DA0] px-8 py-3 text-[15px] font-[PretendardB] text-white"
+            className="rounded-sm bg-[#547DA0] px-8 py-3 text-[15px] font-[PretendardB] text-white cursor-pointer"
           >
             멘토 탐색 바로가기
           </button>

@@ -16,7 +16,7 @@ const Footer = () => {
           rel="noopener noreferrer"
           className="mb-2"
         >
-          <button className="w-10 h-10 bg-[#CDE8FF4D] rounded-full flex items-center justify-center">
+          <button className="w-10 h-10 bg-[#CDE8FF4D] rounded-full flex items-center justify-center cursor-pointer">
             <img src={Githublogo} alt="Githublogo" className="w-5 h-5" />
           </button>
         </a>
