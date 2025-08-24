@@ -22,7 +22,7 @@ export default function ChatBot() {
   const listRef = useRef(null);
 
 
-  const SCALE = 1.5;
+  const SCALE = 1;
   const scaleStyle = {
     transform: `scale(${SCALE})`,
     transformOrigin: "bottom right",
@@ -275,8 +275,8 @@ export default function ChatBot() {
   return (
     <>
       <div
-        className="fixed right-5 w=[378px] w-[378px] h-[465px] rounded-[12px] shadow-2xl overflow-hidden"
-        style={{ background: "#f5f5f5", bottom: `${130 + footerBump}px`, ...scaleStyle }}  // ✅ 전체 확대 적용
+        className="fixed right-8 w=[378px] w-[378px] h-[465px] rounded-[12px] shadow-2xl overflow-hidden"
+        style={{ background: "#f5f5f5", bottom: `${93 + footerBump}px`, ...scaleStyle }}  // ✅ 전체 확대 적용
       >
         <div className="relative h-8 flex items-center">
           {(isChatting || stage === "faq") && (
@@ -286,8 +286,8 @@ export default function ChatBot() {
               aria-label="home"
             >
               <svg
-                width="16"
-                height="16"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 className="text-[#4D6487]"
@@ -330,7 +330,7 @@ export default function ChatBot() {
                 style={{
                   width: "56px",
                   height: "56px",
-                  transform: "translate(20px, 34px)",
+                  transform: "translate(10px, 34px)",
                 }}
               >
                 <img
@@ -345,12 +345,12 @@ export default function ChatBot() {
                 />
               </div>
             </div>
-            <div className="w-full text-left ml-[30px] mt-10">
+            <div className="w-full text-left ml-[13px] mt-10">
               <p className="text-[11px] leading-[16px] text-[#4D6487]">
                 안녕하세요, 당신의 창업 비서 스포티입니다
               </p>
               <h2 className="mt-0.5 text-[18px] leading-[24px] font-extrabold text-[#4D6487]">
-                무엇을 도와드릴까요?
+              무엇을 도와드릴까요?
               </h2>
             </div>
           </div>
