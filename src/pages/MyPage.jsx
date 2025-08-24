@@ -78,7 +78,7 @@ export default function MyPage() {
   };
 
   const inputClass =
-    "h-11 w-full border rounded-md px-4 bg-white focus:shadow-inner focus:outline-[#2E47A4] caret-[#2E47A4]";
+    "h-11 w-full border rounded-md px-4 bg-white focus:shadow-inner focus:outline-[#2E47A4] caret-[#2E47A4] invalid:focus:outline-red-500";
   const disabledInputClass =
     "h-11 w-full border rounded-md px-4 bg-gray-100 text-gray-500 cursor-not-allowed";
 
@@ -99,7 +99,7 @@ export default function MyPage() {
       </h1>
 
       <div className="w-full max-w-4xl place-self-center">
-        <form onSubmit={handleSaveClick} noValidate>
+        <form onSubmit={handleSaveClick}>
           <div className="grid grid-cols-[110px_minmax(0,1fr)_110px] gap-x-8 gap-y-6 items-center py-10 px-12">
             <h2 className="col-span-3 text-[26px] text-[#2E47A4] font-semibold px-3 pb-3 mb-4 border-b-2 border-[#2E47A4]">
               회원 정보
@@ -165,7 +165,8 @@ export default function MyPage() {
               className={inputClass}
               inputMode="numeric"
               placeholder="010-0000-0000"
-              pattern="^(01[016789])[-]?\d{3,4}[-]?\d{4}$"
+              pattern="^(01[01678]|019)-\d{3,4}-\d{4}$"
+              title="올바른 전화번호 형식을 입력해주세요 (예: 010-1234-5678)"
             />
             <div className="block" aria-hidden />
 
@@ -179,6 +180,8 @@ export default function MyPage() {
               onChange={(e) => setNewEmail(e.target.value)}
               className={inputClass}
               autoComplete="email"
+              pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
+              title="올바른 이메일 형식을 입력해주세요 (예: example@domain.com)"
             />
             <div className="block" aria-hidden />
 
