@@ -100,15 +100,15 @@ const SignUp = () => {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 min-h-[calc(100vh-64px)]">
-      <h1 className="w-full max-w-5xl mx-auto text-[30px] text-[#2E47A4] font-bold px-3 pt-2 pb-1 border-b-2 border-[#2E47A4]">
+    <div className="w-full max-w-7xl mx-auto px-4 min-h-[calc(100vh-56px)]">
+      <h1 className="w-full max-w-5xl mx-auto text-[30px] text-[#2E47A4] font-bold px-3 pt-3 py-2 border-b-2 border-[#2E47A4]">
         회원가입
       </h1>
 
       <div className="w-full max-w-3xl place-self-center ">
         <form onSubmit={onSubmit}>
-          <div className="grid grid-cols-[100px_minmax(0,1fr)_80px] gap-x-8 gap-y-5 items-center py-6 px-12">
-            <h2 className="col-span-3 text-[26px] text-[#2E47A4] font-semibold px-3 py-1 mb-2 border-b-2 border-[#2E47A4]">
+          <div className="grid grid-cols-[100px_minmax(0,1fr)_80px] gap-x-8 gap-y-5 items-center py-3 px-12">
+            <h2 className="col-span-3 text-[26px] text-[#2E47A4] font-semibold px-3 py-2 mb-2 border-b-2 border-[#2E47A4]">
               회원 정보 입력
             </h2>
             {/* 이름 */}
