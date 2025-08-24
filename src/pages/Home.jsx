@@ -24,8 +24,8 @@ function Section1() {
         loading="eager"
       />
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent from-10% to-[#121B2A] to-85%" />
-      <div className="min-h-[100vh] flex items-center justify-center">
-        <div className="flex flex-col items-center text-center mb-18">
+      <div className="min-h-[calc(100vh-56px)] flex items-center justify-center">
+        <div className="flex flex-col items-center text-center">
           <h1 className="text-white text-[62px] font-[PretendardB] font-bold">
             Start Pointer &gt;&gt; <span>SPO</span>
           </h1>
