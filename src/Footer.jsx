@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <footer className="w-full h-[165px] bg-[#1D2C44] flex px-8 py-7">
       <div className="flex-1 flex items-center ml-58">
-        <img src={SPOlogo} alt="SPOlogo" className="w-45 h-45" />
+        <img src={SPOlogo} alt="SPOlogo" className="w-41 h-41" />
       </div>
 
       <div className="flex-1 flex flex-col items-end justify-end mr-60">
