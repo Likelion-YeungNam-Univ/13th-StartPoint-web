@@ -317,9 +317,9 @@ const Mentoring = () => {
                 </h3>
 
                 <p className="mt-2 text-center text-[17px] text-[#464646] font-medium px-5 break-words">
-                  {mentor.headline}
+                  {mentor.storeName}
                 </p>
-                <p className="mt-2 text-center text-[14px] text-[#464646] font-medium px-5 break-words">
+                <p className="mt-2 text-center text-[14px] text-[#727272] font-medium px-5 break-words">
                   {mentor.bio}
                 </p>
                 <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
@@ -497,7 +497,7 @@ const Mentoring = () => {
                     key={tag}
                     className="rounded-full bg-white px-4 py-1 text-[12px] text-black border-[0.5px] border-[#DBDBDB]"
                   >
-                    #{tag}
+                    {tag}
                   </span>
                 ))}
               </div>
