@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { getMyPage, updateMyPage } from "../apis/mypage";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -67,10 +67,13 @@ export default function MyPage() {
     }
   };
 
+  // ✅ SignUp과 동일한 입력 스타일
   const inputClass =
-    "w-full border rounded-md px-4 py-2 bg-white focus:shadow-inner focus:outline-[#2E47A4] caret-[#2E47A4]";
+    "h-11 w-full border rounded-md px-4 bg-white focus:shadow-inner focus:outline-[#2E47A4] caret-[#2E47A4]";
   const disabledInputClass =
-    "w-full border rounded-md px-4 py-2 bg-gray-100 text-gray-500 cursor-not-allowed";
+    "h-11 w-full border rounded-md px-4 bg-gray-100 text-gray-500 cursor-not-allowed";
+
+  const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -81,24 +84,22 @@ export default function MyPage() {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4">
-      <h1 className="text-[30px] text-[#2E47A4] font-bold px-3 py-2 border-b-2 border-[#2E47A4]">
+    // ✅ SignUp 레이아웃과 동일한 상단/폭/중앙 배치
+    <div className="w-full max-w-7xl mx-auto px-4 min-h-[calc(100vh-64px)]">
+      <h1 className="w-full max-w-5xl mx-auto mt-4 text-[30px] text-[#2E47A4] font-bold px-3 py-2 border-b-2 border-[#2E47A4]">
         마이페이지
       </h1>
 
-      <div className="flex flex-col mx-auto w-full max-w-2xl">
-        <div className="mt-10">
-          <h2 className="text-[26px] text-[#2E47A4] font-semibold px-3 mb-2">
-            회원 정보
-          </h2>
-        </div>
+      <div className="w-full max-w-4xl place-self-center">
+        <form onSubmit={handleSaveClick} noValidate>
+          {/* ✅ SignUp과 동일한 3열 그리드 구성 */}
+          <div className="grid grid-cols-[110px_minmax(0,1fr)_110px] gap-x-8 gap-y-6 items-center py-10 px-12">
+            <h2 className="col-span-3 text-[26px] text-[#2E47A4] font-semibold px-3 pb-3 mb-4 border-b-2 border-[#2E47A4]">
+              회원 정보
+            </h2>
 
-        <form
-          className="border-t-2 border-[#2E47A4]"
-          onSubmit={handleSaveClick}
-        >
-          <div className="grid grid-cols-[120px_minmax(0,1fr)] gap-x-8 gap-y-6 items-center border-b-2 border-[#2E47A4] py-10 pl-4 pr-20">
-            <label className="text-lg text-left font-semibold text-[#2E47A4]">
+            {/* 이름 */}
+            <label className="pl-3 text-lg font-semibold text-[#2E47A4]">
               이름
             </label>
             <input
@@ -107,8 +108,10 @@ export default function MyPage() {
               disabled
               className={disabledInputClass}
             />
+            <div className="block" aria-hidden />
 
-            <label className="text-lg text-left font-semibold text-[#2E47A4]">
+            {/* 아이디 */}
+            <label className="pl-3 text-lg font-semibold text-[#2E47A4]">
               아이디
             </label>
             <input
@@ -117,8 +120,10 @@ export default function MyPage() {
               disabled
               className={disabledInputClass}
             />
+            <div className="block" aria-hidden />
 
-            <label className="text-lg text-left font-semibold text-[#2E47A4]">
+            {/* 비밀번호 (수정 가능) */}
+            <label className="pl-3 text-lg font-semibold text-[#2E47A4]">
               비밀번호
             </label>
             <input
@@ -127,18 +132,23 @@ export default function MyPage() {
               onChange={(e) => setNewPassword(e.target.value)}
               className={inputClass}
             />
+            <div className="block" aria-hidden />
 
-            <label className="text-lg text-left font-semibold text-[#2E47A4]">
+            {/* 생년월일 */}
+            <label className="pl-3 text-lg font-semibold text-[#2E47A4]">
               생년월일
             </label>
             <input
-              type="text"
+              type="date"
               value={myInfo.birth || ""}
+              max={today}
               disabled
               className={disabledInputClass}
             />
+            <div className="block" aria-hidden />
 
-            <label className="text-lg text-left font-semibold text-[#2E47A4]">
+            {/* 전화번호 (수정 가능) */}
+            <label className="pl-3 text-lg font-semibold text-[#2E47A4]">
               전화번호
             </label>
             <input
@@ -146,9 +156,14 @@ export default function MyPage() {
               value={newPhone}
               onChange={(e) => setNewPhone(e.target.value)}
               className={inputClass}
+              inputMode="numeric"
+              placeholder="010-0000-0000"
+              pattern="^(01[016789])[-]?\d{3,4}[-]?\d{4}$"
             />
+            <div className="block" aria-hidden />
 
-            <label className="text-lg text-left font-semibold text-[#2E47A4]">
+            {/* 이메일 (수정 가능) */}
+            <label className="pl-3 text-lg font-semibold text-[#2E47A4]">
               이메일
             </label>
             <input
@@ -156,12 +171,15 @@ export default function MyPage() {
               value={newEmail}
               onChange={(e) => setNewEmail(e.target.value)}
               className={inputClass}
+              autoComplete="email"
             />
+            <div className="block" aria-hidden />
 
-            <label className="text-lg text-left font-semibold text-[#2E47A4]">
+            {/* 멘토/멘티 (표시만, 비활성) */}
+            <label className="pl-3 text-lg font-semibold text-[#2E47A4]">
               멘토/멘티
             </label>
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-6 pl-1">
               <label className="flex items-center gap-2">
                 <input
                   type="radio"
@@ -169,7 +187,8 @@ export default function MyPage() {
                   value="mentee"
                   disabled
                   className="accent-[#2E47A4]"
-                  checked={myInfo.role == "MENTEE"}
+                  checked={myInfo.role === "MENTEE"}
+                  readOnly
                 />
                 <span className="text-[17px] text-[#2E47A4]">멘티</span>
               </label>
@@ -180,20 +199,27 @@ export default function MyPage() {
                   value="mentor"
                   disabled
                   className="accent-[#2E47A4]"
-                  checked={myInfo.role == "MENTOR"}
+                  checked={myInfo.role === "MENTOR"}
+                  readOnly
                 />
                 <span className="text-[17px] text-[#2E47A4]">멘토</span>
               </label>
             </div>
-          </div>
+            <div className="block" aria-hidden />
 
-          <div className="my-10 flex justify-center">
-            <button
-              type="submit"
-              className="bg-[#2E47A4] text-white text-base py-3 px-[50px] rounded-lg hover:bg-[#2E47A4]/90 transition"
-            >
-              수정 완료
-            </button>
+            {/* 구분선 */}
+            <div className="col-span-3 my-4 border-b-2 border-[#2E47A4]" />
+
+            {/* 버튼 (SignUp과 동일한 폭/스타일) */}
+            <div className="col-start-2 flex justify-center">
+              <button
+                type="submit"
+                className="h-12 px-11 bg-[#2E47A4] text-white text-base rounded-lg hover:bg-[#2E47A4]/90 transition"
+              >
+                수정 완료
+              </button>
+            </div>
+            <div className="block" aria-hidden />
           </div>
         </form>
       </div>
