@@ -49,7 +49,7 @@ export default function MyPage() {
     e.preventDefault();
 
     if (newRole === "MENTOR") {
-      alert("현재 접근할 수 없는 페이지 입니다.");
+      alert("멘토 전환은 추후 지원 예정입니다.");
       return;
     }
 
