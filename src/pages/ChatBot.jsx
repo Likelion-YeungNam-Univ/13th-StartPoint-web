@@ -19,14 +19,7 @@ export default function ChatBot() {
 
   const inputRef = useRef(null);
   const thinkTimer = useRef(null);
-  const listRef = useRef(null);
-
-
-  const SCALE = 1.5;
-  const scaleStyle = {
-    transform: `scale(${SCALE})`,
-    transformOrigin: "bottom right",
-  };
+  const listRef = useRef(null); // ✅ 메시지 리스트 스크롤 뷰포트 참조
 
   useEffect(() => {
     const footer =
@@ -66,10 +59,12 @@ export default function ChatBot() {
     };
   }, []);
 
+  // ✅ 새 메시지/상태 변경 시 항상 바닥으로 스크롤
   useEffect(() => {
     const el = listRef.current;
     if (!el) return;
     el.scrollTop = el.scrollHeight;
+    // el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [messages, thinking, stage]);
 
   const items = [
@@ -235,8 +230,8 @@ export default function ChatBot() {
   if (!open) {
     return (
       <div
-        className="fixed right-5 flex flex-col items-end gap-2"
-        style={{ bottom: `${20 + footerBump}px`, ...scaleStyle }}  // ✅ 전체 확대 적용
+        className="fixed right-7 flex flex-col items-end gap-2"
+        style={{ bottom: `${20 + footerBump}px` }}
       >
         {badgeHover && (
           <div
@@ -275,8 +270,8 @@ export default function ChatBot() {
   return (
     <>
       <div
-        className="fixed right-5 w=[378px] w-[378px] h-[465px] rounded-[12px] shadow-2xl overflow-hidden"
-        style={{ background: "#f5f5f5", bottom: `${130 + footerBump}px`, ...scaleStyle }}  // ✅ 전체 확대 적용
+        className="fixed right-7 w=[378px] w-[378px] h-[465px] rounded-[12px] shadow-2xl overflow-hidden"
+        style={{ background: "#f5f5f5", bottom: `${93 + footerBump}px` }}
       >
         <div className="relative h-8 flex items-center">
           {(isChatting || stage === "faq") && (
@@ -298,12 +293,12 @@ export default function ChatBot() {
           )}
           <button
             onClick={() => setOpen(false)}
-            className="absolute right-3 top-4 [w-4.6] [h-4.6] grid place-items-center rounded-full border border-[#FFFFFF] bg-[#FFFFFF] hover:bg-white/60 cursor-pointer"
+            className="absolute right-3 top-4 w-4 h-4 grid place-items-center rounded-full border border-[#FFFFFF] bg-[#FFFFFF] hover:bg-white/60 cursor-pointer"
             aria-label="close"
           >
             <svg
-              width="14"
-              height="14"
+              width="12"
+              height="12"
               viewBox="0 0 24 24"
               className="text-[#4D6487]"
             >
@@ -317,7 +312,7 @@ export default function ChatBot() {
           </button>
         </div>
 
-        {/* 바깥 래퍼: FAQ일 때만 스크롤 활성화 */}
+        {/* ✅ 바깥 래퍼: FAQ일 때만 스크롤 활성화 */}
         <div
           className={`flex flex-col h-[calc(100%-2rem)] px-5 pt-2 pb-2 ${
             stage === "faq" ? "overflow-y-auto" : ""
@@ -330,7 +325,7 @@ export default function ChatBot() {
                 style={{
                   width: "56px",
                   height: "56px",
-                  transform: "translate(20px, 34px)",
+                  transform: "translate(13px, 34px)",
                 }}
               >
                 <img
@@ -345,7 +340,7 @@ export default function ChatBot() {
                 />
               </div>
             </div>
-            <div className="w-full text-left ml-[30px] mt-10">
+            <div className="w-full text-left ml-[18px] mt-10">
               <p className="text-[11px] leading-[16px] text-[#4D6487]">
                 안녕하세요, 당신의 창업 비서 스포티입니다
               </p>
@@ -376,7 +371,7 @@ export default function ChatBot() {
                 </div>
               )}
 
-              {/* 메시지 리스트: 여기만 스크롤 */}
+              {/* ✅ 메시지 리스트: 여기만 스크롤 */}
               <div
                 ref={listRef}
                 className={`flex-1 overflow-y-auto ${
@@ -508,8 +503,8 @@ export default function ChatBot() {
 
       <button
         onClick={() => setOpen(false)}
-        className="fixed right-5 w-16 h-16 rounded-full shadow-xl grid place-items-center overflow-hidden bg-transparent cursor-pointer"
-        style={{ bottom: `${20 + footerBump}px`, ...scaleStyle }}  // ✅ 전체 확대 적용
+        className="fixed right-7 w-16 h-16 rounded-full shadow-xl grid place-items-center overflow-hidden bg-transparent cursor-pointer"
+        style={{ bottom: `${20 + footerBump}px` }}
         aria-label="챗봇 닫기"
       >
         <img
