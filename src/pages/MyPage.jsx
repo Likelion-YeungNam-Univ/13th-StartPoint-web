@@ -9,6 +9,7 @@ export default function MyPage() {
   const [newPassword, setNewPassword] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const [newEmail, setNewEmail] = useState("");
+  const [newRole, setNewRole] = useState("");
 
   const { name, role, isLoading } = useAuth();
 
@@ -40,6 +41,7 @@ export default function MyPage() {
       setNewPassword(myInfo.password || "");
       setNewPhone(myInfo.phone || "");
       setNewEmail(myInfo.email || "");
+      setNewRole(myInfo.role || "");
     }
   }, [myInfo]);
 
@@ -51,6 +53,7 @@ export default function MyPage() {
         password: newPassword,
         phone: newPhone,
         email: newEmail,
+        role: newRole,
       });
 
       setMyInfo({
@@ -58,6 +61,7 @@ export default function MyPage() {
         password: newPassword,
         phone: newPhone,
         email: newEmail,
+        role: newRole,
       });
 
       alert("정보가 성공적으로 수정되었습니다!");
@@ -181,10 +185,10 @@ export default function MyPage() {
                 <input
                   type="radio"
                   name="role"
-                  value="mentee"
+                  value="MENTEE"
                   className="accent-[#2E47A4]"
-                  checked={myInfo.role === "MENTEE"}
-                  readOnly
+                  checked={newRole === "MENTEE"}
+                  onChange={(e) => setNewRole(e.target.value)}
                 />
                 <span className="text-[17px] text-[#2E47A4]">멘티</span>
               </label>
@@ -192,10 +196,10 @@ export default function MyPage() {
                 <input
                   type="radio"
                   name="role"
-                  value="mentor"
+                  value="MENTOR"
                   className="accent-[#2E47A4]"
-                  checked={myInfo.role === "MENTOR"}
-                  readOnly
+                  checked={newRole === "MENTOR"}
+                  onChange={(e) => setNewRole(e.target.value)}
                 />
                 <span className="text-[17px] text-[#2E47A4]">멘토</span>
               </label>
