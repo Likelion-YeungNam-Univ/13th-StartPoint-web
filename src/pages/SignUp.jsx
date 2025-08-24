@@ -46,27 +46,38 @@ const SignUp = () => {
       return;
     }
 
-    const body = {
+    const trimmedForm = {
       name: form.name.trim(),
-      birth: form.birth,
+      birth: form.birth.trim(),
       email: form.email.trim(),
       userId: form.userId.trim(),
-      password: form.password,
-      role: form.role,
+      password: form.password.trim(),
+      role: form.role.trim(),
       phone: form.phone.trim(),
     };
 
     if (
-      !form.name ||
-      !form.password ||
-      !form.birth ||
-      !form.phone ||
-      !form.email ||
-      !form.role
+      !trimmedForm.name ||
+      !trimmedForm.userId ||
+      !trimmedForm.password ||
+      !trimmedForm.birth ||
+      !trimmedForm.phone ||
+      !trimmedForm.email ||
+      !trimmedForm.role
     ) {
-      setError("모든 필수 항목을 입력해 주세요.");
+      setError("모든 항목을 입력해 주세요. (공백 입력으로 가입은 제한됩니다.)");
       return;
     }
+
+    const body = {
+      name: trimmedForm.name,
+      birth: trimmedForm.birth,
+      email: trimmedForm.email,
+      userId: trimmedForm.userId,
+      password: trimmedForm.password,
+      role: trimmedForm.role,
+      phone: trimmedForm.phone,
+    };
 
     setLoading(true);
     try {
