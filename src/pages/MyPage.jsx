@@ -165,8 +165,8 @@ export default function MyPage() {
               className={inputClass}
               inputMode="numeric"
               placeholder="010-0000-0000"
-              pattern="^(01[01678]|019)-\d{3,4}-\d{4}$"
-              title="올바른 전화번호 형식을 입력해주세요 (예: 010-1234-5678)"
+              pattern="^010-\d{4}-\d{4}$"
+              title="올바른 전화번호 형식을 입력해주세요 (010-4자리-4자리)"
             />
             <div className="block" aria-hidden />
 
