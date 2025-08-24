@@ -4,9 +4,6 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 const SignUp = () => {
-  const inputClass =
-    "h-10 w-full border rounded-md px-4 bg-white focus:shadow-inner focus:outline-[#2E47A4] caret-[#2E47A4] invalid:focus:outline-red-500";
-
   const navigate = useNavigate();
   const { name, role } = useAuth();
 
@@ -20,10 +17,12 @@ const SignUp = () => {
     role: "",
   });
 
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
+
+  const inputClass =
+    "h-10 w-full border rounded-md px-4 bg-white focus:shadow-inner caret-[#2E47A4] focus:outline-[#2E47A4]";
 
   useEffect(() => {
     if (name || role) {
@@ -39,14 +38,13 @@ const SignUp = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    setError("");
 
     if (form.role === "mentor") {
       alert("현재는 멘티만 가입 가능합니다.");
       return;
     }
 
-    const trimmedForm = {
+    const body = {
       name: form.name.trim(),
       birth: form.birth.trim(),
       email: form.email.trim(),
@@ -54,29 +52,6 @@ const SignUp = () => {
       password: form.password.trim(),
       role: form.role.trim(),
       phone: form.phone.trim(),
-    };
-
-    if (
-      !trimmedForm.name ||
-      !trimmedForm.userId ||
-      !trimmedForm.password ||
-      !trimmedForm.birth ||
-      !trimmedForm.phone ||
-      !trimmedForm.email ||
-      !trimmedForm.role
-    ) {
-      setError("모든 항목을 입력해 주세요. (공백 입력으로 가입은 제한됩니다.)");
-      return;
-    }
-
-    const body = {
-      name: trimmedForm.name,
-      birth: trimmedForm.birth,
-      email: trimmedForm.email,
-      userId: trimmedForm.userId,
-      password: trimmedForm.password,
-      role: trimmedForm.role,
-      phone: trimmedForm.phone,
     };
 
     setLoading(true);
@@ -89,7 +64,7 @@ const SignUp = () => {
       const msg =
         err?.response?.data?.message ||
         "회원가입에 실패했습니다. 입력값을 확인하세요.";
-      setError(msg);
+      alert(msg);
     } finally {
       setLoading(false);
     }
@@ -125,6 +100,8 @@ const SignUp = () => {
               onChange={onChange}
               className={inputClass}
               autoComplete="name"
+              pattern="^[가-힣a-zA-Z]{2,10}$"
+              title="한글 또는 영문만 2~10자 이내로 입력해주세요 (특수문자, 숫자, 공백 불가)"
               required
             />
             <div className="block" aria-hidden />
@@ -142,6 +119,8 @@ const SignUp = () => {
               onChange={onChange}
               className={inputClass}
               autoComplete="username"
+              pattern="^[a-z][a-z0-9]{4,14}$"
+              title="영문 소문자로 시작하여 영문 소문자와 숫자 조합 5~15자 (특수문자, 공백 불가)"
               required
             />
             <div className="block" aria-hidden />
@@ -161,8 +140,11 @@ const SignUp = () => {
               onChange={onChange}
               className={inputClass}
               autoComplete="new-password"
-              required
+              pattern="^(?!.*\s)(?=.{8,20}$)(?:(?=.*[A-Z])(?=.*[a-z])(?=.*\d)|(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9])|(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])|(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9])).*$"
+              title="8~20자, 대문자/소문자/숫자/특수문자 중 3종 이상 조합, 공백 불가"
               minLength={8}
+              maxLength={20}
+              required
             />
             <div className="block" aria-hidden />
 
@@ -204,7 +186,7 @@ const SignUp = () => {
               autoComplete="tel"
               inputMode="numeric"
               pattern="^010-\d{4}-\d{4}$"
-              title="올바른 전화번호 형식을 입력해주세요 (010-4자리-4자리)"
+              title="010-XXXX-XXXX 형식으로 입력해주세요"
               required
             />
             <div className="block" aria-hidden />
@@ -224,8 +206,10 @@ const SignUp = () => {
               onChange={onChange}
               className={inputClass}
               autoComplete="email"
-              pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
-              title="올바른 이메일 형식을 입력해주세요 (예: example@domain.com)"
+              pattern="^[a-zA-Z0-9._-]{1,40}@[a-zA-Z0-9.-]{1,10}\.[a-zA-Z]{2,4}$"
+              title="이메일 형식으로 5~50자 이내 입력 (특수문자는 ._- 만 허용)"
+              minLength={5}
+              maxLength={50}
               required
             />
             <div className="block" aria-hidden />
@@ -247,6 +231,7 @@ const SignUp = () => {
                   checked={form.role === "mentee"}
                   onChange={onChange}
                   className="accent-[#2E47A4]"
+                  required
                 />
                 <span className="text-[17px] text-[#2E47A4]">멘티</span>
               </label>
@@ -278,12 +263,6 @@ const SignUp = () => {
             </div>
             <div className="block" aria-hidden />
           </div>
-
-          {error && (
-            <div className="text-red-600 text-center" role="alert">
-              {error}
-            </div>
-          )}
         </form>
       </div>
     </div>

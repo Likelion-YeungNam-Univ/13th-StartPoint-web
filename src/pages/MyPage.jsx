@@ -10,9 +10,16 @@ export default function MyPage() {
   const [newPhone, setNewPhone] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [newRole, setNewRole] = useState("");
-  const [error, setError] = useState("");
 
   const { name, role, isLoading } = useAuth();
+
+  const disabledInputClass =
+    "h-10 w-full border rounded-md px-4 bg-gray-100 text-gray-500 cursor-not-allowed";
+
+  const inputClass =
+    "h-10 w-full border rounded-md px-4 bg-white focus:shadow-inner caret-[#2E47A4] focus:outline-[#2E47A4]";
+
+  const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
   useEffect(() => {
     if (!isLoading && !name && !role) {
@@ -48,44 +55,26 @@ export default function MyPage() {
 
   const handleSaveClick = async (e) => {
     e.preventDefault();
-    setError("");
 
     if (newRole === "MENTOR") {
       alert("멘토 전환은 추후 지원 예정입니다.");
       return;
     }
 
-    const trimmedData = {
-      password: newPassword.trim(),
-      phone: newPhone.trim(),
-      email: newEmail.trim(),
-      role: newRole.trim(),
-    };
-
-    if (
-      !trimmedData.password ||
-      !trimmedData.phone ||
-      !trimmedData.email ||
-      !trimmedData.role
-    ) {
-      setError("모든 필수 항목을 입력해 주세요.");
-      return;
-    }
-
     try {
       await updateMyPage({
-        password: trimmedData.password,
-        phone: trimmedData.phone,
-        email: trimmedData.email,
-        role: trimmedData.role,
+        password: newPassword,
+        phone: newPhone,
+        email: newEmail,
+        role: newRole,
       });
 
       setMyInfo({
         ...myInfo,
-        password: trimmedData.password,
-        phone: trimmedData.phone,
-        email: trimmedData.email,
-        role: trimmedData.role,
+        password: newPassword.trim(),
+        phone: newPhone.trim(),
+        email: newEmail.trim(),
+        role: newRole.trim(),
       });
 
       alert("정보가 성공적으로 수정되었습니다!");
@@ -94,13 +83,6 @@ export default function MyPage() {
       alert("정보 수정에 실패했습니다. 다시 시도해주세요.");
     }
   };
-
-  const inputClass =
-    "h-10 w-full border rounded-md px-4 bg-white focus:shadow-inner focus:outline-[#2E47A4] caret-[#2E47A4] invalid:focus:outline-red-500";
-  const disabledInputClass =
-    "h-10 w-full border rounded-md px-4 bg-gray-100 text-gray-500 cursor-not-allowed";
-
-  const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -156,8 +138,11 @@ export default function MyPage() {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               className={inputClass}
-              minLength={8}
               required
+              pattern="^(?!.*\s)(?=.{8,20}$)(?:(?=.*[A-Z])(?=.*[a-z])(?=.*\d)|(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9])|(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])|(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9])).*$"
+              title="8~20자, 대문자/소문자/숫자/특수문자 중 3종 이상 조합, 공백 불가"
+              minLength={8}
+              maxLength={20}
             />
             <div className="block" aria-hidden />
 
@@ -186,7 +171,7 @@ export default function MyPage() {
               inputMode="numeric"
               placeholder="010-XXXX-XXXX"
               pattern="^010-\d{4}-\d{4}$"
-              title="올바른 전화번호 형식을 입력해주세요 (010-4자리-4자리)"
+              title="010-XXXX-XXXX 형식으로 입력해주세요"
               required
             />
             <div className="block" aria-hidden />
@@ -201,8 +186,10 @@ export default function MyPage() {
               onChange={(e) => setNewEmail(e.target.value)}
               className={inputClass}
               autoComplete="email"
-              pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
-              title="올바른 이메일 형식을 입력해주세요 (예: example@domain.com)"
+              pattern="^[a-zA-Z0-9._-]{1,40}@[a-zA-Z0-9.-]{1,10}\.[a-zA-Z]{2,4}$"
+              title="이메일 형식으로 5~50자 이내 입력 (특수문자는 ._- 만 허용)"
+              minLength={5}
+              maxLength={50}
               required
             />
             <div className="block" aria-hidden />
@@ -232,7 +219,6 @@ export default function MyPage() {
                   className="accent-[#2E47A4]"
                   checked={newRole === "MENTOR"}
                   onChange={(e) => setNewRole(e.target.value)}
-                  required
                 />
                 <span className="text-[17px] text-[#2E47A4]">멘토</span>
               </label>
@@ -252,12 +238,6 @@ export default function MyPage() {
             </div>
             <div className="block" aria-hidden />
           </div>
-
-          {error && (
-            <div className="text-red-600 text-center" role="alert">
-              {error}
-            </div>
-          )}
         </form>
       </div>
     </div>
