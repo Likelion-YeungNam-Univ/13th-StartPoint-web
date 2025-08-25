@@ -11,6 +11,7 @@ import heartPush from "../assets/Heart_Push.svg";
 
 // 선택용 목록 (지금처럼 쓰기 or 멘토 정보에 있는 걸로 나열하기)
 const areaList = [
+  "전체",
   "중방동",
   "중앙동",
   "남부동",
@@ -28,6 +29,7 @@ const areaList = [
   "와촌면",
 ];
 const categoryList = [
+  "전체",
   "소매",
   "음식",
   "수리·개인",
@@ -44,6 +46,8 @@ const Mentoring = () => {
   const navigate = useNavigate();
   const { name, role, isLoading } = useAuth();
   const locationObj = useLocation();
+
+  const [selectedPayment, setSelectedPayment] = useState(null);
 
   const params = useMemo(() => {
     const state = locationObj.state || {};
@@ -133,7 +137,7 @@ const Mentoring = () => {
   };
 
   const handlePaymentConfirm = () => {
-    setShowPreparing(true); // 결제 서비스 준비중 모달 표시
+    setShowPreparing(true);
   };
 
   const times = ["10:00", "14:00", "18:00", "22:00"];
@@ -550,13 +554,16 @@ const Mentoring = () => {
 
       {showPayment && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center backdrop-blur-xs bg-black/50">
-          <div className="bg-white rounded-[6px] shadow-xl w-[700px] h-[250px]">
+          <div className="bg-white rounded-[6px] shadow-xl w-[700px] h-[245.3px] px-6">
             <div className="relative flex justify-between items-center px-6 py-3 border-b border-[#2E47A4]">
               <h2 className="text-[17px] font-semibold text-black">
                 결제 수단 선택
               </h2>
               <button
-                onClick={() => setShowPayment(false)}
+                onClick={() => {
+                  setShowPayment(false);
+                  setSelectedPayment(false);
+                }}
                 className="absolute right-5 w-[18px] h-[18px] bg-[#B5B5B5] flex items-center justify-center text-white text-xl font-bold rounded-full cursor-pointer"
               >
                 <img src={back} alt="back" className="w-[8px] h-[8px]" />
@@ -575,6 +582,7 @@ const Mentoring = () => {
                         <input
                           type="radio"
                           name="payment"
+                          onClick={() => setSelectedPayment(true)}
                           value="realtime"
                           className="cursor-pointer"
                         />
@@ -584,6 +592,7 @@ const Mentoring = () => {
                         <input
                           type="radio"
                           name="payment"
+                          onClick={() => setSelectedPayment(true)}
                           value="virtual"
                           className="cursor-pointer"
                         />
@@ -601,6 +610,7 @@ const Mentoring = () => {
                         <input
                           type="radio"
                           name="payment"
+                          onClick={() => setSelectedPayment(true)}
                           value="realtime"
                           className="cursor-pointer"
                         />
@@ -610,6 +620,7 @@ const Mentoring = () => {
                         <input
                           type="radio"
                           name="payment"
+                          onClick={() => setSelectedPayment(true)}
                           value="virtual"
                           className="cursor-pointer"
                         />
@@ -626,6 +637,7 @@ const Mentoring = () => {
                       <input
                         type="radio"
                         name="payment"
+                        onClick={() => setSelectedPayment(true)}
                         value="card"
                         className="cursor-pointer"
                       />
@@ -639,7 +651,12 @@ const Mentoring = () => {
             <div className="px-6 py-5 border-t border-[#2E47A4] flex justify-center">
               <button
                 onClick={handlePaymentConfirm}
-                className="w-[300px] h-[32px] rounded-[5px] bg-[#2E47A4] text-[14px] text-white font-semibold hover:bg-[#1d3180] cursor-pointer"
+                className={[
+                  "w-[300px] h-[32px] rounded-[5px]  text-[14px] text-white font-semibold ",
+                  selectedPayment
+                    ? "bg-[#2E47A4] cursor-pointer hover:bg-[#1d3180]"
+                    : "bg-[#CFCFCF] cursor-not-allowed",
+                ].join(" ")}
               >
                 결제하기
               </button>
