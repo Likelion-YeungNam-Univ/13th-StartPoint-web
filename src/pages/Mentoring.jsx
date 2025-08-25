@@ -321,7 +321,7 @@ const Mentoring = () => {
 
         <div
           aria-hidden={open}
-          className={`relative z-0 mt-15 overflow-hidden grid grid-cols-3 gap-10 px-13 transition duration-100
+          className={`relative z-0 mt-15 overflow-hidden grid grid-cols-3 gap-10 px-30 transition duration-100
             ${open ? "blur-xs pointer-events-none select-none" : ""}`}
         >
           {loading ? (
@@ -335,7 +335,7 @@ const Mentoring = () => {
             filteredMentors.map((mentor) => (
               <article
                 key={mentor.id}
-                className="w-[330px] h-[420px] rounded-[10px] bg-white py-12 transition hover:bg-white/90 cursor-pointer"
+                className="col-span-1 rounded-[10px] bg-white py-10 transition hover:bg-white/90 cursor-pointer"
                 onClick={() => setSelectedMentor(mentor)}
               >
                 <div className="mx-auto h-[105px] w-[105px] overflow-hidden rounded-full">
@@ -349,21 +349,19 @@ const Mentoring = () => {
                   {mentor.name}
                 </h3>
 
-                <p className="mt-2 text-center text-[17px] text-[#464646] font-medium px-5 break-words">
+                <p className="mt-2 text-center text-[17px] text-[#464646] font-medium px-12 break-words">
                   {mentor.storeName}
                 </p>
-                <p className="mt-2 text-center text-[14px] text-[#727272] font-medium px-5 break-words">
+                <p className="mt-2 text-center text-[14px] text-[#727272] font-medium px-13 break-words">
                   {mentor.bio}
                 </p>
-                <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-                  {mentor.keywords.map((k) => (
-                    <span
-                      key={k}
-                      className="rounded-full border-[0.5px] border-[#4D4D4D] px-4 py-1 text-[14px] text-[#616161]"
-                    >
-                      {k}
-                    </span>
-                  ))}
+                <div className="mt-5 flex items-center justify-center gap-2">
+                  <span className="rounded-full border-[0.5px] border-[#4D4D4D] px-4 py-1 text-[14px] text-[#616161]">
+                    {mentor.area}
+                  </span>
+                  <span className="rounded-full border-[0.5px] border-[#4D4D4D] px-4 py-1 text-[14px] text-[#616161]">
+                    {mentor.category}
+                  </span>
                 </div>
               </article>
             ))
