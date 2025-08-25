@@ -205,6 +205,19 @@ const MarketResult = () => {
     { name: "최고", value: Number(data?.maxAmt) || 0 },
   ];
 
+  // ★ 값이 모두 같아도 가운데에 보이도록 Y축 범위에 패딩 주기
+  const _vals = minAvgMax.map(d => d.value);
+  const _min = Math.min(..._vals);
+  const _max = Math.max(..._vals);
+  const _span = _max - _min;
+
+  // span=0(모두 같은 값)일 땐 값의 5% 또는 최소 1만큼 패딩, 아니면 범위의 20%
+  const _pad = _span === 0
+    ? Math.max(1, Math.round((_min || 1) * 0.05))
+    : Math.max(1, Math.round(_span * 0.2));
+
+  const yDomainMinAvgMax = [_min - _pad, _max + _pad];
+
   const saleSiCnt = Number(data?.storeCnt?.[0]?.storeCnt ?? 0);
 
   const eachDay = [
@@ -372,7 +385,7 @@ const MarketResult = () => {
                     />
                   </Line>
                   <XAxis hide />
-                  <YAxis hide />
+                  <YAxis domain={yDomainMinAvgMax} hide allowDecimals={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
