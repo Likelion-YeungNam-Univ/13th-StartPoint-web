@@ -960,8 +960,7 @@ const MarketResult = () => {
                         lengthAngle={180}
                         lineWidth={15}
                         lineCap="round"
-                        animate
-                        animationDuration={500}
+                        animate={false}
                         style={{ height: "250px", width: "100%" }}
                       />
 
