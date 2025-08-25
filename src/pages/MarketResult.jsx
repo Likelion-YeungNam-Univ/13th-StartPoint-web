@@ -112,6 +112,7 @@ const MarketResult = () => {
       upjongCd: state.upjong3cd || "",
       simpleLoc: state.areaName || "",
       upjongNm: state.upjong3nm || "",
+      upjongMajor: state.upjongMajor || "",
     };
   }, [locationObj.state]);
 
@@ -191,6 +192,8 @@ const MarketResult = () => {
   const dongName = params.simpleLoc || "동";
 
   const upjongName = params.upjongNm || 0;
+
+  const upjongMajor = params.upjongMajor;
 
   const pop = data?.population;
   const maxDay = getMaxDay(pop);
@@ -871,7 +874,9 @@ const MarketResult = () => {
           <div
             onClick={() => {
               if (name || role) {
-                navigate("/mentoring");
+                navigate("/mentoring", {
+                  state: { dongName, upjongMajor },
+                });
               } else {
                 alert("로그인이 필요한 서비스입니다.");
                 navigate("/login");

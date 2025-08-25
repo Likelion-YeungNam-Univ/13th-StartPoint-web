@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import back from "../assets/Back.svg";
 import error from "../assets/Error.svg";
 import mentorListApi from "../apis/mentorListApi";
 import updateMentorApi from "../apis/updateMentorApi";
 import { MoonLoader } from "react-spinners";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import heart from "../assets/Heart.svg";
 import heartPush from "../assets/Heart_Push.svg";
@@ -40,6 +40,15 @@ const categoryList = [
 const Mentoring = () => {
   const navigate = useNavigate();
   const { name, role, isLoading } = useAuth();
+  const locationObj = useLocation();
+
+  const params = useMemo(() => {
+    const state = locationObj.state || {};
+    return {
+      areaName: state.dongName || "",
+      upjongMajor: state.upjongMajor || "",
+    };
+  }, [locationObj].state);
 
   useEffect(() => {
     if (!isLoading && !name && !role) {
@@ -48,10 +57,13 @@ const Mentoring = () => {
     }
   }, [name, role, navigate, isLoading]);
 
+  const resultArea = params.areaName;
+  const resultCategory = params.upjongMajor;
+
   const [open, setOpen] = useState(false);
 
-  const [area, setArea] = useState("서부1동");
-  const [category, setCategory] = useState("음식");
+  const [area, setArea] = useState(`${resultArea}` || "서부1동");
+  const [category, setCategory] = useState(`${resultCategory}` || "음식");
 
   const [selectedMentor, setSelectedMentor] = useState(null);
 
@@ -158,24 +170,22 @@ const Mentoring = () => {
   useEffect(() => {
     if (!selectedMentor) return;
     const id = selectedMentor.id;
-    
-    setLikeCount(
-      likeCountById[id] ?? selectedMentor.likeCount ?? 0
-    );
+
+    setLikeCount(likeCountById[id] ?? selectedMentor.likeCount ?? 0);
     setLiked(!!likedById[id]);
   }, [selectedMentor, likedById, likeCountById]);
 
-    const toggleLike = () => {
-      const nextLiked = !liked;
-      const nextCount = nextLiked ? likeCount + 1 : Math.max(0, likeCount - 1);
-      setLiked(nextLiked);
-      setLikeCount(nextCount);
-      if (selectedMentor) {
-        const id = selectedMentor.id;
-        setLikedById((m) => ({ ...m, [id]: nextLiked }));
-        setLikeCountById((m) => ({ ...m, [id]: nextCount }));
-      }
-    };
+  const toggleLike = () => {
+    const nextLiked = !liked;
+    const nextCount = nextLiked ? likeCount + 1 : Math.max(0, likeCount - 1);
+    setLiked(nextLiked);
+    setLikeCount(nextCount);
+    if (selectedMentor) {
+      const id = selectedMentor.id;
+      setLikedById((m) => ({ ...m, [id]: nextLiked }));
+      setLikeCountById((m) => ({ ...m, [id]: nextCount }));
+    }
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -534,7 +544,7 @@ const Mentoring = () => {
           </div>
         </div>
       )}
-      
+
       {showPayment && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center backdrop-blur-xs bg-black/50">
           <div className="bg-white rounded-[6px] shadow-xl w-[700px] h-[250px]">

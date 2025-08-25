@@ -58,6 +58,7 @@ function Section2() {
   const [selectedMajor, setSelectedMajor] = useState(null);
   const [selectedMiddle, setSelectedMiddle] = useState(null);
   const [selectedSub, setSelectedSub] = useState(null);
+  const [selectedMajorName, setSelectedMajorName] = useState("");
 
   const navigate = useNavigate();
 
@@ -340,6 +341,7 @@ function Section2() {
                                 setSelectedMajor((prev) =>
                                   prev === major.prefix ? null : major.prefix
                                 );
+                                setSelectedMajorName(major.name);
                                 setSelectedMiddle(null);
                                 setSelectedSub(null);
                               }}
@@ -512,10 +514,17 @@ function Section2() {
                     const areaCode = picked?.areaCode ?? null;
                     const areaName = picked?.areaName ?? null;
                     const upjong3cd = selectedSub?.code ?? null;
+                    const upjongMajor = selectedMajorName ?? null;
                     if (!areaCode || !areaName || !upjong3cd) return;
 
                     navigate("/market-result", {
-                      state: { areaCode, upjong3cd, areaName, upjong3nm },
+                      state: {
+                        areaCode,
+                        upjong3cd,
+                        areaName,
+                        upjong3nm,
+                        upjongMajor,
+                      },
                     });
                   }}
                   className={[
