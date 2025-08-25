@@ -206,7 +206,7 @@ const SignUp = () => {
               onChange={onChange}
               className={inputClass}
               autoComplete="email"
-              pattern="^[a-zA-Z0-9._-]{1,40}@[a-zA-Z0-9.-]{1,10}\.[a-zA-Z]{2,4}$"
+              pattern="^[a-zA-Z0-9._-]{1,}@[a-zA-Z0-9._-]{1,}\.[a-zA-Z]{2,}$"
               title="이메일 형식으로 5~50자 이내 입력 (특수문자는 ._- 만 허용)"
               minLength={5}
               maxLength={50}
