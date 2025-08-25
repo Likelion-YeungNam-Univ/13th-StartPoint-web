@@ -345,7 +345,7 @@ const Mentoring = () => {
                     className="h-full w-full object-cover"
                   />
                 </div>
-                <h3 className="text-center text-[24px] font-semibold text-[#464646]">
+                <h3 className="text-center text-[24px] font-semibold text-[#464646] mt-2">
                   {mentor.name}
                 </h3>
 
