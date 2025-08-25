@@ -54,7 +54,7 @@ const codeToName = {
 
 // --- 요일/시간대 최댓값 ---
 const getMaxDay = (p) => {
-  if (!p) return { label: "—", value: null };
+  if (!p) return { label: 0, value: null };
   const dayMap = [
     ["mon", "월"],
     ["tues", "화"],
@@ -64,16 +64,16 @@ const getMaxDay = (p) => {
     ["sat", "토"],
     ["sun", "일"],
   ];
-  let best = { label: "—", value: -Infinity };
+  let best = { label: 0, value: -Infinity };
   for (const [k, label] of dayMap) {
     const v = Number(p?.[k]);
     if (!Number.isNaN(v) && v > best.value) best = { label, value: v };
   }
-  return best.value === -Infinity ? { label: "—", value: null } : best;
+  return best.value === -Infinity ? { label: 0, value: null } : best;
 };
 
 const getMaxHour = (p) => {
-  if (!p) return { label: "—", value: null };
+  if (!p) return { label: 0, value: null };
   const hourMap = [
     ["firstHour", "05-09"],
     ["secondHour", "09-12"],
@@ -82,12 +82,12 @@ const getMaxHour = (p) => {
     ["fifthHour", "18-23"],
     ["sixthHour", "23-05"],
   ];
-  let best = { label: "—", value: -Infinity };
+  let best = { label: 0, value: -Infinity };
   for (const [k, label] of hourMap) {
     const v = Number(p?.[k]);
     if (!Number.isNaN(v) && v > best.value) best = { label, value: v };
   }
-  return best.value === -Infinity ? { label: "—", value: null } : best;
+  return best.value === -Infinity ? { label: 0, value: null } : best;
 };
 
 const MarketResult = () => {
@@ -190,7 +190,7 @@ const MarketResult = () => {
   const guName = "경산시";
   const dongName = params.simpleLoc || "동";
 
-  const upjongName = params.upjongNm || "—";
+  const upjongName = params.upjongNm || 0;
 
   const pop = data?.population;
   const maxDay = getMaxDay(pop);
@@ -252,8 +252,8 @@ const MarketResult = () => {
       </div>
       <div className="text-white text-[22px] mt-5 flex items-center justify-center font-semibold">
         선택하신 동네
-        <span className="text-[#30C0D0] ml-2">‘{dongName}’</span>과 업종
-        <span className="text-[#30C0D0] ml-2">‘{upjongName}’</span>에 대한 분석
+        <span className="text-[#30C0D0] ml-2">{dongName}</span>과 업종
+        <span className="text-[#30C0D0] ml-2">{upjongName}</span>에 대한 분석
         결과입니다.
       </div>
       <div className="flex items-center justify-center text-[16px] text-white font-medium mt-4">
@@ -278,7 +278,7 @@ const MarketResult = () => {
                 ? Number(data.saleAmt) != 0
                   ? `${Number(data.saleAmt).toLocaleString()}만 원`
                   : `${Number(data.guAmt).toLocaleString()}만 원`
-                : "—"}
+                : "0"}
             </div>
           </div>
            
@@ -291,7 +291,7 @@ const MarketResult = () => {
                 ? Number(data.saleCnt) != 0
                   ? `${Number(data.saleCnt).toLocaleString()}개`
                   : `${Number(data.saleGuCnt).toLocaleString()}개`
-                : "—"}
+                : "0"}
             </div>
           </div>
         </div>
@@ -305,7 +305,7 @@ const MarketResult = () => {
               {data?.population?.dayAvg !== undefined &&
               data?.population?.dayAvg !== null
                 ? `${Number(data.population.dayAvg).toLocaleString()}명`
-                : "—"}
+                : 0}
             </div>
           </div>
            
@@ -387,7 +387,7 @@ const MarketResult = () => {
                 <div className="text-[#121B2A] font-semibold text-[15px]">
                   {data?.saleAmt
                     ? `${Number(data.saleAmt).toLocaleString()}`
-                    : "—"}
+                    : 0}
                 </div>
                 <img
                   src={dongIcon}
@@ -448,7 +448,7 @@ const MarketResult = () => {
                   : "text-gray-500"
               }`}
             >
-              {Math.abs(data?.prevYearRate)?.toFixed(1) ?? "—"}%
+              {Math.abs(data?.prevYearRate ?? 0)?.toFixed(1) ?? 0}%
               {(Number(data?.prevYearRate) || 0) > 0 ? (
                 <img
                   src={upIcon}
@@ -462,7 +462,7 @@ const MarketResult = () => {
                   className="ml-1 w-6 h-6 object-contain"
                 />
               ) : (
-                <span className="ml-2 text-gray-500">-</span>
+                <span className="ml-2 text-gray-500"></span>
               )}
             </div>
             <div className="text-[22px] text-[#121B2A] font-semibold mb-1">
@@ -476,7 +476,7 @@ const MarketResult = () => {
                     : "text-gray-500"
                 }`}
               >
-                {Math.abs(data?.prevMonRate)?.toFixed(1) ?? "—"}%
+                {Math.abs(data?.prevMonRate ?? 0)?.toFixed(1) ?? 0}%
                 {(Number(data?.prevMonRate) || 0) > 0 ? (
                   <img
                     src={upIcon}
@@ -490,7 +490,7 @@ const MarketResult = () => {
                     className="ml-1 w-6 h-6 object-contain"
                   />
                 ) : (
-                  <span className="ml-2 text-gray-500">-</span>
+                  <span className="ml-2 text-gray-500"></span>
                 )}
               </div>
             </div>
@@ -515,7 +515,7 @@ const MarketResult = () => {
                   ? Number(data.saleCnt) != 0
                     ? `${Number(data.saleCnt).toLocaleString()}개`
                     : `${Number(data.saleGuCnt).toLocaleString()}개`
-                  : "—"}
+                  : 0}
               </div>
             </div>
             {/* 2-2 지역 업종 수 비교 */} 
@@ -531,7 +531,7 @@ const MarketResult = () => {
                   <div className="text-[#121B2A] font-semibold text-[15px]">
                     {data?.saleCnt != null
                       ? Number(data.saleCnt).toLocaleString()
-                      : "—"}
+                      : 0}
                   </div>
                   <img
                     src={dongIcon}
@@ -596,7 +596,7 @@ const MarketResult = () => {
                     : "text-gray-500"
                 }`}
               >
-                {Math.abs(data?.prevYearCntRate)?.toFixed(1) ?? "—"}%
+                {Math.abs(data?.prevYearCntRate ?? 0)?.toFixed(1) ?? 0}%
                 {(Number(data?.prevYearCntRate) || 0) > 0 ? (
                   <img
                     src={upIcon}
@@ -610,7 +610,7 @@ const MarketResult = () => {
                     className="ml-1 w-6 h-6 object-contain"
                   />
                 ) : (
-                  <span className="ml-2 text-gray-500">-</span>
+                  <span className="ml-2 text-gray-500"></span>
                 )}
               </div>
               <div className="text-[22px] text-[#121B2A] font-semibold mb-1">
@@ -625,7 +625,7 @@ const MarketResult = () => {
                     : "text-gray-500"
                 }`}
               >
-                {Math.abs(data?.prevMonCntRate)?.toFixed(1) ?? "—"}%
+                {Math.abs(data?.prevMonCntRate ?? 0)?.toFixed(1) ?? 0}%
                 {(Number(data?.prevMonCntRate) || 0) > 0 ? (
                   <img
                     src={upIcon}
@@ -639,7 +639,7 @@ const MarketResult = () => {
                     className="ml-1 w-6 h-6 object-contain"
                   />
                 ) : (
-                  <span className="ml-2 text-gray-500">-</span>
+                  <span className="ml-2 text-gray-500"></span>
                 )}
               </div>
             </div>
@@ -663,7 +663,7 @@ const MarketResult = () => {
               <div className="text-[#30C0D0] font-bold text-[32px]">
                 {data?.population?.dayAvg != null
                   ? Number(data.population.dayAvg).toLocaleString()
-                  : "—"}
+                  : 0}
                 명
               </div>
             </div>
@@ -966,7 +966,7 @@ const MarketResult = () => {
                           <span className="absolute left-1/2 transform -translate-x-1/2 text-[28px] text-white font-bold">
                             {pracData?.feasibilityScore
                               ? `${pracData?.feasibilityScore}점`
-                              : "-"}
+                              : "0점"}
                           </span>
                           <span className="text-[15px] text-[#A0AEC0]">
                             10점
