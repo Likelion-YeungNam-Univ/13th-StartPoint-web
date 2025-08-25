@@ -46,7 +46,8 @@ const Login = () => {
     } catch (err) {
       console.error(err?.response || err);
       const msg =
-        err?.response?.data?.message || "회원정보가 존재하지 않습니다. 다시 입력해주세요.";
+        err?.response?.data?.message ||
+        "회원정보가 존재하지 않습니다. 다시 입력해주세요.";
       setError(msg);
     } finally {
       setLoading(false);
@@ -73,11 +74,11 @@ const Login = () => {
         className="flex flex-col items-center justify-center p-2 rounded-2xl w-1/2 -mt-15"
         onSubmit={handleLogin}
       >
-        <h2 className="text-[48px] font-bold text-center text-[#2E47A4]">
+        <h2 className="text-[48px] font-[PretendardR] text-center text-[#2E47A4] font-bold">
           Login
         </h2>
 
-        <div className="text-[20px] font-medium p-3 text-center mb-10">
+        <div className="text-[20px] font-[PretendardR] p-3 text-center mb-10">
           계정에 로그인하면 모든 정보를 볼 수 있습니다.
         </div>
 
