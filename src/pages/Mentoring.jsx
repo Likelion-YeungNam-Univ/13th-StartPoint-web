@@ -69,8 +69,8 @@ const Mentoring = () => {
 
   const [open, setOpen] = useState(false);
 
-  const [area, setArea] = useState(`${resultArea}` || "서부1동");
-  const [category, setCategory] = useState(`${resultCategory}` || "음식");
+  const [area, setArea] = useState(`${resultArea}` || "전체");
+  const [category, setCategory] = useState(`${resultCategory}` || "전체");
 
   const [selectedMentor, setSelectedMentor] = useState(null);
 
@@ -110,7 +110,7 @@ const Mentoring = () => {
   }, [name, role]);
 
   const mentoringApply = () => {
-    setLoadingPayment(true); // 1초 동안 로딩 표시
+    setLoadingPayment(true);
 
     setTimeout(async () => {
       setLoadingPayment(false);
@@ -165,9 +165,17 @@ const Mentoring = () => {
           : "bg-[#B3B3B3] text-white border-white/20 hover:bg-white/20"
       }`;
 
-  const filteredMentors = mentors.filter(
-    (mentor) => mentor.area === area && mentor.category === category
-  );
+  const filteredMentors = mentors.filter((mentor) => {
+    if (area === "전체" && category === "전체") {
+      return true;
+    } else if (area === "전체") {
+      return mentor.category === category;
+    } else if (category === "전체") {
+      return mentor.area === area;
+    } else {
+      return mentor.category === category && mentor.area === area;
+    }
+  });
 
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
