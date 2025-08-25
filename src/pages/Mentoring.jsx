@@ -152,22 +152,30 @@ const Mentoring = () => {
 
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
+  const [likedById, setLikedById] = useState({});
+  const [likeCountById, setLikeCountById] = useState({});
 
   useEffect(() => {
-    if (selectedMentor) {
-      setLikeCount(selectedMentor.likeCount || 0);
-      setLiked(false); // 모달 열 때 기본값 초기화
-    }
-  }, [selectedMentor]);
+    if (!selectedMentor) return;
+    const id = selectedMentor.id;
+    
+    setLikeCount(
+      likeCountById[id] ?? selectedMentor.likeCount ?? 0
+    );
+    setLiked(!!likedById[id]);
+  }, [selectedMentor, likedById, likeCountById]);
 
-  const toggleLike = () => {
-    if (liked) {
-      setLikeCount(likeCount - 1);
-    } else {
-      setLikeCount(likeCount + 1);
-    }
-    setLiked(!liked);
-  };
+    const toggleLike = () => {
+      const nextLiked = !liked;
+      const nextCount = nextLiked ? likeCount + 1 : Math.max(0, likeCount - 1);
+      setLiked(nextLiked);
+      setLikeCount(nextCount);
+      if (selectedMentor) {
+        const id = selectedMentor.id;
+        setLikedById((m) => ({ ...m, [id]: nextLiked }));
+        setLikeCountById((m) => ({ ...m, [id]: nextCount }));
+      }
+    };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -317,9 +325,9 @@ const Mentoring = () => {
                 </h3>
 
                 <p className="mt-2 text-center text-[17px] text-[#464646] font-medium px-5 break-words">
-                  {mentor.headline}
+                  {mentor.storeName}
                 </p>
-                <p className="mt-2 text-center text-[14px] text-[#464646] font-medium px-5 break-words">
+                <p className="mt-2 text-center text-[14px] text-[#727272] font-medium px-5 break-words">
                   {mentor.bio}
                 </p>
                 <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
@@ -497,7 +505,7 @@ const Mentoring = () => {
                     key={tag}
                     className="rounded-full bg-white px-4 py-1 text-[12px] text-black border-[0.5px] border-[#DBDBDB]"
                   >
-                    #{tag}
+                    {tag}
                   </span>
                 ))}
               </div>
@@ -514,7 +522,11 @@ const Mentoring = () => {
             </div>
 
             <button
-              onClick={() => setSelectedMentor(null)}
+              onClick={() => {
+                setSelectedMentor(null);
+                setSelectedDate(null);
+                setSelectedTime(null);
+              }}
               className="absolute top-5 right-5 w-[18px] h-[18px] bg-[#B5B5B5] flex items-center justify-center text-white text-xl font-bold rounded-full cursor-pointer"
             >
               <img src={back} alt="back" className="w-[8px] h-[8px]" />
@@ -522,7 +534,7 @@ const Mentoring = () => {
           </div>
         </div>
       )}
-
+      
       {showPayment && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center backdrop-blur-xs bg-black/50">
           <div className="bg-white rounded-[6px] shadow-xl w-[700px] h-[250px]">
