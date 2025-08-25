@@ -305,7 +305,7 @@ export default function ChatBot() {
             </button>
           )}
           <button
-            onClick={() => { setOpen(false); setBadgeHover(false); }}
+            onClick={() => { setOpen(false); setBadgeHover(false);}}
             className="absolute right-3 top-4 w-4 h-4 grid place-items-center rounded-full border border-[#FFFFFF] bg-[#FFFFFF] hover:bg-white/60 cursor-pointer"
             aria-label="close"
           >
