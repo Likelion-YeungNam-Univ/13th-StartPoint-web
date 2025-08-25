@@ -265,7 +265,7 @@ const MarketResult = () => {
         표시됩니다.
       </div>
       {/* 0. 간단 요약 */}
-      <div className="text-white text-[36px] pt-36 font-bold flex flex-col items-center">
+      <div className="text-white text-[36px] pt-27 font-bold flex flex-col items-center">
         <div className="flex items-center">
           <img src={analysis} alt="analysis" className="mr-4.5" /> 
           <span>분석 결과 간단 요약</span>
