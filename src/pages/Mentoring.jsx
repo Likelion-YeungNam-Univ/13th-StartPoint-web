@@ -152,22 +152,30 @@ const Mentoring = () => {
 
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
+  const [likedById, setLikedById] = useState({});
+  const [likeCountById, setLikeCountById] = useState({});
 
   useEffect(() => {
-    if (selectedMentor) {
-      setLikeCount(selectedMentor.likeCount || 0);
-      setLiked(false); // 모달 열 때 기본값 초기화
-    }
-  }, [selectedMentor]);
+    if (!selectedMentor) return;
+    const id = selectedMentor.id;
+    
+    setLikeCount(
+      likeCountById[id] ?? selectedMentor.likeCount ?? 0
+    );
+    setLiked(!!likedById[id]);
+  }, [selectedMentor, likedById, likeCountById]);
 
-  const toggleLike = () => {
-    if (liked) {
-      setLikeCount(likeCount - 1);
-    } else {
-      setLikeCount(likeCount + 1);
-    }
-    setLiked(!liked);
-  };
+    const toggleLike = () => {
+      const nextLiked = !liked;
+      const nextCount = nextLiked ? likeCount + 1 : Math.max(0, likeCount - 1);
+      setLiked(nextLiked);
+      setLikeCount(nextCount);
+      if (selectedMentor) {
+        const id = selectedMentor.id;
+        setLikedById((m) => ({ ...m, [id]: nextLiked }));
+        setLikeCountById((m) => ({ ...m, [id]: nextCount }));
+      }
+    };
 
   if (isLoading) {
     return <div>Loading...</div>;
