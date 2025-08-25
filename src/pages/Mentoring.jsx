@@ -150,6 +150,11 @@ const Mentoring = () => {
   for (let i = 0; i < firstDay; i++) days.push(null);
   for (let d = 1; d <= lastDate; d++) days.push(d);
 
+  useEffect(() => {
+    document.body.style.overflow = selectedMentor ? "hidden" : "auto";
+    return () => (document.body.style.overflow = "auto");
+  }, [selectedMentor]);
+
   const handlePrevMonth = () => {
     setCurrentDate(new Date(year, month - 1, 1));
   };
@@ -169,11 +174,11 @@ const Mentoring = () => {
     if (area === "전체" && category === "전체") {
       return true;
     } else if (area === "전체") {
-      return mentor.category === category;
+      return mentor.largeCategory === category;
     } else if (category === "전체") {
       return mentor.area === area;
     } else {
-      return mentor.category === category && mentor.area === area;
+      return mentor.largeCategory === category && mentor.area === area;
     }
   });
 
@@ -345,7 +350,7 @@ const Mentoring = () => {
                     className="h-full w-full object-cover"
                   />
                 </div>
-                <h3 className="text-center text-[24px] font-semibold text-[#464646]">
+                <h3 className="text-center text-[24px] font-semibold text-[#464646] mt-2">
                   {mentor.name}
                 </h3>
 
@@ -360,7 +365,7 @@ const Mentoring = () => {
                     {mentor.area}
                   </span>
                   <span className="rounded-full border-[0.5px] border-[#4D4D4D] px-4 py-1 text-[14px] text-[#616161]">
-                    {mentor.category}
+                    {mentor.largeCategory}
                   </span>
                 </div>
               </article>
@@ -522,13 +527,13 @@ const Mentoring = () => {
                 키워드
               </h3>
 
-              <div className="mt-3 flex flex-wrap gap-2">
-                {selectedMentor.keywords.map((tag) => (
+              <div className="mt-3 max-h-32 flex flex-wrap gap-2 overflow-y-auto">
+                {selectedMentor.keywords.split(",").map((keyword) => (
                   <span
-                    key={tag}
+                    key={keyword}
                     className="rounded-full bg-white px-4 py-1 text-[12px] text-black border-[0.5px] border-[#DBDBDB]"
                   >
-                    {tag}
+                    {keyword}
                   </span>
                 ))}
               </div>
