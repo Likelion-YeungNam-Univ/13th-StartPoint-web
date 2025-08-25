@@ -522,7 +522,11 @@ const Mentoring = () => {
             </div>
 
             <button
-              onClick={() => setSelectedMentor(null)}
+              onClick={() => {
+                setSelectedMentor(null);
+                setSelectedDate(null);
+                setSelectedTime(null);
+              }}
               className="absolute top-5 right-5 w-[18px] h-[18px] bg-[#B5B5B5] flex items-center justify-center text-white text-xl font-bold rounded-full cursor-pointer"
             >
               <img src={back} alt="back" className="w-[8px] h-[8px]" />
@@ -530,7 +534,7 @@ const Mentoring = () => {
           </div>
         </div>
       )}
-
+      
       {showPayment && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center backdrop-blur-xs bg-black/50">
           <div className="bg-white rounded-[6px] shadow-xl w-[700px] h-[250px]">
