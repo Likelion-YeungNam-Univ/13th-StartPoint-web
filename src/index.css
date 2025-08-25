@@ -2,6 +2,11 @@
 @import "tailwind-scrollbar-hide/v4";
 
 @font-face {
+  font-family: "PretendardEB";
+  src: url("./font/Pretendard-ExtraBold.ttf");
+}
+
+@font-face {
   font-family: "PretendardB";
   src: url("./font/Pretendard-Bold.ttf");
 }
@@ -16,10 +21,14 @@
   src: url("./font/Pretendard-Regular.ttf");
 }
 
+body {
+  font-family: "Pretendard";
+}
+
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE/Edge */
-  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
 }
 .no-scrollbar::-webkit-scrollbar {
-  display: none;             /* Chrome/Safari/Opera */
+  display: none; /* Chrome/Safari/Opera */
 }
